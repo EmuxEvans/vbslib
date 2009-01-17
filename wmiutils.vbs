@@ -98,6 +98,110 @@ End Class
 Dim MsgOut
 Set MsgOut = New MessageWriter
 
+Sub MakeHeap(list, maxIndex, compare, swap)
+  Dim i, j
+
+  i = maxIndex
+  Do While i >= 1
+    j = Int((i - 1) / 2)
+    If compare(list(i), list(j)) > 0 Then
+      swap list, i, j
+    End If
+    i = j
+  Loop
+End Sub
+
+Sub DownHeap(list, maxIndex, compare, swap)
+  Dim i, j, k, nextIndex
+
+  i = 0
+  Do While i <= maxIndex
+    j = (i + 1) * 2 - 1
+    k = (i + 1) * 2
+
+    If k <= maxIndex Then
+      If compare(list(j), list(k)) > 0 Then
+        nextIndex = j
+      Else
+        nextIndex = k
+      End If
+    ElseIf j <= maxIndex Then
+      nextIndex = j
+    Else
+      Exit Do
+    End If
+
+    If compare(list(nextIndex), list(i)) > 0 Then
+      swap list, nextIndex, i
+    Else
+      Exit Do
+    End If
+
+    i = nextIndex
+  Loop
+End Sub
+
+Sub HeapSort(list, compare, swap)
+  Dim i
+
+  For i = 1 To UBound(list)
+    MakeHeap list, i, compare, swap
+  Next
+
+  For i = UBound(list) To 1 Step -1
+    swap list, 0, i
+    DownHeap list, i - 1, compare, swap
+  Next
+End Sub
+
+Sub Sort(list, compare, swap)
+  HeapSort list, compare, swap
+End Sub
+
+Class SwapValue
+  Public Default Sub Swap(list, i, j)
+    Dim t
+    t = list(i)
+    list(i) = list(j)
+    list(j) = t
+  End Sub
+End Class
+
+Sub SortValue(list, compare)
+  Sort list, compare, New SwapValue
+End Sub
+
+Class SwapObject
+  Public Default Sub Swap(list, i, j)
+    Dim t
+    Set t = list(i)
+    Set list(i) = list(j)
+    Set list(j) = t
+  End Sub
+End Class
+
+Sub SortObject(list, compare)
+  Sort list, compare, New SwapObject
+End Sub
+
+Class NumberCompare
+  Public Default Function Compare(a, b)
+    Compare = a - b
+  End Function
+End Class
+
+Class StringTextCompare
+  Public Default Function Compare(a, b)
+    Compare = StrComp(a, b, vbTextCompare)
+  End Function
+End Class
+
+Class StringBinaryCompare
+  Public Default Function Compare(a, b)
+    Compare = StrComp(a, b, vbBinaryCompare)
+  End Function
+End Class
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil
