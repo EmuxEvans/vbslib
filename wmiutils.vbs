@@ -8,6 +8,12 @@ Function WMIServiceInstancesOf(computerName, serviceName)
   Set WMIServiceInstancesOf = wbemServices.InstancesOf(serviceName)
 End Function
 
+Function ShowObjectProperty(object, propertyName)
+  Dim value
+  value = Eval("object." & propertyName)
+  ShowObjectProperty = propertyName & ": " & value
+End Function
+
 Const MessageWriter_INIT_BUF_SIZE = 15
 
 Class MessageWriter
