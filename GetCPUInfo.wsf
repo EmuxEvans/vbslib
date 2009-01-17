@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<job id="GetCPUInfo">
+<script language="VBScript" src="wmiutils.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim wbemObject
+For Each wbemObject In WMIServiceInstancesOf(".", "Win32_Processor")
+  MsgOut "DeviceID: " & wbemObject.DeviceID
+  MsgOut "Name: " & wbemObject.Name
+  MsgOut "Version: " & wbemObject.Version
+  MsgOut "Revision: " & wbemObject.Revision
+  MsgOut "Description: " & wbemObject.Description
+  MsgOut "Manufacturer: " & wbemObject.Manufacturer
+  MsgOut "ProcessorId: " & wbemObject.ProcessorId
+  MsgOut "AddressWidth: " & wbemObject.AddressWidth
+  MsgOut "DataWidth: " & wbemObject.DataWidth
+  MsgOut "CurrentClockSpeed: " & wbemObject.CurrentClockSpeed
+  MsgOut "MaxClockSpeed: " & wbemObject.MaxClockSpeed
+  MsgOut "ExtClock: " & wbemObject.ExtClock
+  MsgOut "L2CacheSize: " & wbemObject.L2CacheSize
+  MsgOut "L2CacheSpeed: " & wbemObject.L2CacheSpeed
+  MsgOut "L3CacheSize: " & wbemObject.L3CacheSize
+  MsgOut "L3CacheSpeed: " & wbemObject.L3CacheSpeed
+  MsgOut "CurrentVoltage: " & wbemObject.CurrentVoltage
+  MsgOut "NumberOfCores: " & wbemObject.NumberOfCores
+  MsgOut "NumberOfLogicalProcessors: " & wbemObject.NumberOfLogicalProcessors
+  MsgOut "PowerManagementSupported: " & wbemObject.PowerManagementSupported
+  MsgOut "SocketDesignation: " & wbemObject.SocketDesignation
+  MsgOut "Status: " & wbemObject.Status
+  MsgOut.FlushAndWriteLine "*"
+Next
+
+]]></script>
+</job>
