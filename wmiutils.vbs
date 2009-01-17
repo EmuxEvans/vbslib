@@ -25,7 +25,7 @@ Class MessageWriter
     lastIndex = 0
   End Sub
 
-  Private Sub ExpandBuffer
+  Private Sub ExtendBuffer
     Dim maxIndex
     maxIndex = UBound(buffer)
     If maxIndex < MessageWriter_INIT_BUF_SIZE Then
@@ -38,7 +38,7 @@ Class MessageWriter
 
   Public Sub Write(message)
     If lastIndex > UBound(buffer) Then
-      ExpandBuffer
+      ExtendBuffer
     End If
     buffer(lastIndex) = message
     lastIndex = lastIndex + 1
