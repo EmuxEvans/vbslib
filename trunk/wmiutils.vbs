@@ -22,9 +22,13 @@ Function DefinedObjectProperty(object, propertyName)
   End Select
 End Function
 
+Function GetObjectProperty(object, propertyName)
+  GetObjectProperty = Eval("object." & propertyName)
+End Function
+
 Function ShowObjectProperty(object, propertyName)
   Dim value
-  value = Eval("object." & propertyName)
+  value = GetObjectProperty(object, propertyName)
   ShowObjectProperty = propertyName & ": " & value
 End Function
 
@@ -202,6 +206,38 @@ Class StringBinaryCompare
     Compare = StrComp(a, b, vbBinaryCompare)
   End Function
 End Class
+
+Class ObjectPropertyCompare
+  Private propName
+  Private propComp
+
+  Public Property Let PropertyName(value)
+    propName = value
+  End Property
+
+  Public Property Set PropertyCompare(value)
+    Set propComp = value
+  End Property
+
+  Public Default Function Compare(a, b)
+    If IsEmpty(propName) Then
+      Err.Raise 51, "ObjectPropertyCompare", "Not defined `PropertyName'."
+    End If
+    If IsEmpty(propComp) Then
+      Err.Raise 51, "ObjectPropertyCompare", "Not defined `PropertyCompare'."
+    End If
+    Compare = propComp(GetObjectProperty(a, propName), _
+                       GetObjectProperty(b, propName))
+  End Function
+End Class
+
+Function New_ObjectPropertyCompare(propertyName, propertyCompare)
+  Dim compare
+  Set compare = New ObjectPropertyCompare
+  compare.PropertyName = propertyName
+  Set compare.PropertyCompare = propertyCompare
+  Set New_ObjectPropertyCompare = compare
+End Function
 
 ' Local Variables:
 ' mode: Visual-Basic
