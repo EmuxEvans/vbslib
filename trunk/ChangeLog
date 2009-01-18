@@ -1,5 +1,7 @@
 2009-01-18  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* GetProcessInfo.wsf: Process Information tool.
+
 	* wmiutils.vbs: DefinedObjectProperty Function. GetObjectProperty
 	Function. ObjectPropertyCompare Class.
 
