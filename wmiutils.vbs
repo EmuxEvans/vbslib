@@ -106,6 +106,8 @@ Sub MakeHeap(list, maxIndex, compare, swap)
     j = Int((i - 1) / 2)
     If compare(list(i), list(j)) > 0 Then
       swap list, i, j
+    Else
+      Exit Do
     End If
     i = j
   Loop
