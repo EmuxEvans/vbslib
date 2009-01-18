@@ -8,6 +8,20 @@ Function WMIServiceInstancesOf(computerName, serviceName)
   Set WMIServiceInstancesOf = wbemServices.InstancesOf(serviceName)
 End Function
 
+Function DefinedObjectProperty(object, propertyName)
+  Dim value
+  On Error Resume Next
+  value = Eval("VarType(object." & propertyName & ")")
+  Select Case Err.Number
+    Case 0:
+      DefinedObjectProperty = True
+    Case 438:
+      DefinedObjectProperty = False
+    Case Else:
+      Err.Raise Err.Number
+  End Select
+End Function
+
 Function ShowObjectProperty(object, propertyName)
   Dim value
   value = Eval("object." & propertyName)

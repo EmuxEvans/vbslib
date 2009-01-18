@@ -1,5 +1,7 @@
 2009-01-18  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* wmiutils.vbs: DefinedObjectProperty Function.
+
 	* wmiutils.vbs: WMIServiceInstancesOf Function, ShowObjectProperty
 	Function, MessageWriter Object, Sort Subroutines.
 

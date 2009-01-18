@@ -21,8 +21,12 @@ For Each wbemObject In WMIServiceInstancesOf(".", "Win32_Processor")
   MsgOut ShowObjectProperty(wbemObject, "ExtClock")
   MsgOut ShowObjectProperty(wbemObject, "L2CacheSize")
   MsgOut ShowObjectProperty(wbemObject, "L2CacheSpeed")
-  MsgOut ShowObjectProperty(wbemObject, "L3CacheSize")
-  MsgOut ShowObjectProperty(wbemObject, "L3CacheSpeed")
+  If DefinedObjectProperty(wbemObject, "L3CacheSize") Then
+    MsgOut ShowObjectProperty(wbemObject, "L3CacheSize")
+  End If
+  If DefinedObjectProperty(wbemObject, "L3CacheSpeed") Then
+    MsgOut ShowObjectProperty(wbemObject, "L3CacheSpeed")
+  End If
   MsgOut ShowObjectProperty(wbemObject, "CurrentVoltage")
   MsgOut ShowObjectProperty(wbemObject, "NumberOfCores")
   MsgOut ShowObjectProperty(wbemObject, "NumberOfLogicalProcessors")
