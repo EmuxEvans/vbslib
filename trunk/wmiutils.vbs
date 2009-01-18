@@ -98,25 +98,10 @@ End Class
 Dim MsgOut
 Set MsgOut = New MessageWriter
 
-Sub MakeHeap(list, maxIndex, compare, swap)
-  Dim i, j
-
-  i = maxIndex
-  Do While i >= 1
-    j = Int((i - 1) / 2)
-    If compare(list(i), list(j)) > 0 Then
-      swap list, i, j
-    Else
-      Exit Do
-    End If
-    i = j
-  Loop
-End Sub
-
-Sub DownHeap(list, maxIndex, compare, swap)
+Sub DownHeap(list, startIndex, maxIndex, compare, swap)
   Dim i, j, k, nextIndex
 
-  i = 0
+  i = startIndex
   Do While i <= maxIndex
     j = (i + 1) * 2 - 1
     k = (i + 1) * 2
@@ -146,13 +131,13 @@ End Sub
 Sub HeapSort(list, compare, swap)
   Dim i
 
-  For i = 1 To UBound(list)
-    MakeHeap list, i, compare, swap
+  For i = Int((UBound(list) - 1) / 2) To 0 Step -1
+    DownHeap list, i, UBound(list), compare, swap
   Next
 
   For i = UBound(list) To 1 Step -1
     swap list, 0, i
-    DownHeap list, i - 1, compare, swap
+    DownHeap list, 0, i - 1, compare, swap
   Next
 End Sub
 
