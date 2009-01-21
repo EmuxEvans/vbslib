@@ -74,6 +74,21 @@ Sub PopupHistory(hist)
   MsgBox text, vbOKOnly + vbInformation, POPUP_TITLE & ": History"
 End Sub
 
+Function GetHistory(hist, indexExpr)
+  Dim index
+  On Error Resume Next
+  index = CInt(indexExpr)
+
+  If Err.Number = 0 Then
+    If hist.Exists(index) Then
+      GetHistory = hist(index)
+      Exit Function
+    End If
+  End If
+
+  GetHistory = Empty
+End Function
+
 Sub REPL_Execute(expr)
   On Error Resume Next
   ExecuteGlobal expr
@@ -144,11 +159,7 @@ Do
     If expr = "" Then
       PopupHistory(hist)
     Else
-      Dim index
-      index = CInt(expr)
-      If hist.Exists(index) Then
-        defaultExpr = hist(index)
-      End If
+      defaultExpr = GetHistory(hist, expr)
     End If
   Else
     REPL_Execute expr
