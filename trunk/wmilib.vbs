@@ -1,122 +1,111 @@
-'WMI Utilities
+'WMI library
 
 Option Explicit
 
-Function WMIServiceInstancesOf(computerName, serviceName)
-  Dim wbemServices
-  Set wbemServices = GetObject("winmgmts:\\" & computerName)
-  Set WMIServiceInstancesOf = wbemServices.InstancesOf(serviceName)
-End Function
+'=========================================================
+'################ common utilities: begin ################
+'---------------------------------------------------------
 
-Function DefinedObjectProperty(object, propertyName)
-  Dim value
-  On Error Resume Next
-  value = Eval("VarType(object." & propertyName & ")")
-  Select Case Err.Number
-    Case 0:
-      DefinedObjectProperty = True
-    Case 438:
-      DefinedObjectProperty = False
-    Case Else:
-      Err.Raise Err.Number
-  End Select
-End Function
+Sub Bind(toStore, value)
+  If IsObject(value) Then
+    Set toStore = value
+  Else
+    toStore = value
+  End
+End Sub
 
-Function GetObjectProperty(object, propertyName)
-  GetObjectProperty = Eval("object." & propertyName)
-End Function
+Sub BindAt(toStore, index, value)
+  If IsObject(value) Then
+    Set toStore(index) = value
+  Else
+    toStore(index) = value
+  End
+End Sub
 
-Function ShowObjectProperty(object, propertyName)
-  Dim value
-  value = GetObjectProperty(object, propertyName)
-  ShowObjectProperty = propertyName & ": " & value
-End Function
-
-Const MessageWriter_INIT_BUF_SIZE = 15
-
-Class MessageWriter
-  Private buffer
-  Private lastIndex
+Class ListBuffer
+  Private ivar_dict
 
   Private Sub Class_Initialize
-    ReDim buffer(MessageWriter_INIT_BUF_SIZE)
-    lastIndex = 0
+    Set ivar_dict = CreateObject("Scripting.Dictionary")
   End Sub
 
-  Private Sub ExtendBuffer
-    Dim maxIndex
-    maxIndex = UBound(buffer)
-    If maxIndex < MessageWriter_INIT_BUF_SIZE Then
-      maxIndex = MessageWriter_INIT_BUF_SIZE
+  Public Property Get Count
+    Count = ivar_dict.Count
+  End Property
+
+  Public Default Property Get Item(index)
+    If ivar_dict.Exists(index) Then
+      Bind Item, ivar_dict(index)
     Else
-      maxIndex = maxIndex * 2
+      Err.Raise 9, "wmilib.vbs:ListBuffer.Item(Get)", "out of range."
+    End
+  End Property
+
+  Public Default Property Let Item(index, value)
+    If ivar_dict.Exists(index) Then
+      ivar_dict(index) = value
+    Else
+      Err.Raise 9, "wmilib.vbs:ListBuffer.Item(Let)", "out of range."
     End If
-    ReDim Preserve buffer(maxIndex)
-  End Sub
+  End Property
 
-  Public Sub Write(message)
-    If lastIndex > UBound(buffer) Then
-      ExtendBuffer
+  Public Default Property Set Item(index, value)
+    If ivar_dict.Exists(index) Then
+      Set ivar_dict(index) = value
+    Else
+      Err.Raise 9, "wmilib.vbs:ListBuffer.Item(Let)", "out of range."
     End If
-    buffer(lastIndex) = message
-    lastIndex = lastIndex + 1
+  End Property
+
+  Public Sub Add(value)
+    Dim nextIndex
+    nextIndex = ivar_dict.Count
+    BindAt ivar_dict, nextIndex, value
   End Sub
 
-  Public Default Sub WriteLine(message)
-    Write message & vbNewLine
-  End Sub
-
-  Private Function FlushBuffer
-    Dim s
-    s = ""
-
-    Dim i
-    For i = 0 To lastIndex - 1
-      s = s & buffer(i)
-      buffer(i) = ""
-    Next
-    lastIndex = 0
-
-    FlushBuffer = s
+  Public Function Exists(key)
+    Exists = ivar_dict.Exists(key)
   End Function
 
-  Private Sub PopupMessage(message)
-    MsgBox message, vbOKOnly + vbInformation, WScript.ScriptName
-  End Sub
+  Public Function Items
+    ReDim itemList(ivar_dict.Count - 1)
+    Dim i
+    For i = 0 To ivar_dict.Count - 1
+      BindAt itemList, i, ivar_dict(i)
+    Next
+    Items = itemList
+  End Function
 
-  Public Sub Flush
-    Dim s
-    s = FlushBuffer
+  Public Function Keys
+    ReDim keyList(ivar_dict.Count - 1)
+    Dim i
+    For i = 0 To ivar_dict.Count - 1
+      BindAt keyList, i, ivar_dict(i)
+    Next
+    Keys = keyList
+  End Function
 
-    On Error Resume Next
-    WScript.StdOut.Write s
-
-    If Err.Number <> 0 Then
-      PopupMessage s
-    End if
-  End Sub
-
-  Public Sub FlushAndWriteLine(lastMessage)
-    Write(lastMessage)
-
-    Dim s
-    s = FlushBuffer
-
-    On Error Resume Next
-    WScript.StdOut.Write s
-
-    If Err.Number <> 0 Then
-      PopupMessage s
-    Else
-      WScript.StdOut.WriteLine
-    End if
+  Public Sub RemoveAll
+    ivar_dict.RemoveAll
   End Sub
 End Class
 
-Dim MsgOut
-Set MsgOut = New MessageWriter
+'---------------------------------------------------------
+'################# common utilities: end #################
+'=========================================================
 
-Sub DownHeap(list, startIndex, maxIndex, compare, swap)
+'=======================================================
+'################ sort utilities: begin ################
+'-------------------------------------------------------
+
+Sub SwapArrayElement(list, i, j)
+  Dim t
+  Bind t, list(i)
+  BindAt list, i, list(j)
+  BindAt list, j, t
+End Sub
+
+Sub DownHeap(list, startIndex, maxIndex, compare)
   Dim i, j, k, nextIndex
 
   i = startIndex
@@ -137,7 +126,7 @@ Sub DownHeap(list, startIndex, maxIndex, compare, swap)
     End If
 
     If compare(list(nextIndex), list(i)) > 0 Then
-      swap list, nextIndex, i
+      SwapArrayElement list, nextIndex, i
     Else
       Exit Do
     End If
@@ -146,47 +135,21 @@ Sub DownHeap(list, startIndex, maxIndex, compare, swap)
   Loop
 End Sub
 
-Sub HeapSort(list, compare, swap)
+Sub HeapSort(list, compare)
   Dim i
 
   For i = Int((UBound(list) - 1) / 2) To 0 Step -1
-    DownHeap list, i, UBound(list), compare, swap
+    DownHeap list, i, UBound(list), compare
   Next
 
   For i = UBound(list) To 1 Step -1
-    swap list, 0, i
-    DownHeap list, 0, i - 1, compare, swap
+    SwapArrayElement list, 0, i
+    DownHeap list, 0, i - 1, compare
   Next
 End Sub
 
-Sub Sort(list, compare, swap)
-  HeapSort list, compare, swap
-End Sub
-
-Class SwapValue
-  Public Default Sub Swap(list, i, j)
-    Dim t
-    t = list(i)
-    list(i) = list(j)
-    list(j) = t
-  End Sub
-End Class
-
-Sub SortValue(list, compare)
-  Sort list, compare, New SwapValue
-End Sub
-
-Class SwapObject
-  Public Default Sub Swap(list, i, j)
-    Dim t
-    Set t = list(i)
-    Set list(i) = list(j)
-    Set list(j) = t
-  End Sub
-End Class
-
-Sub SortObject(list, compare)
-  Sort list, compare, New SwapObject
+Sub Sort(list, compare)
+  HeapSort list, compare
 End Sub
 
 Class NumberCompare
@@ -221,10 +184,10 @@ Class ObjectPropertyCompare
 
   Public Default Function Compare(a, b)
     If IsEmpty(propName) Then
-      Err.Raise 51, "ObjectPropertyCompare", "Not defined `PropertyName'."
+      Err.Raise 51, "wmilib.vbs:ObjectPropertyCompare", "Not defined `PropertyName'."
     End If
     If IsEmpty(propComp) Then
-      Err.Raise 51, "ObjectPropertyCompare", "Not defined `PropertyCompare'."
+      Err.Raise 51, "wmilib.vbs:ObjectPropertyCompare", "Not defined `PropertyCompare'."
     End If
     Compare = propComp(GetObjectProperty(a, propName), _
                        GetObjectProperty(b, propName))
@@ -238,6 +201,138 @@ Function New_ObjectPropertyCompare(propertyName, propertyCompare)
   Set compare.PropertyCompare = propertyCompare
   Set New_ObjectPropertyCompare = compare
 End Function
+
+'-------------------------------------------------------
+'################# sort utilities: end #################
+'=======================================================
+
+'======================================================
+'################ I/O utilities: begin ################
+'------------------------------------------------------
+
+Class MessageWriter
+  Private ivar_buffer
+  
+  Private Sub Class_Initialize
+    Set ivar_buffer = New ListBuffer
+  End Sub
+
+  Public Sub Write(message)
+    ivar_buffer.Add message
+  End Sub
+
+  Public Default Sub WriteLine(message)
+    Write message & vbNewLine
+  End Sub
+
+  Private Function FlushBuffer
+    Dim s, msg
+    s = ""
+    For Each msg In ivar_buffer.Items
+      s = s & msg
+    Next
+    ivar_buffer.RemoveAll
+    FlushBuffer = s
+  End Function
+
+  Private Sub PopupMessage(message)
+    MsgBox message, vbOKOnly + vbInformation, WScript.ScriptName
+  End Sub
+
+  Public Sub Flush
+    Dim s
+    s = FlushBuffer
+
+    On Error Resume Next
+    WScript.StdOut.Write s
+
+    If Err.Number <> 0 Then
+      Err.Clear
+      On Error ToTo 0
+      PopupMessage s
+    End if
+  End Sub
+
+  Public Sub FlushAndWriteLine(lastMessage)
+    Write(lastMessage)
+
+    Dim s
+    s = FlushBuffer
+
+    On Error Resume Next
+    WScript.StdOut.Write s
+
+    If Err.Number <> 0 Then
+      Err.Clear
+      On Error GoTo 0
+      PopupMessage s
+    Else
+      On Error GoTo 0
+      WScript.StdOut.WriteLine
+    End if
+  End Sub
+End Class
+
+Dim MsgOut
+Set MsgOut = New MessageWriter
+
+'------------------------------------------------------
+'################# I/O utilities: end #################
+'======================================================
+
+'=======================================================
+'################# MOP utilities: Begin ################
+'-------------------------------------------------------
+
+Function ExistsObjectProperty(Object, name)
+  Dim value
+  On Error Resume Next
+  value = Eval("VarType(object." & name & ")")
+  Select Case Err.Number
+    Case 0:
+      ExistsObjectProperty = True
+    Case 438:
+      ExistsObjectProperty = False
+    Case Else:
+      Err.Raise 51, "wmilib.vbs:ExistsObjectProperty", "unknown error."
+  End Select
+end Function
+
+Function GetObjectProperty(object, name)
+  Bind GetObjectProperty, Eval("object." & Name)
+End Function
+
+Function ShowObjectProperty(object, name)
+  Dim value
+  value = GetObjectProperty(object, propertyName)
+  ShowObjectProperty = propertyName & ": " & value
+End Function
+
+'-------------------------------------------------------
+'################## MOP utilities: end #################
+'=======================================================
+
+Function WMIServiceInstancesOf(computerName, serviceName)
+  Dim wbemServices
+  Set wbemServices = GetObject("winmgmts:\\" & computerName)
+  Set WMIServiceInstancesOf = wbemServices.InstancesOf(serviceName)
+End Function
+
+Function DefinedObjectProperty(object, propertyName)
+  Dim value
+  On Error Resume Next
+  value = Eval("VarType(object." & propertyName & ")")
+  Select Case Err.Number
+    Case 0:
+      DefinedObjectProperty = True
+    Case 438:
+      DefinedObjectProperty = False
+    Case Else:
+      Err.Raise Err.Number
+  End Select
+End Function
+
+
 
 ' Local Variables:
 ' mode: Visual-Basic
