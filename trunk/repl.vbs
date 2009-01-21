@@ -78,40 +78,32 @@ Function GetHistory(hist, indexExpr)
   Dim index
   On Error Resume Next
   index = CInt(indexExpr)
-
   If Err.Number = 0 Then
     If hist.Exists(index) Then
       GetHistory = hist(index)
       Exit Function
     End If
   End If
-
   GetHistory = Empty
 End Function
 
 Sub REPL_Execute(expr)
   On Error Resume Next
   ExecuteGlobal expr
-
   If Err.Number <> 0 Then
     PopupError
   End If
-
-  Err.Clear
 End Sub
 
 Sub REPL_Evaluate(expr)
   Dim result
   On Error Resume Next
   result = Eval(expr)
-
   If Err.Number = 0 Then
     PopupResult expr, result
   Else
     PopupError
   End If
-
-  Err.Clear
 End Sub
 
 Dim execCommand
