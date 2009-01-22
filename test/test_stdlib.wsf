@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<job id="GetCPUInfo">
+<script language="VBScript" src="../stdlib.vbs" />
+<script language="VBScript" src="../unittest.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+UnitTest_Description "test for stdlib.vbs"
+
+Sub TestBindValue
+  Dim v
+  Bind v, "Hello world."
+  If v <> "Hello world." Then
+    Err.Raise RuntimeError, "ASSERT_FAIL", "Bind Error"
+  End If
+End Sub
+UnitTest_TestCase "TestBindValue"
+
+UnitTest_ConsoleRun
+
+]]></script>
+</job>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->

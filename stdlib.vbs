@@ -13,7 +13,7 @@ Sub Bind(toStore, value)
     Set toStore = value
   Else
     toStore = value
-  End
+  End If
 End Sub
 
 Sub BindAt(toStore, index, value)
@@ -21,7 +21,7 @@ Sub BindAt(toStore, index, value)
     Set toStore(index) = value
   Else
     toStore(index) = value
-  End
+  End If
 End Sub
 
 Class ListBuffer
@@ -40,10 +40,10 @@ Class ListBuffer
       Bind Item, ivar_dict(index)
     Else
       Err.Raise 9, "stdlib.vbs:ListBuffer.Item(Get)", "out of range."
-    End
+    End If
   End Property
 
-  Public Default Property Let Item(index, value)
+  Public Property Let Item(index, value)
     If ivar_dict.Exists(index) Then
       ivar_dict(index) = value
     Else
@@ -51,7 +51,7 @@ Class ListBuffer
     End If
   End Property
 
-  Public Default Property Set Item(index, value)
+  Public Property Set Item(index, value)
     If ivar_dict.Exists(index) Then
       Set ivar_dict(index) = value
     Else
@@ -244,7 +244,7 @@ Class MessageWriter
 
     If Err.Number <> 0 Then
       Err.Clear
-      On Error ToTo 0
+      On Error GoTo 0
       PopupMessage s
     End if
   End Sub
