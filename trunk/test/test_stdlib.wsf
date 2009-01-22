@@ -74,6 +74,12 @@ Sub TestListBuffer
   Assert listBuf.Exists(1)
   Assert listBuf.Exists(2)
   Assert Not listBuf.Exists(3)
+
+  Set listBuf(0) = Nothing
+  listBuf(2) = "baz"
+  AssertSame Nothing, listBuf(0)
+  AssertEqual "bar", listBuf(1)
+  AssertEqual "baz", listBuf(2)
 End Sub
 UnitTest_TestCase "TestListBuffer"
 
