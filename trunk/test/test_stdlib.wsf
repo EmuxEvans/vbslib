@@ -36,7 +36,6 @@ Sub TestBindAtObject
   AssertSame Nothing, a(0)
   Assert IsEmpty(a(1))
 End Sub
-
 UnitTest_ConsoleRun
 
 ]]></script>
