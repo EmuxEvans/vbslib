@@ -39,7 +39,7 @@ Function UnitTest_MakeErrorEntry(testCaseSub, message)
   ReDim entry(2)
   entry(0) = UNITTEST_FAIL_TYPE_E
   entry(1) = testCaseSub
-  entry(2) = "UnitTestError: " & message & ": " & _
+  entry(2) = "UnitTest Error: " & message & ": " & _
              "(" & Err.Number & ") " & "[" & Err.Source & "] " & Err.Description
   UnitTest_MakeErrorEntry = entry
 End Function
@@ -150,6 +150,52 @@ Sub AssertEqualWithComment(expected, actual, comment)
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
+End Sub
+
+Sub AssertSame(expected, actual)
+  AssertSameWithComment expected, actual, Empty
+End Sub
+
+Sub AssertSameWithComment(expected, actual, comment)
+  If Not actual Is expected Then
+    Dim errMsg
+    errMsg = "AssertSame NG: expected <" & TypeName(expected) & "> but was <" & TypeName(actual) & ">."
+    If Not IsEmpty(comment) Then
+      errMsg = errMsg & "[" & comment & "]"
+    End If
+    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+  End If
+End Sub
+
+Sub AssertMatch(pattern, text)
+  AssertMatchWithComment pattern, text, Empty
+End Sub
+
+Sub AssertMatchWithComment(pattern, text, comment)
+  Dim re
+  Set re = New RegExp
+  re.Pattern = pattern
+  If Not re.Test(text) Then
+    Dim errMsg
+    errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
+    If Not IsEmpty(comment) Then
+      errMsg = errMsg & "[" & comment & "]"
+    End If
+    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+  End If
+End Sub
+
+Sub AssertFail
+  AssertFailWithComment Empty
+End Sub
+
+Sub AssertFailWithComment(comment)
+  Dim errMsg
+  errMsg = "AssertFail NG."
+  If Not IsEmpty(comment) Then
+    errMsg = errMsg & "[" & comment & "]"
+  End If
+  Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
 End Sub
 
 ' Local Variables:
