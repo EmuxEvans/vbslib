@@ -55,9 +55,20 @@ Sub TestListBuffer
   Dim a
   a = listBuf.Items
   AssertEqual "Variant()", TypeName(a)
+  AssertEqual 0, LBound(a)
+  AssertEqual 2, UBound(a)
   AssertEqual "foo", a(0)
   AssertEqual "bar", a(1)
   AssertSame Nothing, a(2)
+
+  Dim k
+  k = listBuf.Keys
+  AssertEqual "Variant()", TypeName(k)
+  AssertEqual 0, LBound(k)
+  AssertEqual 2, UBound(k)
+  AssertEqual 0, k(0)
+  AssertEqual 1, k(1)
+  AssertEqual 2, k(2)
 End Sub
 UnitTest_TestCase "TestListBuffer"
 
