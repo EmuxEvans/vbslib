@@ -11,11 +11,16 @@ UnitTest_Description "test for stdlib.vbs"
 Sub TestBindValue
   Dim v
   Bind v, "Hello world."
-  If v <> "Hello world." Then
-    Err.Raise RuntimeError, "ASSERT_FAIL", "Bind Error"
-  End If
+  AssertEqual "Hello world.", v
 End Sub
 UnitTest_TestCase "TestBindValue"
+
+Sub TestBindObject
+  Dim v
+  Bind v, Nothing
+  AssertSame Nothing, v
+End Sub
+UnitTest_TestCase "TestBindObject"
 
 UnitTest_ConsoleRun
 
