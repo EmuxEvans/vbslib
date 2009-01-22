@@ -5,6 +5,7 @@ Option Explicit
 
 Const UNITTEST_FAIL_TYPE_E = "Error"
 Const UNITTEST_FAIL_TYPE_A = "Assert"
+Const UNITTEST_ASSERT_SOURCE_KEYWORD = "UnitTest Assertion"
 
 Dim UnitTest_Desc
 UnitTest_Desc = Empty
@@ -65,7 +66,11 @@ Sub UnitTest_RunTestCase(testCaseSub, failList)
   If Err.Number = 0 Then
     ExecuteGlobal "Call " & testCaseSub
     If Err.Number <> 0 Then
-      failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed test case.")
+      If Err.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
+        failList.Add UnitTest_MakeFailAssertEntry(testCaseSub, "error test case.")
+      Else
+        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed test case.")
+      End If
       Err.Clear
     End If
   Else
@@ -114,6 +119,21 @@ Sub UnitTest_ConsoleRun
   Else
     WScript.StdOut.WriteLine "*"
     WScript.Quit 1
+  End If
+End Sub
+
+Sub Assert(result)
+  AssertWithComment result, Empty
+End Sub
+
+Sub AssertWithComment(result, comment)
+  If Not result Then
+    Dim errMsg
+    errMsg = "failed to Assert."
+    If Not IsEmpty(comment) Then
+      errMsg = errMsg & " [" & comment & "]"
+    End If
+    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
 End Sub
 
