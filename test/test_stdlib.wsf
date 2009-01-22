@@ -36,6 +36,22 @@ Sub TestBindAtObject
   AssertSame Nothing, a(0)
   Assert IsEmpty(a(1))
 End Sub
+UnitTest_TestCase "TestBindAtObject"
+
+Sub TestListBuffer
+  Dim listBuf
+  Set listBuf = New ListBuffer
+
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
+
+  AssertEqual "foo", listBuf(0)
+  AssertEqual "bar", listBuf(1)
+  AssertSame Nothing, listBuf(2)
+End Sub
+UnitTest_TestCase "TestListBuffer"
+
 UnitTest_ConsoleRun
 
 ]]></script>
