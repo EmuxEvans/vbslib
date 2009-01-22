@@ -44,12 +44,12 @@ Function UnitTest_MakeErrorEntry(testCaseSub, message)
   UnitTest_MakeErrorEntry = entry
 End Function
 
-Function UnitTest_MakeFailAssertEntry(testCaseSub, message)
+Function UnitTest_MakeAssertFailEntry(testCaseSub, message)
   ReDim entry(2)
   entry(0) = UNITTEST_FAIL_TYPE_A
   entry(1) = testCaseSub
-  entry(2) = "Assertion Failed: " & message & ": " & Err.Description
-  UnitTest_MakeFailAssertEntry = entry
+  entry(2) = "Assertion Failed: " & Err.Description
+  UnitTest_MakeAssertFailEntry = entry
 End Function
 
 Sub UnitTest_RunSubs(subs)
@@ -67,7 +67,7 @@ Sub UnitTest_RunTestCase(testCaseSub, failList)
     ExecuteGlobal "Call " & testCaseSub
     If Err.Number <> 0 Then
       If Err.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
-        failList.Add UnitTest_MakeFailAssertEntry(testCaseSub, "error test case.")
+        failList.Add UnitTest_MakeAssertFailEntry(testCaseSub, "error test case.")
       Else
         failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed test case.")
       End If
@@ -129,7 +129,22 @@ End Sub
 Sub AssertWithComment(result, comment)
   If Not result Then
     Dim errMsg
-    errMsg = "failed to Assert."
+    errMsg = " Assert NG."
+    If Not IsEmpty(comment) Then
+      errMsg = errMsg & " [" & comment & "]"
+    End If
+    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+  End If
+End Sub
+
+Sub AssertEqual(expected, actual)
+  AssertEqualWithComment expected, actual, Empty
+End Sub
+
+Sub AssertEqualWithComment(expected, actual, comment)
+  If expected <> actual Then
+    Dim errMsg
+    errMsg = "AssertEqual NG: expected <" & expected & "> but was <" & actual & ">."
     If Not IsEmpty(comment) Then
       errMsg = errMsg & " [" & comment & "]"
     End If
