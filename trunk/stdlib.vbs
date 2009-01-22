@@ -82,7 +82,7 @@ Class ListBuffer
     ReDim keyList(ivar_dict.Count - 1)
     Dim i
     For i = 0 To ivar_dict.Count - 1
-      BindAt keyList, i, ivar_dict(i)
+      keyList(i) = i
     Next
     Keys = keyList
   End Function
