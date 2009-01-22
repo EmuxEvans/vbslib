@@ -44,7 +44,7 @@ Function UnitTest_MakeErrorEntry(testCaseSub, message)
   UnitTest_MakeErrorEntry = entry
 End Function
 
-Function UnitTest_MakeAssertFailEntry(testCaseSub, message)
+Function UnitTest_MakeAssertFailEntry(testCaseSub)
   ReDim entry(2)
   entry(0) = UNITTEST_FAIL_TYPE_A
   entry(1) = testCaseSub
@@ -67,9 +67,9 @@ Sub UnitTest_RunTestCase(testCaseSub, failList)
     ExecuteGlobal "Call " & testCaseSub
     If Err.Number <> 0 Then
       If Err.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
-        failList.Add UnitTest_MakeAssertFailEntry(testCaseSub, "error test case.")
+        failList.Add UnitTest_MakeAssertFailEntry(testCaseSub)
       Else
-        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed test case.")
+        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "error test case.")
       End If
       Err.Clear
     End If
@@ -129,7 +129,7 @@ End Sub
 Sub AssertWithComment(result, comment)
   If Not result Then
     Dim errMsg
-    errMsg = " Assert NG."
+    errMsg = "Assert NG."
     If Not IsEmpty(comment) Then
       errMsg = errMsg & " [" & comment & "]"
     End If
