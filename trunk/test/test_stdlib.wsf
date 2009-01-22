@@ -69,6 +69,11 @@ Sub TestListBuffer
   AssertEqual 0, k(0)
   AssertEqual 1, k(1)
   AssertEqual 2, k(2)
+
+  Assert listBuf.Exists(0)
+  Assert listBuf.Exists(1)
+  Assert listBuf.Exists(2)
+  Assert Not listBuf.Exists(3)
 End Sub
 UnitTest_TestCase "TestListBuffer"
 
