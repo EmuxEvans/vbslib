@@ -22,6 +22,14 @@ Sub TestBindObject
 End Sub
 UnitTest_TestCase "TestBindObject"
 
+Sub TestBindAtValue
+  Dim a(1)
+  BindAt a, 0, "Hello world."
+  AssertEqual "Hello world.", a(0)
+  Assert IsEmpty(a(1))
+End Sub
+UnitTest_TestCase "TestBindAtValue"
+
 UnitTest_ConsoleRun
 
 ]]></script>
