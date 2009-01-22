@@ -6,6 +6,8 @@ Option Explicit
 '################ basic tool ################
 '--------------------------------------------
 
+Const RuntimeError = 51
+
 Sub Bind(toStore, value)
   If IsObject(value) Then
     Set toStore = value
@@ -181,10 +183,10 @@ Class ObjectPropertyCompare
 
   Public Default Function Compare(a, b)
     If IsEmpty(propName) Then
-      Err.Raise 51, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyName'."
+      Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyName'."
     End If
     If IsEmpty(propComp) Then
-      Err.Raise 51, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyCompare'."
+      Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyCompare'."
     End If
     Compare = propComp(GetObjectProperty(a, propName), _
                        GetObjectProperty(b, propName))
