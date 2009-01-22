@@ -46,9 +46,18 @@ Sub TestListBuffer
   listBuf.Add "bar"
   listBuf.Add Nothing
 
+  AssertEqual 3, listBuf.Count
+
   AssertEqual "foo", listBuf(0)
   AssertEqual "bar", listBuf(1)
   AssertSame Nothing, listBuf(2)
+
+  Dim a
+  a = listBuf.Items
+  AssertEqual "Variant()", TypeName(a)
+  AssertEqual "foo", a(0)
+  AssertEqual "bar", a(1)
+  AssertSame Nothing, a(2)
 End Sub
 UnitTest_TestCase "TestListBuffer"
 
