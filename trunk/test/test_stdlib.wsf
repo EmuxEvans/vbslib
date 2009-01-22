@@ -30,6 +30,13 @@ Sub TestBindAtValue
 End Sub
 UnitTest_TestCase "TestBindAtValue"
 
+Sub TestBindAtObject
+  Dim a(1)
+  BindAt a, 0, Nothing
+  AssertSame Nothing, a(0)
+  Assert IsEmpty(a(1))
+End Sub
+
 UnitTest_ConsoleRun
 
 ]]></script>
