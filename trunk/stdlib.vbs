@@ -55,7 +55,7 @@ Class ListBuffer
     If ivar_dict.Exists(index) Then
       Set ivar_dict(index) = value
     Else
-      Err.Raise 9, "stdlib.vbs:ListBuffer.Item(Let)", "out of range."
+      Err.Raise 9, "stdlib.vbs:ListBuffer.Item(Set)", "out of range."
     End If
   End Property
 
@@ -91,6 +91,49 @@ Class ListBuffer
     ivar_dict.RemoveAll
   End Sub
 End Class
+
+
+'=========================================================
+'################ dynamic object accessor ################
+'---------------------------------------------------------
+
+Dim ObjectProperty_AccessorPool
+Set ObjectProperty_AccessorPool = CreateObject("Scripting.Dictionary")
+
+Sub ObjectProperty_CreateAccessor(name)
+  Dim className, classExpr
+  className = "GetObjectProperty_Accessor_" & propertyName
+  classExpr = "Class " & className & vbNewLine & _
+              "  Public Default Property Get Prop(obj)" & vbNewLine & _
+              "    Bind Prop, obj." & propertyName & vbNewLine & _
+              "  End Property" & vbNewLine & _
+              "" & vbNewLine & _
+              "  Public Property Let Prop(obj, value)" & vbNewLine & _
+              "    obj." & propertyName & " = value" & vbNewLine & _
+              "  End Property" & vbNewLine & _
+              "" & vbNewLine & _
+              "  Public Property Set Prop(obj, value)" & vbNewLine & _
+              "    Set obj." & propertyName & " = value" & vbNewLine & _
+              "  End Property" & vbNewLine & _
+              "End Class" & vbNewLine
+  ExecuteGlobal classExpr
+  Set GetObjectProperty_CreateAccessor = Eval("New " & className)
+End Sub
+
+Sub ObjectProperty_GetAccessor(name)
+  If Not ObjectProperty_AccessorPool.Exists(name) Then
+    Set ObjectProperty_AccessorPool(name) = ObjectProperty_CreateAccessor(name)
+  End If
+  Set ObjectProperty_GetAccessor = ObjectProperty_AccessorPool(name)
+End Sub
+
+Function GetObjectProperty(obj, name)
+  Bind GetObjectProperty, ObjectProperty_GetAccessor(name)(obj)
+End Function
+
+Sub SetObjectProperty(obj, name, value)
+  BindAt ObjectProperty_GetAccessor(name), obj, value
+End Sub
 
 
 '======================================
