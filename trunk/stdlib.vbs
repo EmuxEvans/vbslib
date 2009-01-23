@@ -135,6 +135,25 @@ Sub SetObjectProperty(obj, name, value)
   BindAt ObjectProperty_GetAccessor(name), obj, value
 End Sub
 
+Sub ExistsObjectProperty(obj, name)
+  On Error Resume Next
+  ObjectProperty_GetAccessor(name)(obj)
+  Select Case Err.Number
+    Case 0:
+      ExistsObjectProperty = True
+    Case 438:
+      ExistsObjectProperty = False
+    Case Else:
+      Dim errNum, errSrc, errDsc
+      errNum = Err.Number
+      errSrc = Err.Source
+      errDsc = Err.Description
+      Err.Clear
+      On Error GoTo 0
+      Err.Raise errNum, errSrc, errDsc
+  End Select
+End Sub
+
 
 '======================================
 '################ sort ################
