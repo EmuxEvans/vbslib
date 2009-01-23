@@ -50,24 +50,24 @@ Sub TestListBuffer_GetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add Nothing
 
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   listBuf(3)
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_GetItemOutOfRange"
 
 Sub TestListBuffer_GetItemEmpty
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   listBuf(0)
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_GetItemEmpty"
 
@@ -88,24 +88,24 @@ Sub TestListBuffer_LetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add Nothing
 
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   listBuf(3) = "baz"
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_LetItemOutOfRange"
 
 Sub TestListBuffer_LetItemEmpty
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   listBuf(0) = "foo"
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_LetItemEmpty"
 
@@ -126,24 +126,24 @@ Sub TestListBuffer_SetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add Nothing
 
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   Set listBuf(3) = Nothing
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_SetItemOutOfRange"
 
 Sub TestListBuffer_SetItemEmpty
-  Dim errnum
+  Dim errNum
   On Error Resume Next
   Set listBuf(0) = Nothing
-  errnum = Err.Number: Err.Clear
+  errNum = Err.Number: Err.Clear
   On Error GoTo 0
 
-  AssertEqual 9, errnum
+  AssertEqual 9, errNum
 End Sub
 UnitTest_TestCase "TestListBuffer_SetItemEmpty"
 
