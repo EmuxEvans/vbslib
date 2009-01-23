@@ -24,6 +24,11 @@ Sub TestListBuffer_Count
 End Sub
 UnitTest_TestCase "TestListBuffer_Count"
 
+Sub TestListBuffer_CountEmpty
+  AssertEqual 0, listBuf.Count
+End Sub
+UnitTest_TestCase "TestListBuffer_CountEmpty"
+
 Sub TestListBuffer_GetItem
   listBuf.Add "foo"
   listBuf.Add "bar"
@@ -33,7 +38,7 @@ Sub TestListBuffer_GetItem
   AssertEqual "bar", listBuf(1)
   AssertSame Nothing, listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_Item"
+UnitTest_TestCase "TestListBuffer_GetItem"
 
 Sub TestListBuffer_LetSetItem
   listBuf.Add "foo"
@@ -46,7 +51,7 @@ Sub TestListBuffer_LetSetItem
   AssertEqual "bar", listBuf(1)
   AssertEqual "baz", listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_ItemSetter"
+UnitTest_TestCase "TestListBuffer_LetSetItem"
 
 Sub TestListBuffer_Items
   listBuf.Add "foo"
