@@ -135,7 +135,7 @@ Sub SetObjectProperty(obj, name, value)
   BindAt ObjectProperty_GetAccessor(name), obj, value
 End Sub
 
-Sub ExistsObjectProperty(obj, name)
+Function ExistsObjectProperty(obj, name)
   On Error Resume Next
   ObjectProperty_GetAccessor(name)(obj)
   Select Case Err.Number
@@ -152,7 +152,7 @@ Sub ExistsObjectProperty(obj, name)
       On Error GoTo 0
       Err.Raise errNum, errSrc, errDsc
   End Select
-End Sub
+End Function
 
 
 '======================================
