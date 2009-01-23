@@ -209,6 +209,11 @@ Sub TestListBuffer_Exists
 End Sub
 UnitTest_TestCase "TestListBuffer_Exists"
 
+Sub TestListBuffer_ExistsEmpty
+  Assert Not listBuf.Exists(0)
+End Sub
+UnitTest_TestCase "TestListBuffer_ExistsEmpty"
+
 Sub TestListBuffer_RemoveAll
   listBuf.Add "foo"
   listBuf.Add "bar"
