@@ -15,6 +15,11 @@ Sub SetUp
 End Sub
 UnitTest_SetUp "SetUp"
 
+Sub TearDown
+  Set listBuf = Nothing
+End Sub
+UnitTest_TearDown "TearDown"
+
 Sub TestListBuffer_Count
   listBuf.Add "foo"
   listBuf.Add "bar"
