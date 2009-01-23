@@ -8,19 +8,37 @@ Option Explicit
 
 UnitTest_Description "ListBuffer test in stdlib.vbs."
 
-Sub TestListBuffer
-  Dim listBuf
-  Set listBuf = New ListBuffer
+Dim listBuf
 
+Sub SetUp
+  Set listBuf = New ListBuffer
+End Sub
+UnitTest_SetUp "SetUp"
+
+Sub TestListBuffer_Count
   listBuf.Add "foo"
   listBuf.Add "bar"
   listBuf.Add Nothing
 
   AssertEqual 3, listBuf.Count
+End Sub
+UnitTest_TestCase "TestListBuffer_Count"
+
+Sub TestListBuffer_Item
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   AssertEqual "foo", listBuf(0)
   AssertEqual "bar", listBuf(1)
   AssertSame Nothing, listBuf(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_Item"
+
+Sub TestListBuffer_Items
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   Dim a
   a = listBuf.Items
@@ -30,6 +48,13 @@ Sub TestListBuffer
   AssertEqual "foo", a(0)
   AssertEqual "bar", a(1)
   AssertSame Nothing, a(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_Items"
+
+Sub TestListBuffer_Keys
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   Dim k
   k = listBuf.Keys
@@ -39,17 +64,38 @@ Sub TestListBuffer
   AssertEqual 0, k(0)
   AssertEqual 1, k(1)
   AssertEqual 2, k(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_Keys"
+
+Sub TestListBuffer_Exists
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   Assert listBuf.Exists(0)
   Assert listBuf.Exists(1)
   Assert listBuf.Exists(2)
   Assert Not listBuf.Exists(3)
+End Sub
+UnitTest_TestCase "TestListBuffer_Exists"
+
+Sub TestListBuffer_ItemSetter
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   Set listBuf(0) = Nothing
   listBuf(2) = "baz"
   AssertSame Nothing, listBuf(0)
   AssertEqual "bar", listBuf(1)
   AssertEqual "baz", listBuf(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_ItemSetter"
+
+Sub TestListBuffer_RemoveAll
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
 
   listBuf.RemoveAll
   AssertEqual 0, listBuf.Count
@@ -57,7 +103,7 @@ Sub TestListBuffer
   Assert Not listBuf.Exists(1)
   Assert Not listBuf.Exists(2)
 End Sub
-UnitTest_TestCase "TestListBuffer"
+UnitTest_TestCase "TestListBuffer_RemoveAll"
 
 UnitTest_ConsoleRun
 
