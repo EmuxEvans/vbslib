@@ -163,6 +163,15 @@ Sub TestListBuffer_Items
 End Sub
 UnitTest_TestCase "TestListBuffer_Items"
 
+Sub TestListBuffer_ItemsEmpty
+  Dim a
+  a = listBuf.Items
+  AssertEqual "Variant()", TypeName(a)
+  AssertEqual 0, LBound(a)
+  AssertEqual -1, UBound(a)
+End Sub
+UnitTest_TestCase "TestListBuffer_ItemsEmpty"
+
 Sub TestListBuffer_Keys
   listBuf.Add "foo"
   listBuf.Add "bar"
@@ -178,6 +187,15 @@ Sub TestListBuffer_Keys
   AssertEqual 2, k(2)
 End Sub
 UnitTest_TestCase "TestListBuffer_Keys"
+
+Sub TestListBuffer_KeysEmpty
+  Dim k
+  k = listBuf.Keys
+  AssertEqual "Variant()", TypeName(k)
+  AssertEqual 0, LBound(k)
+  AssertEqual -1, UBound(k)
+End Sub
+UnitTest_TestCase "TestListBuffer_KeysEmpty"
 
 Sub TestListBuffer_Exists
   listBuf.Add "foo"
