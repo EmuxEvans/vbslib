@@ -71,20 +71,19 @@ Sub TestListBuffer_GetItemEmpty
 End Sub
 UnitTest_TestCase "TestListBuffer_GetItemEmpty"
 
-Sub TestListBuffer_LetSetItem
+Sub TestListBuffer_LetItem
   listBuf.Add "foo"
   listBuf.Add "bar"
   listBuf.Add Nothing
 
-  Set listBuf(0) = Nothing
   listBuf(2) = "baz"
-  AssertSame Nothing, listBuf(0)
+  AssertEqual "foo", listBuf(0)
   AssertEqual "bar", listBuf(1)
   AssertEqual "baz", listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_LetSetItem"
+UnitTest_TestCase "TestListBuffer_LetItem"
 
-Sub TestListBuffer_LetSetItemOutOfRange
+Sub TestListBuffer_LetItemOutOfRange
   listBuf.Add "foo"
   listBuf.Add "bar"
   listBuf.Add Nothing
@@ -97,7 +96,34 @@ Sub TestListBuffer_LetSetItemOutOfRange
 
   AssertEqual 9, errnum
 End Sub
-UnitTest_TestCase "TestListBuffer_LetSetItemOutOfRange"
+UnitTest_TestCase "TestListBuffer_LetItemOutOfRange"
+
+Sub TestListBuffer_SetItem
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
+
+  Set listBuf(0) = Nothing
+  AssertSame Nothing, listBuf(0)
+  AssertEqual "bar", listBuf(1)
+  AssertSame Nothing, listBuf(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_SetItem"
+
+Sub TestListBuffer_SetItemOutOfRange
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
+
+  Dim errnum
+  On Error Resume Next
+  Set listBuf(3) = Nothing
+  errnum = Err.Number: Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 9, errnum
+End Sub
+UnitTest_TestCase "TestListBuffer_SetItemOutOfRange"
 
 Sub TestListBuffer_Items
   listBuf.Add "foo"
