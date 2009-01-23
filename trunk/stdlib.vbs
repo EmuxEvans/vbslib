@@ -1,4 +1,4 @@
-'VBScript Standard Library
+' VBScript Standard Library
 
 Option Explicit
 
