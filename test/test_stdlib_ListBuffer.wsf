@@ -79,6 +79,21 @@ Sub TestListBuffer_LetSetItem
 End Sub
 UnitTest_TestCase "TestListBuffer_LetSetItem"
 
+Sub TestListBuffer_LetSetItemOutOfRange
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add Nothing
+
+  Dim errnum
+  On Error Resume Next
+  listBuf(3) = "baz"
+  errnum = Err.Number: Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 9, errnum
+End Sub
+UnitTest_TestCase "TestListBuffer_LetSetItemOutOfRange"
+
 Sub TestListBuffer_Items
   listBuf.Add "foo"
   listBuf.Add "bar"
