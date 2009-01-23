@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<job id="GetCPUInfo">
+<script language="VBScript" src="../stdlib.vbs" />
+<script language="VBScript" src="../unittest.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+UnitTest_Description "Bind test in stdlib.vbs."
+
+Sub TestBindValue
+  Dim v
+  Bind v, "Hello world."
+  AssertEqual "Hello world.", v
+End Sub
+UnitTest_TestCase "TestBindValue"
+
+Sub TestBindObject
+  Dim v
+  Bind v, Nothing
+  AssertSame Nothing, v
+End Sub
+UnitTest_TestCase "TestBindObject"
+
+Sub TestBindAtValue
+  Dim a(1)
+  BindAt a, 0, "Hello world."
+  AssertEqual "Hello world.", a(0)
+  Assert IsEmpty(a(1))
+End Sub
+UnitTest_TestCase "TestBindAtValue"
+
+Sub TestBindAtObject
+  Dim a(1)
+  BindAt a, 0, Nothing
+  AssertSame Nothing, a(0)
+  Assert IsEmpty(a(1))
+End Sub
+UnitTest_TestCase "TestBindAtObject"
+
+UnitTest_ConsoleRun
+
+]]></script>
+</job>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->
