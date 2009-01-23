@@ -6,7 +6,7 @@
 
 Option Explicit
 
-UnitTest_Description "Bind test in stdlib.vbs."
+UnitTest_Description "stdlib.vbs: Bind subroutine test."
 
 Sub TestBind_Value
   Dim v

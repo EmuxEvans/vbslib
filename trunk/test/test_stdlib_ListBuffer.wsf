@@ -6,7 +6,7 @@
 
 Option Explicit
 
-UnitTest_Description "ListBuffer test in stdlib.vbs."
+UnitTest_Description "stdlib.vbs: ListBuffer class test."
 
 Dim listBuf
 
