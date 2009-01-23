@@ -227,6 +227,15 @@ Sub TestListBuffer_RemoveAll
 End Sub
 UnitTest_TestCase "TestListBuffer_RemoveAll"
 
+Sub TestListBuffer_RemoveAllEmpty
+  listBuf.RemoveAll
+  AssertEqual 0, listBuf.Count
+  Assert Not listBuf.Exists(0)
+  Assert Not listBuf.Exists(1)
+  Assert Not listBuf.Exists(2)
+End Sub
+UnitTest_TestCase "TestListBuffer_RemoveAllEmpty"
+
 UnitTest_ConsoleRun
 
 ]]></script>
