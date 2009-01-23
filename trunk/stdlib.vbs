@@ -102,7 +102,7 @@ Set ObjectProperty_AccessorPool = CreateObject("Scripting.Dictionary")
 
 Sub ObjectProperty_CreateAccessor(name)
   Dim className, classExpr
-  className = "GetObjectProperty_Accessor_" & propertyName
+  className = "ObjectProperty_Accessor_" & propertyName
   classExpr = "Class " & className & vbNewLine & _
               "  Public Default Property Get Prop(obj)" & vbNewLine & _
               "    Bind Prop, obj." & propertyName & vbNewLine & _
