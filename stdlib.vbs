@@ -92,6 +92,41 @@ Class ListBuffer
   End Sub
 End Class
 
+Dim ShowValue_Quote
+Set ShowValue_Quote = New RegExp
+ShowValue_Quote.Pattern = """"
+ShowValue_Quote.Global = True
+
+Function ShowValue(value)
+  Dim r
+  If VarType(value) = vbString Then
+    r = """" & ShowValue_Quote.Replace(value, """""") & """"
+  ElseIf IsArray(value) Then
+    Dim i, sep: sep = ""
+    r = "["
+    For Each i In value
+      r = r & sep & ShowValue(i)
+      sep = ","
+    Next
+    r = r & "]"
+  ElseIf IsObject(value) Then
+    r = "<" & TypeName(value) & ">"
+  ElseIf IsEmpty(value) Then
+    r = "<empty>"
+  ElseIf IsNull(value) Then
+    r = "<null>"
+  Else
+    On Error Resume Next
+    r = CStr(value)
+    If Err.Number <> 0 Then
+      Err.Clear
+      r = "<unknown:" & VarType(value) & ">"
+    End If
+    On Error GoTo 0
+  End If
+  ShowValue = r
+End Function
+
 
 '=================================================
 '################ object accessor ################
