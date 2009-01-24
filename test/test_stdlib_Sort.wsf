@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<job id="test_stdlib_Sort">
+<script language="VBScript" src="../stdlib.vbs" />
+<script language="VBScript" src="../unittest.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+UnitTest_Description "stdlib.vbs: Sort function test."
+
+Sub TestSwapArrayItem_ValueAndValue
+  Dim a(1)
+  a(0) = "foo"
+  a(1) = "bar"
+  SwapArrayItem a, 0, 1
+  AssertEqual "bar", a(0)
+  AssertEqual "foo", a(1)
+End Sub
+UnitTest_TestCase "TestSwapArrayItem_ValueAndValue"
+
+Sub TestSwapArrayItem_ValueAndObject
+  Dim a(1)
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
+  a(0) = "foo"
+  Set a(1) = obj
+  SwapArrayItem a, 0, 1
+  AssertSame obj, a(0)
+  AssertEqual "foo", a(1)
+End Sub
+UnitTest_TestCase "TestSwapArrayItem_ValueAndObject"
+
+Sub TestSwapArrayItem_ObjectAndObject
+  Dim a(1)
+  Dim obj1: Set obj1 = CreateObject("Scripting.Dictionary")
+  Dim obj2: Set obj2 = CreateObject("Scripting.Dictionary")
+  Set a(0) = obj1
+  Set a(1) = obj2
+  SwapArrayItem a, 0, 1
+  AssertSame obj2, a(0)
+  AssertSame obj1, a(1)
+End Sub
+UnitTest_TestCase "TestSwapArrayItem_ObjectAndObject"
+
+UnitTest_ConsoleRun
+
+]]></script>
+</job>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->
