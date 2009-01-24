@@ -93,39 +93,40 @@ Class ListBuffer
 End Class
 
 
-'=========================================================
-'################ dynamic object accessor ################
-'---------------------------------------------------------
+'=================================================
+'################ object accessor ################
+'-------------------------------------------------
 
 Dim ObjectProperty_AccessorPool
 Set ObjectProperty_AccessorPool = CreateObject("Scripting.Dictionary")
 
-Sub ObjectProperty_CreateAccessor(name)
+Function ObjectProperty_CreateAccessor(name)
   Dim className, classExpr
-  className = "ObjectProperty_Accessor_" & propertyName
+  className = "ObjectProperty_Accessor_" & name
   classExpr = "Class " & className & vbNewLine & _
               "  Public Default Property Get Prop(obj)" & vbNewLine & _
-              "    Bind Prop, obj." & propertyName & vbNewLine & _
+              "    Bind Prop, obj." & name & vbNewLine & _
               "  End Property" & vbNewLine & _
               "" & vbNewLine & _
               "  Public Property Let Prop(obj, value)" & vbNewLine & _
-              "    obj." & propertyName & " = value" & vbNewLine & _
+              "    obj." & name & " = value" & vbNewLine & _
               "  End Property" & vbNewLine & _
               "" & vbNewLine & _
               "  Public Property Set Prop(obj, value)" & vbNewLine & _
-              "    Set obj." & propertyName & " = value" & vbNewLine & _
+              "    Set obj." & name & " = value" & vbNewLine & _
               "  End Property" & vbNewLine & _
               "End Class" & vbNewLine
   ExecuteGlobal classExpr
-  Set GetObjectProperty_CreateAccessor = Eval("New " & className)
-End Sub
+  Set ObjectProperty_CreateAccessor = Eval("New " & className)
+End Function
 
-Sub ObjectProperty_GetAccessor(name)
-  If Not ObjectProperty_AccessorPool.Exists(name) Then
-    Set ObjectProperty_AccessorPool(name) = ObjectProperty_CreateAccessor(name)
+Function ObjectProperty_GetAccessor(Name)
+  Dim key: key = UCase(name)
+  If Not ObjectProperty_AccessorPool.Exists(key) Then
+    Set ObjectProperty_AccessorPool(key) = ObjectProperty_CreateAccessor(name)
   End If
-  Set ObjectProperty_GetAccessor = ObjectProperty_AccessorPool(name)
-End Sub
+  Set ObjectProperty_GetAccessor = ObjectProperty_AccessorPool(key)
+End Function
 
 Function GetObjectProperty(obj, name)
   Bind GetObjectProperty, ObjectProperty_GetAccessor(name)(obj)
@@ -140,8 +141,10 @@ Function ExistsObjectProperty(obj, name)
   ObjectProperty_GetAccessor(name)(obj)
   Select Case Err.Number
     Case 0:
+      Err.Clear
       ExistsObjectProperty = True
     Case 438:
+      Err.Clear
       ExistsObjectProperty = False
     Case Else:
       Dim errNum, errSrc, errDsc
