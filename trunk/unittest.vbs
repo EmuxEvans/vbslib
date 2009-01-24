@@ -39,7 +39,7 @@ Function UnitTest_MakeErrorEntry(testCaseSub, message)
   ReDim entry(2)
   entry(0) = UNITTEST_FAIL_TYPE_E
   entry(1) = testCaseSub
-  entry(2) = "UnitTest Error: " & message & ": " & _
+  entry(2) = message & ": " & _
              "(" & Err.Number & ") " & "[" & Err.Source & "] " & Err.Description
   UnitTest_MakeErrorEntry = entry
 End Function
@@ -69,18 +69,18 @@ Sub UnitTest_RunTestCase(testCaseSub, failList)
       If Err.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
         failList.Add UnitTest_MakeAssertFailEntry(testCaseSub)
       Else
-        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "error test case.")
+        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "TestCase Error")
       End If
       Err.Clear
     End If
   Else
-    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed to setup.")
+    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "SetUp Error")
     Err.Clear
   End If
 
   UnitTest_RunSubs UnitTest_TearDownSubs
   If Err.Number <> 0 Then
-    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "failed to teardown.")
+    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "TearDown Error")
     Err.Clear
   End If
 End Sub
