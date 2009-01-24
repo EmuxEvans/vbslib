@@ -144,7 +144,7 @@ End Sub
 Sub AssertEqualWithComment(expected, actual, comment)
   If expected <> actual Then
     Dim errMsg
-    errMsg = "AssertEqual NG: expected <" & expected & "> but was <" & actual & ">."
+    errMsg = "AssertEqual NG: expected <" & ShowValue(expected) & "> but was <" & ShowValue(actual) & ">."
     If Not IsEmpty(comment) Then
       errMsg = errMsg & " [" & comment & "]"
     End If
