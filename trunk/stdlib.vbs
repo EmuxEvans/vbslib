@@ -197,7 +197,7 @@ End Function
 '################ sort ################
 '--------------------------------------
 
-Sub SwapArrayElement(list, i, j)
+Sub SwapArrayItem(list, i, j)
   Dim t
   Bind t, list(i)
   BindAt list, i, list(j)
@@ -225,7 +225,7 @@ Sub DownHeap(list, startIndex, maxIndex, compare)
     End If
 
     If compare(list(nextIndex), list(i)) > 0 Then
-      SwapArrayElement list, nextIndex, i
+      SwapArrayItem list, nextIndex, i
     Else
       Exit Do
     End If
@@ -242,7 +242,7 @@ Sub HeapSort(list, compare)
   Next
 
   For i = UBound(list) To 1 Step -1
-    SwapArrayElement list, 0, i
+    SwapArrayItem list, 0, i
     DownHeap list, 0, i - 1, compare
   Next
 End Sub
