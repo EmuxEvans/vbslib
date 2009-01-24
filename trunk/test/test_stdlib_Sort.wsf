@@ -18,17 +18,6 @@ Sub TestSwapArrayItem_ValueAndValue
 End Sub
 UnitTest_TestCase "TestSwapArrayItem_ValueAndValue"
 
-Sub TestSwapArrayItem_ValueAndObject
-  Dim a(1)
-  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
-  a(0) = "foo"
-  Set a(1) = obj
-  SwapArrayItem a, 0, 1
-  AssertSame obj, a(0)
-  AssertEqual "foo", a(1)
-End Sub
-UnitTest_TestCase "TestSwapArrayItem_ValueAndObject"
-
 Sub TestSwapArrayItem_ObjectAndObject
   Dim a(1)
   Dim obj1: Set obj1 = CreateObject("Scripting.Dictionary")
