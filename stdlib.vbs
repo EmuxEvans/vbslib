@@ -257,43 +257,43 @@ Class NumberCompare
   End Function
 End Class
 
-Class StringTextCompare
+Class TextStringCompare
   Public Default Function Compare(a, b)
     Compare = StrComp(a, b, vbTextCompare)
   End Function
 End Class
 
-Class StringBinaryCompare
+Class BinaryStringCompare
   Public Default Function Compare(a, b)
     Compare = StrComp(a, b, vbBinaryCompare)
   End Function
 End Class
 
 Class ObjectPropertyCompare
-  Private propName
-  Private propComp
+  Private ivar_propName
+  Private ivar_propComp
 
   Public Property Let PropertyName(value)
-    propName = value
+    ivar_propName = value
   End Property
 
   Public Property Set PropertyCompare(value)
-    Set propComp = value
+    Set ivar_propComp = value
   End Property
 
   Public Default Function Compare(a, b)
-    If IsEmpty(propName) Then
+    If IsEmpty(ivar_propName) Then
       Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyName'."
     End If
-    If IsEmpty(propComp) Then
+    If IsEmpty(ivar_propComp) Then
       Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyCompare'."
     End If
-    Compare = propComp(GetObjectProperty(a, propName), _
-                       GetObjectProperty(b, propName))
+    Compare = ivar_propComp(GetObjectProperty(a, ivar_propName), _
+                            GetObjectProperty(b, ivar_propName))
   End Function
 End Class
 
-Function New_ObjectPropertyCompare(propertyName, propertyCompare)
+Function CreateObjectPropertyCompare(propertyName, propertyCompare)
   Dim compare
   Set compare = New ObjectPropertyCompare
   compare.PropertyName = propertyName
