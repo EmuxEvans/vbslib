@@ -17,8 +17,9 @@ UnitTest_TestCase "TestBind_Value"
 
 Sub TestBind_Object
   Dim v
-  Bind v, Nothing
-  AssertSame Nothing, v
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
+  Bind v, obj
+  AssertSame obj, v
 End Sub
 UnitTest_TestCase "TestBind_Object"
 
@@ -32,6 +33,7 @@ UnitTest_TestCase "TestBindAt_Value"
 
 Sub TestBindAt_Object
   Dim a(1)
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   BindAt a, 0, Nothing
   AssertSame Nothing, a(0)
   Assert IsEmpty(a(1))
