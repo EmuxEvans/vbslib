@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<job id="test_stdlib_Bind">
+<job id="test_stdlib_ObjectAccessor">
 <script language="VBScript" src="../stdlib.vbs" />
 <script language="VBScript" src="../unittest.vbs" />
 <script language="VBScript"><![CDATA[
