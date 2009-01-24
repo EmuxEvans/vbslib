@@ -108,6 +108,13 @@ Sub TestExistsObjectProperty_NotExists
 End Sub
 UnitTest_TestCase "TestExistsObjectProperty_NotExists"
 
+Sub TestObjectPropertyUpDownCase
+  SetObjectProperty obj_foo, "bar", "Hello world."
+  AssertEqual "Hello world.", GetObjectProperty(obj_foo, "BAR")
+  AssertEqual True, ExistsObjectProperty(obj_foo, "bAr")
+End Sub
+UnitTest_TestCase "TestObjectPropertyUpDownCase"
+
 UnitTest_ConsoleRun
 
 ]]></script>
