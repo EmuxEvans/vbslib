@@ -21,9 +21,10 @@ End Sub
 UnitTest_TearDown "TearDown"
 
 Sub TestListBuffer_Count
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   AssertEqual 3, listBuf.Count
 End Sub
@@ -35,20 +36,22 @@ End Sub
 UnitTest_TestCase "TestListBuffer_CountEmpty"
 
 Sub TestListBuffer_GetItem
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   AssertEqual "foo", listBuf(0)
   AssertEqual "bar", listBuf(1)
-  AssertSame Nothing, listBuf(2)
+  AssertSame obj, listBuf(2)
 End Sub
 UnitTest_TestCase "TestListBuffer_GetItem"
 
 Sub TestListBuffer_GetItemOutOfRange
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Dim errNum
   On Error Resume Next
@@ -72,9 +75,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_GetItemEmpty"
 
 Sub TestListBuffer_LetItem
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   listBuf(2) = "baz"
   AssertEqual "foo", listBuf(0)
@@ -84,9 +88,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_LetItem"
 
 Sub TestListBuffer_LetItemOutOfRange
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Dim errNum
   On Error Resume Next
@@ -110,21 +115,23 @@ End Sub
 UnitTest_TestCase "TestListBuffer_LetItemEmpty"
 
 Sub TestListBuffer_SetItem
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
-  Set listBuf(0) = Nothing
-  AssertSame Nothing, listBuf(0)
+  Set listBuf(0) = obj
+  AssertSame obj, listBuf(0)
   AssertEqual "bar", listBuf(1)
-  AssertSame Nothing, listBuf(2)
+  AssertSame obj, listBuf(2)
 End Sub
 UnitTest_TestCase "TestListBuffer_SetItem"
 
 Sub TestListBuffer_SetItemOutOfRange
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Dim errNum
   On Error Resume Next
@@ -148,9 +155,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_SetItemEmpty"
 
 Sub TestListBuffer_Items
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Dim a
   a = listBuf.Items
@@ -159,7 +167,7 @@ Sub TestListBuffer_Items
   AssertEqual 2, UBound(a)
   AssertEqual "foo", a(0)
   AssertEqual "bar", a(1)
-  AssertSame Nothing, a(2)
+  AssertSame obj, a(2)
 End Sub
 UnitTest_TestCase "TestListBuffer_Items"
 
@@ -173,9 +181,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_ItemsEmpty"
 
 Sub TestListBuffer_Keys
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Dim k
   k = listBuf.Keys
@@ -198,9 +207,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_KeysEmpty"
 
 Sub TestListBuffer_Exists
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   Assert listBuf.Exists(0)
   Assert listBuf.Exists(1)
@@ -215,9 +225,10 @@ End Sub
 UnitTest_TestCase "TestListBuffer_ExistsEmpty"
 
 Sub TestListBuffer_RemoveAll
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
   listBuf.Add "bar"
-  listBuf.Add Nothing
+  listBuf.Add obj
 
   listBuf.RemoveAll
   AssertEqual 0, listBuf.Count
