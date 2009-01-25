@@ -75,7 +75,7 @@ Sub TestSort_3
 End Sub
 UnitTest_TestCase "TestSort_3"
 
-Const COUNT_OF_MANY_ITEMS = 5000
+Const COUNT_OF_MANY_ITEMS = 2000
 
 Sub Testsort_Many
   Dim i
