@@ -199,9 +199,15 @@ End Function
 
 Sub SwapArrayItem(list, i, j)
   Dim t
-  Bind t, list(i)
-  BindAt list, i, list(j)
-  BindAt list, j, t
+  If IsObject(list(i)) Then
+    Set t = list(i)
+    Set list(i) = list(j)
+    Set list(j) = t
+  Else
+    t = list(i)
+    list(i) = list(j)
+    list(j) = t
+  End If
 End Sub
 
 Sub DownHeap(list, startIndex, maxIndex, compare)
