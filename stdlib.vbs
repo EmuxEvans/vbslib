@@ -251,23 +251,26 @@ Sub Sort(list, compare)
   HeapSort list, compare
 End Sub
 
-Class NumberCompare
-  Public Default Function Compare(a, b)
-    Compare = a - b
-  End Function
-End Class
+Dim NumberCompare
+Set NumberCompare = GetRef("NumberCompareFunction")
 
-Class TextStringCompare
-  Public Default Function Compare(a, b)
-    Compare = StrComp(a, b, vbTextCompare)
-  End Function
-End Class
+Function NumberCompareFunction(a, b)
+  NumberCompareFunction = a - b
+End Function
 
-Class BinaryStringCompare
-  Public Default Function Compare(a, b)
-    Compare = StrComp(a, b, vbBinaryCompare)
-  End Function
-End Class
+Dim TextStringCompare
+Set TextStringCompare = GetRef("TextStringCompareFunction")
+
+Function TextStringCompareFunction(a, b)
+  TextStringCompareFunction = StrComp(a, b, vbTextCompare)
+End Function
+
+Dim BinaryStringCompare
+Set BinaryStringCompare = GetRef("BinaryStringCompareFunction")
+
+Function BinaryStringCompareFunction(a, b)
+  BinaryStringCompareFunction = StrComp(a, b, vbBinaryCompare)
+End Function
 
 Class ObjectPropertyCompare
   Private ivar_propName
