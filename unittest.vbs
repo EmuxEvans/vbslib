@@ -89,6 +89,7 @@ Sub UnitTest_ConsoleRun
   Dim testCaseSub, failEntry, count
   Dim failList: Set failList = New ListBuffer
   Dim allFailList: Set allFailList = New ListBuffer
+  Dim startTime: startTime = Timer
 
   If Not IsEmpty(UnitTest_Desc) Then
     WScript.StdOut.WriteLine UnitTest_Desc
@@ -106,6 +107,11 @@ Sub UnitTest_ConsoleRun
     Next
     failList.RemoveAll
   Next
+
+  Dim stopTime: stopTime = Timer
+  Dim elapsed: elapsed = stopTime - startTime
+  WScript.StdOut.Write(" " & FormatNumber(elapsed, 3, True) & "s")
+
   WScript.StdOut.WriteBlankLines 1
 
   count = 0
