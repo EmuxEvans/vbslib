@@ -139,15 +139,15 @@ Function ObjectProperty_CreateAccessor(name)
   Dim className, classExpr
   className = "ObjectProperty_Accessor_" & name
   classExpr = "Class " & className & vbNewLine & _
-              "  Public Default Property Get Prop(obj)" & vbNewLine & _
-              "    Bind Prop, obj." & name & vbNewLine & _
+              "  Public Default Property Get Item(obj)" & vbNewLine & _
+              "    Bind Item, obj." & name & vbNewLine & _
               "  End Property" & vbNewLine & _
               "" & vbNewLine & _
-              "  Public Property Let Prop(obj, value)" & vbNewLine & _
+              "  Public Property Let Item(obj, value)" & vbNewLine & _
               "    obj." & name & " = value" & vbNewLine & _
               "  End Property" & vbNewLine & _
               "" & vbNewLine & _
-              "  Public Property Set Prop(obj, value)" & vbNewLine & _
+              "  Public Property Set Item(obj, value)" & vbNewLine & _
               "    Set obj." & name & " = value" & vbNewLine & _
               "  End Property" & vbNewLine & _
               "End Class" & vbNewLine
