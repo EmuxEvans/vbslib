@@ -315,9 +315,22 @@ End Function
 '################ Display I/O ################
 '---------------------------------------------
 
-Class MessageWriter
+Class ConsoleWriter
+  Public Sub Write(message)
+    WScript.StdOut.Write(message)
+  End Sub
+
+  Public Sub Flush
+  End Sub
+
+  Public Sub FlushAndWrite(lastMessage)
+    Write(lastMessage)
+  End Sub
+End Class
+
+Class MsgBoxWriter
   Private ivar_buffer
-  
+
   Private Sub Class_Initialize
     Set ivar_buffer = New ListBuffer
   End Sub
@@ -326,55 +339,60 @@ Class MessageWriter
     ivar_buffer.Add message
   End Sub
 
+  Public Sub Flush
+    Dim s: s = ""
+    Dim msg
+    For Each msg In ivar_buffer.Items
+      s = s & msg
+    Next
+    ivar_buffer.Clear
+    MsgBox s, vbOKOnly + vbInformation, WScript.ScriptName
+  End Sub
+
+  Public Sub FlushAndWrite(lastMessage)
+    Flush
+  End Sub
+End Class
+
+Class MessageWriter
+  Private out
+
+  Private Sub Class_Initialize
+    Set out = New ConsoleWriter
+  End Sub
+
+  Public Sub Write(message)
+    On Error Resume Next
+    out.Write message
+    If Err.Number <> 0 Then
+      Err.Clear
+      On Error GoTo 0
+      out = New MsgBoxWriter
+      out.Write message
+    End If
+  End Sub
+
   Public Default Sub WriteLine(message)
     Write message & vbNewLine
   End Sub
 
-  Private Function FlushBuffer
-    Dim s, msg
-    s = ""
-    For Each msg In ivar_buffer.Items
-      s = s & msg
-    Next
-    ivar_buffer.RemoveAll
-    FlushBuffer = s
-  End Function
-
-  Private Sub PopupMessage(message)
-    MsgBox message, vbOKOnly + vbInformation, WScript.ScriptName
+  Public Sub Flush
+    out.Flush
   End Sub
 
-  Public Sub Flush
-    Dim s
-    s = FlushBuffer
-
+  Public Sub FlushAndWrite(lastMessage)
     On Error Resume Next
-    WScript.StdOut.Write s
-
+    out.FlushAndWrite lastMessage
     If Err.Number <> 0 Then
       Err.Clear
       On Error GoTo 0
-      PopupMessage s
-    End if
+      out = New MsgBoxWriter
+      out.FlushAndWrite lastMessage
+    End If
   End Sub
 
   Public Sub FlushAndWriteLine(lastMessage)
-    Write(lastMessage)
-
-    Dim s
-    s = FlushBuffer
-
-    On Error Resume Next
-    WScript.StdOut.Write s
-
-    If Err.Number <> 0 Then
-      Err.Clear
-      On Error GoTo 0
-      PopupMessage s
-    Else
-      On Error GoTo 0
-      WScript.StdOut.WriteLine
-    End if
+    FlushAndWrite lastMessage & vbNewLine
   End Sub
 End Class
 
