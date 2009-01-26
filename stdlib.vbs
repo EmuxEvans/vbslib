@@ -155,7 +155,7 @@ Function ObjectProperty_CreateAccessor(name)
   Set ObjectProperty_CreateAccessor = Eval("New " & className)
 End Function
 
-Function ObjectProperty_GetAccessor(Name)
+Function ObjectProperty_GetAccessor(name)
   Dim key: key = UCase(name)
   If Not ObjectProperty_AccessorPool.Exists(key) Then
     Set ObjectProperty_AccessorPool(key) = ObjectProperty_CreateAccessor(name)
