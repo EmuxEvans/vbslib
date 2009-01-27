@@ -108,17 +108,17 @@ End Sub
 
 Dim execCommand
 Set execCommand = New RegExp
-execCommand.Pattern = "^e *"
+execCommand.Pattern = "^e\s+"
 execCommand.IgnoreCase = True
 
 Dim evalCommand
 Set evalCommand = New RegExp
-evalCommand.Pattern = "^p *"
+evalCommand.Pattern = "^p\s+"
 evalCommand.IgnoreCase = True
 
 Dim histCommand
 Set histCommand = New RegExp
-histCommand.Pattern = "^h$|^h *"
+histCommand.Pattern = "^h$|^h\s+"
 histCommand.IgnoreCase = True
 
 Dim hist
