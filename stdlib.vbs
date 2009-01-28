@@ -185,21 +185,24 @@ Set ObjectProperty_AccessorPool = CreateObject("Scripting.Dictionary")
 
 Function ObjectProperty_CreateAccessor(name)
   Dim className, classExpr
-  className = "ObjectProperty_Accessor_" & name
-  classExpr = "Class " & className & vbNewLine & _
-              "  Public Default Property Get Item(obj)" & vbNewLine & _
-              "    Bind Item, obj." & name & vbNewLine & _
-              "  End Property" & vbNewLine & _
-              "" & vbNewLine & _
-              "  Public Property Let Item(obj, value)" & vbNewLine & _
-              "    obj." & name & " = value" & vbNewLine & _
-              "  End Property" & vbNewLine & _
-              "" & vbNewLine & _
-              "  Public Property Set Item(obj, value)" & vbNewLine & _
-              "    Set obj." & name & " = value" & vbNewLine & _
-              "  End Property" & vbNewLine & _
-              "End Class" & vbNewLine
-  ExecuteGlobal classExpr
+  className = "ObjectProperty_Accessor_" & Name
+  Set classExpr = New ListBuffer
+
+  classExpr.Add "Class " & className
+  classExpr.Add "  Public Default Property Get Item(obj)"
+  classExpr.Add "    Bind Item, obj." & name
+  classExpr.Add "  End Property"
+  classExpr.Add ""
+  classExpr.Add "  Public Property Let Item(obj, value)"
+  classExpr.Add "    obj." & name & " = value"
+  classExpr.Add "  End Property"
+  classExpr.Add ""
+  classExpr.Add "  Public Property Set Item(obj, value)"
+  classExpr.Add "    Set obj." & name & " = value"
+  classExpr.Add "  End Property"
+  classExpr.Add "End Class"
+
+  ExecuteGlobal Join(classExpr.Items, vbNewLine)
   Set ObjectProperty_CreateAccessor = Eval("New " & className)
 End Function
 
@@ -254,6 +257,7 @@ Function ObjectMethod_CreateHandler(name, argCount)
   Dim className, classExpr
   className = "ObjectMethod_Handler_" & name & "_" & argCount
   Set classExpr = New ListBuffer
+
   classExpr.Add "Class " & className
   classExpr.Add "  Public Sub InvokeMethod(obj, args)" 
   classExpr.Add "    obj." & name & " " & argList
