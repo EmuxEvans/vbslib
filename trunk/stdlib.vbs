@@ -243,6 +243,11 @@ Function ExistsObjectProperty(obj, name)
   End Select
 End Function
 
+
+'===============================================
+'################ object method ################
+'-----------------------------------------------
+
 Dim ObjectMethod_HandlerPool
 Set ObjectMethod_HandlerPool = CreateObject("Scripting.Dictionary")
 
