@@ -8,6 +8,9 @@ Option Explicit
 
 UnitTest_Description "stdlib.vbs: ShowValue function test."
 
+Class Foo
+End Class
+
 Sub TestShowValue_Empty
   AssertEqual "<empty>", ShowValue(Empty)
 End Sub
@@ -74,9 +77,23 @@ End Sub
 UnitTest_TestCase "TestShowValue_StringQuote"
 
 Sub TestShowValue_Object
-  AssertEqual "<Dictionary>", ShowValue(CreateObject("Scripting.Dictionary"))
+  AssertEqual "<Foo>", ShowValue(New Foo)
 End Sub
 UnitTest_TestCase "TestShowValue_Object"
+
+Sub TestShowValue_ObjectDictionary
+  Dim d: Set d = CreateObject("Scripting.Dictionary")
+  d("foo") = "Apple"
+  d("bar") = "Banana"
+  d("baz") = "Orange"
+  AssertEqual "{""foo""=>""Apple"",""bar""=>""Banana"",""baz""=>""Orange""}", ShowValue(d)
+End Sub
+UnitTest_TestCase "TestShowValue_ObjectDictionary"
+
+Sub TestShowValue_ObjectDictionaryEmpty
+  AssertEqual "{}", ShowValue(CreateObject("Scripting.Dictionary"))
+End Sub
+UnitTest_TestCase "TestShowValue_ObjectDictionaryEmpty"
 
 Sub TestShowValue_Array
   Dim a(5)
@@ -85,13 +102,14 @@ Sub TestShowValue_Array
   ' a(2) is Empty.
   a(3) = Null
   Set a(4) = CreateObject("Scripting.Dictionary")
+  a(4)("bar") = "Banana"
 
   Dim b(1)
   b(0) = "a"
   b(1) = "b"
   a(5) = b
 
-  AssertEqual "[1,""foo"",<empty>,<null>,<Dictionary>,[""a"",""b""]]", ShowValue(a)
+  AssertEqual "[1,""foo"",<empty>,<null>,{""bar""=>""Banana""},[""a"",""b""]]", ShowValue(a)
 End Sub
 UnitTest_TestCase "TestShowValue_Array"
 
