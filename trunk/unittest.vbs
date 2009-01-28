@@ -129,77 +129,77 @@ Sub UnitTest_ConsoleRun
 End Sub
 
 Sub Assert(result)
-  AssertWithComment result, Empty
+  AssertWithMessage result, Empty
 End Sub
 
-Sub AssertWithComment(result, comment)
+Sub AssertWithMessage(result, message)
   If Not result Then
     Dim errMsg
     errMsg = "Assert NG."
-    If Not IsEmpty(comment) Then
-      errMsg = errMsg & " [" & comment & "]"
+    If Not IsEmpty(message) Then
+      errMsg = errMsg & " [" & message & "]"
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
 End Sub
 
 Sub AssertEqual(expected, actual)
-  AssertEqualWithComment expected, actual, Empty
+  AssertEqualWithMessage expected, actual, Empty
 End Sub
 
-Sub AssertEqualWithComment(expected, actual, comment)
+Sub AssertEqualWithMessage(expected, actual, message)
   If expected <> actual Then
     Dim errMsg
     errMsg = "AssertEqual NG: expected <" & ShowValue(expected) & "> but was <" & ShowValue(actual) & ">."
-    If Not IsEmpty(comment) Then
-      errMsg = errMsg & " [" & comment & "]"
+    If Not IsEmpty(message) Then
+      errMsg = errMsg & " [" & message & "]"
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
 End Sub
 
 Sub AssertSame(expected, actual)
-  AssertSameWithComment expected, actual, Empty
+  AssertSameWithMessage expected, actual, Empty
 End Sub
 
-Sub AssertSameWithComment(expected, actual, comment)
+Sub AssertSameWithMessage(expected, actual, message)
   If Not actual Is expected Then
     Dim errMsg
     errMsg = "AssertSame NG: expected <" & TypeName(expected) & "> but was <" & TypeName(actual) & ">."
-    If Not IsEmpty(comment) Then
-      errMsg = errMsg & "[" & comment & "]"
+    If Not IsEmpty(message) Then
+      errMsg = errMsg & "[" & message & "]"
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
 End Sub
 
 Sub AssertMatch(pattern, text)
-  AssertMatchWithComment pattern, text, Empty
+  AssertMatchWithMessage pattern, text, Empty
 End Sub
 
-Sub AssertMatchWithComment(pattern, text, comment)
+Sub AssertMatchWithMessage(pattern, text, message)
   Dim re
   Set re = New RegExp
   re.Pattern = pattern
   If Not re.Test(text) Then
     Dim errMsg
     errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
-    If Not IsEmpty(comment) Then
-      errMsg = errMsg & "[" & comment & "]"
+    If Not IsEmpty(message) Then
+      errMsg = errMsg & "[" & message & "]"
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End If
 End Sub
 
 Sub AssertFail
-  AssertFailWithComment Empty
+  AssertFailWithMessage Empty
 End Sub
 
-Sub AssertFailWithComment(comment)
+Sub AssertFailWithMessage(message)
   Dim errMsg
   errMsg = "AssertFail NG."
-  If Not IsEmpty(comment) Then
-    errMsg = errMsg & "[" & comment & "]"
+  If Not IsEmpty(message) Then
+    errMsg = errMsg & "[" & message & "]"
   End If
   Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
 End Sub
