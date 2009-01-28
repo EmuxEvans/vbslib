@@ -240,6 +240,116 @@ Function ExistsObjectProperty(obj, name)
   End Select
 End Function
 
+Dim ObjectMethod_HandlerPool
+Set ObjectMethod_HandlerPool = CreateObject("Scripting.Dictionary")
+
+Function ObjectMethod_CreateHandler(name, argCount)
+  Dim i, sep: sep = ""
+  Dim argList: argList = ""
+  For i = 0 To argCount - 1
+    argList = argList & sep & "args(" & i & ")"
+    sep = ", "
+  Next
+
+  Dim className, classExpr
+  className = "ObjectMethod_Handler_" & name & "_" & argCount
+  Set classExpr = New ListBuffer
+  classExpr.Add "Class " & className
+  classExpr.Add "  Public Sub InvokeMethod(obj, args)" 
+  classExpr.Add "    obj." & name & " " & argList
+  classExpr.Add "  End Sub"
+  classExpr.Add ""
+  classExpr.Add "  Public Function FuncallMethod(obj, args)"
+  classExpr.Add "    Bind FuncallMethod, obj." & name & "(" & argList & ")"
+  classExpr.Add "  End Function"
+  classExpr.Add "End Class"
+
+  ExecuteGlobal Join(classExpr.Items, vbNewLine)
+  Set ObjectMethod_CreateHandler = Eval("New " & className)
+End Function
+
+Function ObjectMethod_GetHandler(name, argCount)
+  Dim key: key = UCase(name) & "_" & argCount
+  If Not ObjectMethod_HandlerPool.Exists(key) Then
+    Set ObjectMethod_HandlerPool(key) = ObjectMethod_CreateHandler(name, argCount)
+  End If
+  Set ObjectMethod_CreateHandler = ObjectMethod_HandlerPool(key)
+End Function
+
+Sub InvokeObjectMethod(obj, name, args)
+  Dim argCount, handler
+  If IsArray(args) Then
+    argCount = UBound(args) + 1
+  ElseIf IsObject(args) Then
+    argCount = args.Count
+  Else
+    Err.Raise 13, "stdlib.vbs:InvokeObjectMethod", "args is not Array."
+  End If
+  Set handler = ObjectMethod_GetHandler(name, argCount)
+  handler.InvokeMethod obj, args
+End Sub
+
+Sub InvokeObjectMethod0(obj, name)
+  InvokeObjectMethod(obj, name, Array())
+End Sub
+
+Sub InvokeObjectMethod1(obj, name, arg1)
+  InvokeObjectMethod(obj, name, Array(arg1))
+End Sub
+
+Sub InvokeObjectMethod2(obj, name, arg1, arg2)
+  InvokeObjectMethod(obj, name, Array(arg1, arg2))
+End Sub
+
+Sub InvokeObjectMethod3(obj, name, arg1, arg2, arg3)
+  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3))
+End Sub
+
+Sub InvokeObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
+  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4))
+End Sub
+
+Sub InvokeObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
+  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4, arg5))
+End Sub
+
+Sub FuncallObjectMethod(obj, name, args)
+  Dim argCount, handler
+  If IsArray(args) Then
+    argCount = UBound(args) + 1
+  ElseIf IsObject(args) Then
+    argCount = args.Count
+  Else
+    Err.Raise 13, "stdlib.vbs:FuncallObjectMethod", "args is not Array."
+  End If
+  Set handler = ObjectMethod_GetHandler(name, argCount)
+  Bind FuncallObjectMethod, handler.FuncallMethod(obj, args)
+End Sub
+
+Sub FuncallObjectMethod(obj, name)
+  Bind FuncallObjectMethod0, FuncallObjectMethod(obj, name, Array())
+End Sub
+
+Sub FuncallObjectMethod1(obj, name, arg1)
+  Bind FuncallObjectMethod1, FuncallObjectMethod(obj, name, Array(arg1))
+End Sub
+
+Sub FuncallObjectMethod2(obj, name, arg1, arg2)
+  Bind FuncallObjectMethod2, FuncallObjectMethod(obj, name, Array(arg1, arg2))
+End Sub
+
+Sub FuncallObjectMethod3(obj, name, arg1, arg2, arg3)
+  Bind FuncallObjectMethod3, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3))
+End Sub
+
+Sub FuncallObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
+  Bind FuncallObjectMethod4, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4))
+End Sub
+
+Sub FuncallObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
+  Bind FuncallObjectMethod5, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4, arg5))
+End Sub
+
 
 '======================================
 '################ sort ################
