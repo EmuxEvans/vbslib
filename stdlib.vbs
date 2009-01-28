@@ -273,7 +273,7 @@ Function ObjectMethod_GetHandler(name, argCount)
   If Not ObjectMethod_HandlerPool.Exists(key) Then
     Set ObjectMethod_HandlerPool(key) = ObjectMethod_CreateHandler(name, argCount)
   End If
-  Set ObjectMethod_CreateHandler = ObjectMethod_HandlerPool(key)
+  Set ObjectMethod_GetHandler = ObjectMethod_HandlerPool(key)
 End Function
 
 Sub InvokeObjectMethod(obj, name, args)
@@ -290,30 +290,30 @@ Sub InvokeObjectMethod(obj, name, args)
 End Sub
 
 Sub InvokeObjectMethod0(obj, name)
-  InvokeObjectMethod(obj, name, Array())
+  InvokeObjectMethod obj, name, Array()
 End Sub
 
 Sub InvokeObjectMethod1(obj, name, arg1)
-  InvokeObjectMethod(obj, name, Array(arg1))
+  InvokeObjectMethod obj, name, Array(arg1)
 End Sub
 
 Sub InvokeObjectMethod2(obj, name, arg1, arg2)
-  InvokeObjectMethod(obj, name, Array(arg1, arg2))
+  InvokeObjectMethod obj, name, Array(arg1, arg2)
 End Sub
 
 Sub InvokeObjectMethod3(obj, name, arg1, arg2, arg3)
-  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3))
+  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3)
 End Sub
 
 Sub InvokeObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
-  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4))
+  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3, arg4)
 End Sub
 
 Sub InvokeObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
-  InvokeObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4, arg5))
+  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3, arg4, arg5)
 End Sub
 
-Sub FuncallObjectMethod(obj, name, args)
+Function FuncallObjectMethod(obj, name, args)
   Dim argCount, handler
   If IsArray(args) Then
     argCount = UBound(args) + 1
@@ -324,31 +324,31 @@ Sub FuncallObjectMethod(obj, name, args)
   End If
   Set handler = ObjectMethod_GetHandler(name, argCount)
   Bind FuncallObjectMethod, handler.FuncallMethod(obj, args)
-End Sub
+End Function
 
-Sub FuncallObjectMethod(obj, name)
+Function FuncallObjectMethod0(obj, Name)
   Bind FuncallObjectMethod0, FuncallObjectMethod(obj, name, Array())
-End Sub
+End Function
 
-Sub FuncallObjectMethod1(obj, name, arg1)
+Function FuncallObjectMethod1(obj, name, arg1)
   Bind FuncallObjectMethod1, FuncallObjectMethod(obj, name, Array(arg1))
-End Sub
+End Function
 
-Sub FuncallObjectMethod2(obj, name, arg1, arg2)
+Function FuncallObjectMethod2(obj, name, arg1, arg2)
   Bind FuncallObjectMethod2, FuncallObjectMethod(obj, name, Array(arg1, arg2))
-End Sub
+End Function
 
-Sub FuncallObjectMethod3(obj, name, arg1, arg2, arg3)
+Function FuncallObjectMethod3(obj, name, arg1, arg2, arg3)
   Bind FuncallObjectMethod3, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3))
-End Sub
+End Function
 
-Sub FuncallObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
+Function FuncallObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
   Bind FuncallObjectMethod4, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4))
-End Sub
+End Function
 
-Sub FuncallObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
+Function FuncallObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
   Bind FuncallObjectMethod5, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4, arg5))
-End Sub
+End Function
 
 
 '======================================
