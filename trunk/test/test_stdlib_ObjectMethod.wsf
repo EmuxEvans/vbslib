@@ -274,6 +274,27 @@ Sub TestGetObjectMethodFuncProc0
 End Sub
 UnitTest_TestCase "TestGetObjectMethodFuncProc0"
 
+Sub TestGetObjectMethodFuncProc0_manyCall
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func0", 0)
+  Dim i
+  For i = 1 To 100
+    AssertEqual "func0", proc
+  Next
+  AssertEqual 100, obj_foo.func0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc0_manyCall"
+
+Sub TestGetObjectMethodFuncProc0_manyGet
+  Dim i, proc
+  For i = 1 To 100
+    Set proc = GetObjectMethodFuncProc(obj_foo, "func0", 0)
+    AssertEqual "func0", proc
+  Next
+  AssertEqual 100, obj_foo.func0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc0_manyGet"
+
 Sub TestGetObjectMethodFuncProc1
   Dim proc
   Set proc = GetObjectMethodFuncProc(obj_foo, "func1", 1)
@@ -282,13 +303,45 @@ Sub TestGetObjectMethodFuncProc1
 End Sub
 UnitTest_TestCase "TestGetObjectMethodFuncProc1"
 
+Sub TestGetObjectMethodFuncProc1_manyCall
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func1", 1)
+  Dim i
+  For i = 1 To 100
+    AssertEqual "func1:a", proc("a")
+  Next
+  AssertEqual 100, obj_foo.func1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc1_manyCall"
+
+Sub TestGetObjectMethodFuncProc1_manyGet
+  Dim i, proc
+  For i = 1 To 100
+    Set proc = GetObjectMethodFuncProc(obj_foo, "func1", 1)
+    AssertEqual "func1:a", proc("a")
+  Next
+  AssertEqual 100, obj_foo.func1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc1_manyGet"
+
 Sub TestGetObjectMethodFuncProc2
   Dim proc
-  Set proc = GetObjectMethodFuncProc(obj_foo, "func2", 1)
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func2", 2)
   AssertEqual "func2:a,b", proc("a", "b")
-  AssertEqual 1, obj_foo.funcd2_countCall
+  AssertEqual 1, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc1"
+UnitTest_TestCase "TestGetObjectMethodFuncProc2"
+
+Sub TestGetObjectMethodFuncProc2_manyCall
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func2", 2)
+  Dim i
+  For i = 1 To 100
+    AssertEqual "func2:a,b", proc("a", "b")
+  Next
+  AssertEqual 100, obj_foo.func2_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc2_manyCall"
 
 UnitTest_ConsoleRun
 
