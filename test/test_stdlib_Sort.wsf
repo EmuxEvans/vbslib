@@ -77,7 +77,7 @@ UnitTest_TestCase "TestSort_3"
 
 Const COUNT_OF_MANY_ITEMS = 2000
 
-Sub Testsort_Many
+Sub TestSort_Many
   Dim i
   ReDim a(COUNT_OF_MANY_ITEMS - 1)
 
@@ -91,9 +91,9 @@ Sub Testsort_Many
     Assert a(i) <= a(i + 1)
   Next
 End Sub
-UnitTest_TestCase "Testsort_Many"
+UnitTest_TestCase "TestSort_Many"
 
-Sub Testsort_SortedList
+Sub TestSort_SortedList
   Dim i
   ReDim a(COUNT_OF_MANY_ITEMS - 1)
 
@@ -108,7 +108,7 @@ Sub Testsort_SortedList
     Assert a(i) <= a(i + 1)
   Next
 End Sub
-UnitTest_TestCase "Testsort_Many"
+UnitTest_TestCase "TestSort_Many"
 
 UnitTest_ConsoleRun
 
