@@ -314,7 +314,7 @@ End Function
 Dim ObjectMethod_ProcBuilderPool
 Set ObjectMethod_ProcBuilderPool = CreateObject("Scripting.Dictionary")
 
-Sub ObjectMethod_CreateProcBuilder
+Function ObjectMethod_CreateProcBuilder(name, argCount)
   Dim i, sep: sep = ""
   Dim argList: argList = ""
   For i = 1 To argCount
@@ -347,7 +347,7 @@ Sub ObjectMethod_CreateProcBuilder
   classExpr.Add ""
   classExpr.Add "  Public Default Function Apply(" & argList & ")"
   classExpr.Add "    Bind Apply, ivar_obj." & name & "(" & argList & ")"
-  classExpr.Add "  End Sub"
+  classExpr.Add "  End Function"
   classExpr.Add "End Class"
   classExpr.Add ""
   classExpr.Add "Class " & className & "_Builder"
@@ -368,7 +368,7 @@ Sub ObjectMethod_CreateProcBuilder
 
   ExecuteGlobal Join(classExpr.Items, vbNewLine)
   Set ObjectMethod_CreateProcBuilder = Eval("New " & className & "_Builder")
-End Sub
+End Function
 
 Function ObjectMethod_GetProcBuilder(name, argCount)
   Dim key: key = UCase(name) & "_" & argCount
