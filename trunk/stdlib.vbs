@@ -298,30 +298,6 @@ Sub InvokeObjectMethod(obj, name, args)
   handler.InvokeMethod obj, args
 End Sub
 
-Sub InvokeObjectMethod0(obj, name)
-  InvokeObjectMethod obj, name, Array()
-End Sub
-
-Sub InvokeObjectMethod1(obj, name, arg1)
-  InvokeObjectMethod obj, name, Array(arg1)
-End Sub
-
-Sub InvokeObjectMethod2(obj, name, arg1, arg2)
-  InvokeObjectMethod obj, name, Array(arg1, arg2)
-End Sub
-
-Sub InvokeObjectMethod3(obj, name, arg1, arg2, arg3)
-  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3)
-End Sub
-
-Sub InvokeObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
-  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3, arg4)
-End Sub
-
-Sub InvokeObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
-  InvokeObjectMethod obj, name, Array(arg1, arg2, arg3, arg4, arg5)
-End Sub
-
 Function FuncallObjectMethod(obj, name, args)
   Dim argCount, handler
   If IsArray(args) Then
@@ -333,30 +309,6 @@ Function FuncallObjectMethod(obj, name, args)
   End If
   Set handler = ObjectMethod_GetHandler(name, argCount)
   Bind FuncallObjectMethod, handler.FuncallMethod(obj, args)
-End Function
-
-Function FuncallObjectMethod0(obj, Name)
-  Bind FuncallObjectMethod0, FuncallObjectMethod(obj, name, Array())
-End Function
-
-Function FuncallObjectMethod1(obj, name, arg1)
-  Bind FuncallObjectMethod1, FuncallObjectMethod(obj, name, Array(arg1))
-End Function
-
-Function FuncallObjectMethod2(obj, name, arg1, arg2)
-  Bind FuncallObjectMethod2, FuncallObjectMethod(obj, name, Array(arg1, arg2))
-End Function
-
-Function FuncallObjectMethod3(obj, name, arg1, arg2, arg3)
-  Bind FuncallObjectMethod3, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3))
-End Function
-
-Function FuncallObjectMethod4(obj, name, arg1, arg2, arg3, arg4)
-  Bind FuncallObjectMethod4, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4))
-End Function
-
-Function FuncallObjectMethod5(obj, name, arg1, arg2, arg3, arg4, arg5)
-  Bind FuncallObjectMethod5, FuncallObjectMethod(obj, name, Array(arg1, arg2, arg3, arg4, arg5))
 End Function
 
 
