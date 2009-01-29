@@ -203,6 +203,30 @@ Sub TestGetObjectMethodSubProc2
 End Sub
 UnitTest_TestCase "TestGetObjectMethodSubProc1"
 
+Sub TestGetObjectMethodFuncProc0
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func0", 0)
+  AssertEqual "func0", proc
+  AssertEqual 1, obj_foo.func0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc0"
+
+Sub TestGetObjectMethodFuncProc1
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func1", 1)
+  AssertEqual "func1:a", proc("a")
+  AssertEqual 1, obj_foo.func1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc1"
+
+Sub TestGetObjectMethodFuncProc2
+  Dim proc
+  Set proc = GetObjectMethodFuncProc(obj_foo, "func2", 1)
+  AssertEqual "func2:a,b", proc("a", "b")
+  AssertEqual 1, obj_foo.funcd2_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodFuncProc1"
+
 UnitTest_ConsoleRun
 
 ]]></script>
