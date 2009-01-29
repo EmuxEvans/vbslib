@@ -311,6 +311,81 @@ Function FuncallObjectMethod(obj, name, args)
   Bind FuncallObjectMethod, handler.FuncallMethod(obj, args)
 End Function
 
+Dim ObjectMethod_ProcBuilderPool
+Set ObjectMethod_ProcBuilderPool = CreateObject("Scripting.Dictionary")
+
+Sub ObjectMethod_CreateProcBuilder
+  Dim i, sep: sep = ""
+  Dim argList: argList = ""
+  For i = 1 To argCount
+    argList = argList & sep & "arg" & i
+    sep = ", "
+  Next
+
+  Dim className, classExpr
+  className = "ObjectMethod_Proc_" & name & "_" & argCount
+  Set classExpr = New ListBuffer
+
+  classExpr.Add "Class " & className & "_SubProc"
+  classExpr.Add "  Private ivar_obj"
+  classExpr.Add ""
+  classExpr.Add "  Public Property Set Self(obj)"
+  classExpr.Add "    Set ivar_obj = obj"
+  classExpr.Add "  End Property"
+  classExpr.Add ""
+  classExpr.Add "  Public Default Sub Apply(" & argList & ")"
+  classExpr.Add "    ivar_obj." & name & " " & argList
+  classExpr.Add "  End Sub"
+  classExpr.Add "End Class"
+  classExpr.Add ""
+  classExpr.Add "Class " & className & "_FuncProc"
+  classExpr.Add "  Private ivar_obj"
+  classExpr.Add ""
+  classExpr.Add "  Public Property Set self(obj)"
+  classExpr.Add "    Set ivar_obj = obj"
+  classExpr.Add "  End Property"
+  classExpr.Add ""
+  classExpr.Add "  Public Default Function Apply(" & argList & ")"
+  classExpr.Add "    Bind Apply, ivar_obj." & name & "(" & argList & ")"
+  classExpr.Add "  End Sub"
+  classExpr.Add "End Class"
+  classExpr.Add ""
+  classExpr.Add "Class " & className & "_Builder"
+  classExpr.Add "  Public Function CreateSubProc(obj)"
+  classExpr.Add "    Dim closure"
+  classExpr.Add "    Set closure = New " & className & "_SubProc"
+  classExpr.Add "    Set closure.Self = obj"
+  classExpr.Add "    Set CreateSubProc = closure"
+  classExpr.Add "  End Function"
+  classExpr.Add ""
+  classExpr.Add "  Public Function CreateFuncProc(obj)"
+  classExpr.Add "    Dim closure"
+  classExpr.Add "    Set closure = New " & className & "_FuncProc"
+  classExpr.Add "    Set closure.Self = obj"
+  classExpr.Add "    Set CreateFuncProc = closure"
+  classExpr.Add "  End Function"
+  classExpr.Add "End Class"
+
+  ExecuteGlobal Join(classExpr.Items, vbNewLine)
+  Set ObjectMethod_CreateProcBuilder = Eval("New " & className & "_Builder")
+End Sub
+
+Function ObjectMethod_GetProcBuilder(name, argCount)
+  Dim key: key = UCase(name) & "_" & argCount
+  If Not ObjectMethod_ProcBuilderPool.Exists(key) Then
+    Set ObjectMethod_ProcBuilderPool(key) = ObjectMethod_CreateProcBuilder(name, argCount)
+  End If
+  Set ObjectMethod_GetProcBuilder = ObjectMethod_ProcBuilderPool(key)
+End Function
+
+Function GetObjectMethodSubProc(obj, name, argCount)
+  Set GetObjectMethodSubProc = ObjectMethod_GetProcBuilder(name, argCount).CreateSubProc(obj)
+End Function
+
+Function GetObjectMethodFuncProc(obj, name, argCount)
+  Set GetObjectMethodFuncProc = ObjectMethod_GetProcBuilder(name, argCount).CreateFuncProc(obj)
+End Function
+
 
 '======================================
 '################ sort ################
