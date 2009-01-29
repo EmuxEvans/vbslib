@@ -12,29 +12,17 @@ Class Foo
   Private ivar_method0_countCall
   Private ivar_method1_countCall
   Private ivar_method2_countCall
-  Private ivar_method3_countCall
-  Private ivar_method4_countCall
-  Private ivar_method5_countCall
   Private ivar_func0_countCall
   Private ivar_func1_countCall
   Private ivar_func2_countCall
-  Private ivar_func3_countCall
-  Private ivar_func4_countCall
-  Private ivar_func5_countCall
 
   Private Sub Class_Initialize
     ivar_method0_countCall = 0
     ivar_method1_countCall = 0
     ivar_method2_countCall = 0
-    ivar_method3_countCall = 0
-    ivar_method4_countCall = 0
-    ivar_method5_countCall = 0
     ivar_func0_countCall = 0
     ivar_func1_countCall = 0
     ivar_func2_countCall = 0
-    ivar_func3_countCall = 0
-    ivar_func4_countCall = 0
-    ivar_func5_countCall = 0
   End Sub
 
   Public Sub method0
@@ -59,30 +47,6 @@ Class Foo
 
   Public Property Get method2_countCall
     method2_countCall = ivar_method2_countCall
-  End Property
-
-  Public Sub method3(arg1, arg2, arg3)
-    ivar_method3_countCall = ivar_method3_countCall + 1
-  End Sub
-
-  Public Property Get method3_countCall
-    method3_countCall = ivar_method3_countCall
-  End Property
-
-  Public Sub method4(arg1, arg2, arg3, arg4)
-    ivar_method4_countCall = ivar_method4_countCall + 1
-  End Sub
-
-  Public Property Get method4_countCall
-    method4_countCall = ivar_method4_countCall
-  End Property
-
-  Public Sub method5(arg1, arg2, arg3, arg4, arg5)
-    ivar_method5_countCall = ivar_method5_countCall + 1
-  End Sub
-
-  Public Property Get method5_countCall
-    method5_countCall = ivar_method5_countCall
   End Property
 
   Public Function func0
@@ -110,33 +74,6 @@ Class Foo
 
   Public Property Get func2_countCall
     func2_countCall = ivar_func2_countCall
-  End Property
-
-  Public Function func3(arg1, arg2, arg3)
-    ivar_func3_countCall = ivar_func3_countCall + 1
-    func3 = "func3:" & Join(Array(arg1, arg2, arg3), ",")
-  End Function
-
-  Public Property Get func3_countCall
-    func3_countCall = ivar_func3_countCall
-  End Property
-
-  Public Function func4(arg1, arg2, arg3, arg4)
-    ivar_func4_countCall = ivar_func4_countCall + 1
-    func4 = "func4:" & Join(Array(arg1, arg2, arg3, arg4), ",")
-  End Function
-
-  Public Property Get func4_countCall
-    func4_countCall = ivar_func4_countCall
-  End Property
-
-  Public Function func5(arg1, arg2, arg3, arg4, arg5)
-    ivar_func5_countCall = ivar_func5_countCall + 1
-    func5 = "func5:" & Join(Array(arg1, arg2, arg3, arg4, arg5), ",")
-  End Function
-
-  Public Property Get func5_countCall
-    func5_countCall = ivar_func5_countCall
   End Property
 End Class
 
@@ -197,51 +134,6 @@ Sub TestInvokeObjectMethod2_manyCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod2_manyCall"
 
-Sub TestInvokeObjectMethod3
-  InvokeObjectMethod obj_foo, "method3", Array("a", "b", "c")
-  AssertEqual 1, obj_foo.method3_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod3"
-
-Sub TestInvokeObjectMethod3_manyCall
-  Dim i
-  For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method3", Array("a", "b", "c")
-  Next
-  AssertEqual 100, obj_foo.method3_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod3_manyCall"
-
-Sub TestInvokeObjectMethod4
-  InvokeObjectMethod obj_foo, "method4", Array("a", "b", "c", "d")
-  AssertEqual 1, obj_foo.method4_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod4"
-
-Sub TestInvokeObjectMethod4_manyCall
-  Dim i
-  For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method4", Array("a", "b", "c", "d")
-  Next
-  AssertEqual 100, obj_foo.method4_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod4_manyCall"
-
-Sub TestInvokeObjectMethod5
-  InvokeObjectMethod obj_foo, "method5", Array("a", "b", "c", "d", "e")
-  AssertEqual 1, obj_foo.method5_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod5"
-
-Sub TestInvokeObjectMethod5_manyCall
-  Dim i
-  For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method5", Array("a", "b", "c", "d", "e")
-  Next
-  AssertEqual 100, obj_foo.method5_countCall
-End Sub
-UnitTest_TestCase "TestInvokeObjectMethod5_manyCall"
-
 Sub TestFuncallObjectMethod0
   AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
   AssertEqual 1, obj_foo.func0_countCall
@@ -286,51 +178,6 @@ Sub TestFuncallObjectMethod2_manyCall
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod2_manyCall"
-
-Sub TestFuncallObjectMethod3
-  AssertEqual "func3:a,b,c", FuncallObjectMethod(obj_foo, "func3", Array("a", "b", "c"))
-  AssertEqual 1, obj_foo.func3_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod3"
-
-Sub TestFuncallObjectMethod3_manyCall
-  Dim i
-  For i = 1 To 100
-    AssertEqual "func3:a,b,c", FuncallObjectMethod(obj_foo, "func3", Array("a", "b", "c"))
-  Next
-  AssertEqual 100, obj_foo.func3_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod3_manyCall"
-
-Sub TestFuncallObjectMethod4
-  AssertEqual "func4:a,b,c,e", FuncallObjectMethod(obj_foo, "func4", Array("a", "b", "c", "e"))
-  AssertEqual 1, obj_foo.func4_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod4"
-
-Sub TestFuncallObjectMethod4_manyCall
-  Dim i
-  For i = 1 To 100
-    AssertEqual "func4:a,b,c,e", FuncallObjectMethod(obj_foo, "func4", Array("a", "b", "c", "e"))
-  Next
-  AssertEqual 100, obj_foo.func4_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod4_manyCall"
-
-Sub TestFuncallObjectMethod5
-  AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod(obj_foo, "func5", Array("a", "b", "c", "e", "f"))
-  AssertEqual 1, obj_foo.func5_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod5"
-
-Sub TestFuncallObjectMethod5_manyCall
-  Dim i
-  For i = 1 To 100
-    AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod(obj_foo, "func5", Array("a", "b", "c", "e", "f"))
-  Next
-  AssertEqual 100, obj_foo.func5_countCall
-End Sub
-UnitTest_TestCase "TestFuncallObjectMethod5_manyCall"
 
 UnitTest_ConsoleRun
 
