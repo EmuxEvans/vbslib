@@ -179,6 +179,30 @@ Sub TestFuncallObjectMethod2_manyCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod2_manyCall"
 
+Sub TestGetObjectMethodSubProc0
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method0", 0)
+  proc
+  AssertEqual 1, obj_foo.method0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc0"
+
+Sub TestGetObjectMethodSubProc1
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method1", 1)
+  proc "a"
+  AssertEqual 1, obj_foo.method1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1"
+
+Sub TestGetObjectMethodSubProc2
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+  proc "a", "b"
+  AssertEqual 1, obj_foo.method2_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1"
+
 UnitTest_ConsoleRun
 
 ]]></script>
