@@ -153,7 +153,7 @@ End Sub
 UnitTest_TearDown "TearDown"
 
 Sub TestInvokeObjectMethod0
-  InvokeObjectMethod0 obj_foo, "method0"
+  InvokeObjectMethod obj_foo, "method0", Array()
   AssertEqual 1, obj_foo.method0_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod0"
@@ -161,14 +161,14 @@ UnitTest_TestCase "TestInvokeObjectMethod0"
 Sub TestInvokeObjectMethod0_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod0 obj_foo, "method0"
+    InvokeObjectMethod obj_foo, "method0", Array()
   Next
   AssertEqual 100, obj_foo.method0_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod0_manyCall"
 
 Sub TestInvokeObjectMethod1
-  InvokeObjectMethod1 obj_foo, "method1", "a"
+  InvokeObjectMethod obj_foo, "method1", Array("a")
   AssertEqual 1, obj_foo.method1_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod1"
@@ -176,14 +176,14 @@ UnitTest_TestCase "TestInvokeObjectMethod1"
 Sub TestInvokeObjectMethod1_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod1 obj_foo, "method1", "a"
+    InvokeObjectMethod obj_foo, "method1", Array("a")
   Next
   AssertEqual 100, obj_foo.method1_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod1_manyCall"
 
 Sub TestInvokeObjectMethod2
-  InvokeObjectMethod2 obj_foo, "method2", "a", "b"
+  InvokeObjectMethod obj_foo, "method2", Array("a", "b")
   AssertEqual 1, obj_foo.method2_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod2"
@@ -191,14 +191,14 @@ UnitTest_TestCase "TestInvokeObjectMethod2"
 Sub TestInvokeObjectMethod2_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod2 obj_foo, "method2", "a", "b"
+    InvokeObjectMethod obj_foo, "method2", Array("a", "b")
   Next
   AssertEqual 100, obj_foo.method2_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod2_manyCall"
 
 Sub TestInvokeObjectMethod3
-  InvokeObjectMethod3 obj_foo, "method3", "a", "b", "c"
+  InvokeObjectMethod obj_foo, "method3", Array("a", "b", "c")
   AssertEqual 1, obj_foo.method3_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod3"
@@ -206,14 +206,14 @@ UnitTest_TestCase "TestInvokeObjectMethod3"
 Sub TestInvokeObjectMethod3_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod3 obj_foo, "method3", "a", "b", "c"
+    InvokeObjectMethod obj_foo, "method3", Array("a", "b", "c")
   Next
   AssertEqual 100, obj_foo.method3_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod3_manyCall"
 
 Sub TestInvokeObjectMethod4
-  InvokeObjectMethod4 obj_foo, "method4", "a", "b", "c", "d"
+  InvokeObjectMethod obj_foo, "method4", Array("a", "b", "c", "d")
   AssertEqual 1, obj_foo.method4_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod4"
@@ -221,14 +221,14 @@ UnitTest_TestCase "TestInvokeObjectMethod4"
 Sub TestInvokeObjectMethod4_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod4 obj_foo, "method4", "a", "b", "c", "d"
+    InvokeObjectMethod obj_foo, "method4", Array("a", "b", "c", "d")
   Next
   AssertEqual 100, obj_foo.method4_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod4_manyCall"
 
 Sub TestInvokeObjectMethod5
-  InvokeObjectMethod5 obj_foo, "method5", "a", "b", "c", "d", "e"
+  InvokeObjectMethod obj_foo, "method5", Array("a", "b", "c", "d", "e")
   AssertEqual 1, obj_foo.method5_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod5"
@@ -236,14 +236,14 @@ UnitTest_TestCase "TestInvokeObjectMethod5"
 Sub TestInvokeObjectMethod5_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod5 obj_foo, "method5", "a", "b", "c", "d", "e"
+    InvokeObjectMethod obj_foo, "method5", Array("a", "b", "c", "d", "e")
   Next
   AssertEqual 100, obj_foo.method5_countCall
 End Sub
 UnitTest_TestCase "TestInvokeObjectMethod5_manyCall"
 
 Sub TestFuncallObjectMethod0
-  AssertEqual "func0", FuncallObjectMethod0(obj_foo, "func0")
+  AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
   AssertEqual 1, obj_foo.func0_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod0"
@@ -251,14 +251,14 @@ UnitTest_TestCase "TestFuncallObjectMethod0"
 Sub TestFuncallObjectMethod0_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func0", FuncallObjectMethod0(obj_foo, "func0")
+    AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
   Next
   AssertEqual 100, obj_foo.func0_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod0_manyCall"
 
 Sub TestFuncallObjectMethod1
-  AssertEqual "func1:a", FuncallObjectMethod1(obj_foo, "func1", "a")
+  AssertEqual "func1:a", FuncallObjectMethod(obj_foo, "func1", Array("a"))
   AssertEqual 1, obj_foo.func1_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod1"
@@ -266,14 +266,14 @@ UnitTest_TestCase "TestFuncallObjectMethod1"
 Sub TestFuncallObjectMethod1_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func1:a", FuncallObjectMethod1(obj_foo, "func1", "a")
+    AssertEqual "func1:a", FuncallObjectMethod(obj_foo, "func1", Array("a"))
   Next
   AssertEqual 100, obj_foo.func1_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod1_manyCall"
 
 Sub TestFuncallObjectMethod2
-  AssertEqual "func2:a,b", FuncallObjectMethod2(obj_foo, "func2", "a", "b")
+  AssertEqual "func2:a,b", FuncallObjectMethod(obj_foo, "func2", Array("a", "b"))
   AssertEqual 1, obj_foo.func2_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod2"
@@ -281,14 +281,14 @@ UnitTest_TestCase "TestFuncallObjectMethod2"
 Sub TestFuncallObjectMethod2_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func2:a,b", FuncallObjectMethod2(obj_foo, "func2", "a", "b")
+    AssertEqual "func2:a,b", FuncallObjectMethod(obj_foo, "func2", Array("a", "b"))
   Next
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod2_manyCall"
 
 Sub TestFuncallObjectMethod3
-  AssertEqual "func3:a,b,c", FuncallObjectMethod3(obj_foo, "func3", "a", "b", "c")
+  AssertEqual "func3:a,b,c", FuncallObjectMethod(obj_foo, "func3", Array("a", "b", "c"))
   AssertEqual 1, obj_foo.func3_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod3"
@@ -296,14 +296,14 @@ UnitTest_TestCase "TestFuncallObjectMethod3"
 Sub TestFuncallObjectMethod3_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func3:a,b,c", FuncallObjectMethod3(obj_foo, "func3", "a", "b", "c")
+    AssertEqual "func3:a,b,c", FuncallObjectMethod(obj_foo, "func3", Array("a", "b", "c"))
   Next
   AssertEqual 100, obj_foo.func3_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod3_manyCall"
 
 Sub TestFuncallObjectMethod4
-  AssertEqual "func4:a,b,c,e", FuncallObjectMethod4(obj_foo, "func4", "a", "b", "c", "e")
+  AssertEqual "func4:a,b,c,e", FuncallObjectMethod(obj_foo, "func4", Array("a", "b", "c", "e"))
   AssertEqual 1, obj_foo.func4_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod4"
@@ -311,14 +311,14 @@ UnitTest_TestCase "TestFuncallObjectMethod4"
 Sub TestFuncallObjectMethod4_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func4:a,b,c,e", FuncallObjectMethod4(obj_foo, "func4", "a", "b", "c", "e")
+    AssertEqual "func4:a,b,c,e", FuncallObjectMethod(obj_foo, "func4", Array("a", "b", "c", "e"))
   Next
   AssertEqual 100, obj_foo.func4_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod4_manyCall"
 
 Sub TestFuncallObjectMethod5
-  AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod5(obj_foo, "func5", "a", "b", "c", "e", "f")
+  AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod(obj_foo, "func5", Array("a", "b", "c", "e", "f"))
   AssertEqual 1, obj_foo.func5_countCall
 End Sub
 UnitTest_TestCase "TestFuncallObjectMethod5"
@@ -326,7 +326,7 @@ UnitTest_TestCase "TestFuncallObjectMethod5"
 Sub TestFuncallObjectMethod5_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod5(obj_foo, "func5", "a", "b", "c", "e", "f")
+    AssertEqual "func5:a,b,c,e,f", FuncallObjectMethod(obj_foo, "func5", Array("a", "b", "c", "e", "f"))
   Next
   AssertEqual 100, obj_foo.func5_countCall
 End Sub
