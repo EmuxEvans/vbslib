@@ -187,6 +187,27 @@ Sub TestGetObjectMethodSubProc0
 End Sub
 UnitTest_TestCase "TestGetObjectMethodSubProc0"
 
+Sub TestGetObjectMethodSubProc0_manyCall
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method0", 0)
+  Dim i
+  For i = 1 To 100
+    proc
+  Next
+  AssertEqual 100, obj_foo.method0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc0_manyCall"
+
+Sub TestGetObjectMethodSubProc0_manyGet
+  Dim i, proc
+  For i = 1 To 100
+    Set proc = GetObjectMethodSubProc(obj_foo, "method0", 0)
+    proc
+  Next
+  AssertEqual 100, obj_foo.method0_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc0"
+
 Sub TestGetObjectMethodSubProc1
   Dim proc
   Set proc = GetObjectMethodSubProc(obj_foo, "method1", 1)
@@ -195,11 +216,53 @@ Sub TestGetObjectMethodSubProc1
 End Sub
 UnitTest_TestCase "TestGetObjectMethodSubProc1"
 
+Sub TestGetObjectMethodSubProc1_manyCall
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method1", 1)
+  Dim i
+  For i = 1 To 100
+    proc "a"
+  Next
+  AssertEqual 100, obj_foo.method1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1_manyCall"
+
+Sub TestGetObjectMethodSubProc1_manyGet
+  Dim i, proc
+  For i = 1 To 100
+    Set proc = GetObjectMethodSubProc(obj_foo, "method1", 1)
+    proc "a"
+  Next
+  AssertEqual 100, obj_foo.method1_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1_manyGet"
+
 Sub TestGetObjectMethodSubProc2
   Dim proc
   Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
   proc "a", "b"
   AssertEqual 1, obj_foo.method2_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1"
+
+Sub TestGetObjectMethodSubProc2_manyCall
+  Dim proc
+  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+  Dim i
+  For i = 1 To 100
+    proc "a", "b"
+  Next
+  AssertEqual 100, obj_foo.method2_countCall
+End Sub
+UnitTest_TestCase "TestGetObjectMethodSubProc1_manyGet"
+
+Sub TestGetObjectMethodSubProc2_manyGet
+  Dim i, proc
+  For i = 1 To 100
+    Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+    proc "a", "b"
+  Next
+  AssertEqual 100, obj_foo.method2_countCall
 End Sub
 UnitTest_TestCase "TestGetObjectMethodSubProc1"
 
