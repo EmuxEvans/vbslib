@@ -372,9 +372,8 @@ Sub HeapSort(list, compare)
   Next
 End Sub
 
-Sub Sort(list, compare)
-  HeapSort list, compare
-End Sub
+Dim Sort
+Set Sort = GetRef("HeapSort")
 
 Dim NumberCompare
 Set NumberCompare = GetRef("NumberCompareFunction")
