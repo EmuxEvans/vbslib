@@ -2,6 +2,89 @@
 
 Option Explicit
 
+Dim ShowString_Quote
+Set ShowString_Quote = New RegExp
+ShowString_Quote.Pattern = """"
+ShowString_Quote.Global = True
+
+Function ShowString(value)
+  ShowString = """" & ShowString_Quote.Replace(value, """""") & """"
+End Function
+
+Function ShowArray(value)
+  Dim r, i, sep: sep = ""
+  r = "["
+  For Each i In value
+    r = r & sep & ShowValue(i)
+    sep = ","
+  Next
+  r = r & "]"
+  ShowArray = r
+End Function
+
+Function ShowDictionary(value)
+  Dim r, k, sep: sep = ""
+  r = "{"
+  For Each k In value.Keys
+    r = r & sep & ShowValue(k) & "=>" & ShowValue(value(k))
+    sep = ","
+  Next
+  r = r & "}"
+  ShowDictionary = r
+End Function
+
+Function ShowObject(value)
+  On Error Resume Next
+  Dim r
+  r = ShowDictionary(value)
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = ShowArray(value)
+  End If
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = "<" & TypeName(value) & ">"
+  End If
+  ShowObject = r
+End Function
+
+Function ShowOther(value)
+  On Error Resume Next
+  Dim r
+  r = CStr(value)
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = ShowArray(value)
+  End If
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = ShowDictionary(value)
+  End If
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = "<unknown:" & VarType(value) & ">"
+  End If
+  ShowOther = r
+End Function
+
+Function ShowValue(value)
+  Dim r
+  If VarType(value) = vbString Then
+    r = ShowString(value)
+  ElseIf IsArray(value) Then
+    r = ShowArray(value)
+  ElseIf IsObject(value) Then
+    r = ShowObject(value)
+  ElseIf IsEmpty(value) Then
+    r = "<empty>"
+  ElseIf IsNull(value) Then
+    r = "<null>"
+  Else
+    r = ShowOther(value)
+  End If
+  ShowValue = r
+End Function
+
 Const MAX_HISTORY = 30
 
 Class History
@@ -61,7 +144,7 @@ Sub PopupError
 End Sub
 
 Sub PopupResult(expr, result)
-  MsgBox "`" & expr & "'" & vbNewLine & "=> " & result, _
+  MsgBox expr & vbNewLine & "=> " & result, _
          vbOKOnly, POPUP_TITLE & ": Result"
 End Sub
 
@@ -98,7 +181,7 @@ End Sub
 Sub REPL_Evaluate(expr)
   Dim result
   On Error Resume Next
-  result = Eval(expr)
+  result = ShowValue(Eval(expr))
   If Err.Number = 0 Then
     PopupResult expr, result
   Else
