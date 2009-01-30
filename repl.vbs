@@ -230,7 +230,7 @@ Do
     expr = evalCommand.Replace(expr, "")
     REPL_Evaluate expr
   ElseIf histCommand.Test(expr) Then
-    Select Case LCase(Trim(expr))
+    Select Case LCase(expr)
       Case "h":
         PopupHistory(hist)
       Case "hh":
