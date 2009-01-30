@@ -201,7 +201,7 @@ evalCommand.IgnoreCase = True
 
 Dim histCommand
 Set histCommand = New RegExp
-histCommand.Pattern = "^h$|^h\s+"
+histCommand.Pattern = "^h$|^hh$|^h\s+"
 histCommand.IgnoreCase = True
 
 Dim hist
@@ -212,7 +212,7 @@ Dim defaultExpr
 defaultExpr = Empty
 
 Do
-  expr = InputBox("input `statement' or `e statement' or `p expression'. `h' for history.", _
+  expr = InputBox("Input `statement' or `e statement' or `p expression'. `h' for history.", _
                   POPUP_TITLE & " [" & hist.NextIndex & "]", _
                   defaultExpr)
 
@@ -230,12 +230,14 @@ Do
     expr = evalCommand.Replace(expr, "")
     REPL_Evaluate expr
   ElseIf histCommand.Test(expr) Then
-    expr = histCommand.Replace(expr, "")
-    If expr = "" Then
-      PopupHistory(hist)
-    Else
-      defaultExpr = GetHistory(hist, expr)
-    End If
+    Select Case LCase(Trim(expr))
+      Case "h":
+        PopupHistory(hist)
+      Case "hh":
+        defaultExpr = hist(hist.NextIndex - 2)
+      Case Else:
+        defaultExpr = GetHistory(hist, histCommand.Replace(expr, ""))
+    End Select
   Else
     REPL_Execute expr
   End If
