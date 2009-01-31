@@ -65,6 +65,13 @@ Class ListBuffer
     BindAt ivar_dict, nextIndex, value
   End Sub
 
+  Public Sub Append(list)
+    Dim i
+    For Each i In list
+      Add i
+    Next
+  End Sub
+  
   Public Function Exists(key)
     Exists = ivar_dict.Exists(key)
   End Function
