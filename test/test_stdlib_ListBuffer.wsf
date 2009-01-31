@@ -224,6 +224,16 @@ Sub TestListBuffer_ExistsEmpty
 End Sub
 UnitTest_TestCase "TestListBuffer_ExistsEmpty"
 
+Sub TestListBuffer_Append
+  listBuf.Append Array(1, 2, 3, "a", "b")
+  AssertEqual 5, listBuf.Count
+  AssertEqual 1, listBuf(0)
+  AssertEqual 2, listBuf(1)
+  AssertEqual 3, listBuf(2)
+  AssertEqual "a", listBuf(3)
+  AssertEqual "b", listBuf(4)
+End Sub
+
 Sub TestListBuffer_RemoveAll
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
