@@ -72,8 +72,8 @@ Class ListBuffer
     Next
   End Sub
   
-  Public Function Exists(key)
-    Exists = ivar_dict.Exists(key)
+  Public Function Exists(index)
+    Exists = ivar_dict.Exists(index)
   End Function
 
   Public Function Items
@@ -83,15 +83,6 @@ Class ListBuffer
       BindAt itemList, i, ivar_dict(i)
     Next
     Items = itemList
-  End Function
-
-  Public Function Keys
-    ReDim keyList(ivar_dict.Count - 1)
-    Dim i
-    For i = 0 To ivar_dict.Count - 1
-      keyList(i) = i
-    Next
-    Keys = keyList
   End Function
 
   Public Sub RemoveAll
@@ -137,6 +128,10 @@ Function ShowObject(value)
   If Err.Number <> 0 Then
     Err.Clear
     r = ShowArray(value)
+  End If
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = ShowArray(value.Items)
   End If
   If Err.Number <> 0 Then
     Err.Clear
