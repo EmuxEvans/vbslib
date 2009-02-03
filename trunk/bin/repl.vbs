@@ -43,6 +43,10 @@ Function ShowObject(value)
   End If
   If Err.Number <> 0 Then
     Err.Clear
+    r = ShowArray(value.Items)
+  End If
+  If Err.Number <> 0 Then
+    Err.Clear
     r = "<" & TypeName(value) & ">"
   End If
   ShowObject = r
