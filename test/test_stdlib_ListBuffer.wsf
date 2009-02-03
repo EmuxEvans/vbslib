@@ -180,32 +180,6 @@ Sub TestListBuffer_ItemsEmpty
 End Sub
 UnitTest_TestCase "TestListBuffer_ItemsEmpty"
 
-Sub TestListBuffer_Keys
-  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
-  listBuf.Add "foo"
-  listBuf.Add "bar"
-  listBuf.Add obj
-
-  Dim k
-  k = listBuf.Keys
-  AssertEqual "Variant()", TypeName(k)
-  AssertEqual 0, LBound(k)
-  AssertEqual 2, UBound(k)
-  AssertEqual 0, k(0)
-  AssertEqual 1, k(1)
-  AssertEqual 2, k(2)
-End Sub
-UnitTest_TestCase "TestListBuffer_Keys"
-
-Sub TestListBuffer_KeysEmpty
-  Dim k
-  k = listBuf.Keys
-  AssertEqual "Variant()", TypeName(k)
-  AssertEqual 0, LBound(k)
-  AssertEqual -1, UBound(k)
-End Sub
-UnitTest_TestCase "TestListBuffer_KeysEmpty"
-
 Sub TestListBuffer_Exists
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
   listBuf.Add "foo"
