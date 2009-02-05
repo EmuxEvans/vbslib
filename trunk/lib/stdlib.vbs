@@ -59,6 +59,12 @@ Class ListBuffer
     End If
   End Property
 
+  Public Property Get LastItem
+    If ivar_dict.Count > 0 Then
+      Bind LastItem, ivar_dict(ivar_dict.Count - 1)
+    End If
+  End Property
+
   Public Sub Add(value)
     Dim nextIndex
     nextIndex = ivar_dict.Count
