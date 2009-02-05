@@ -1,5 +1,8 @@
 2009-02-06  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* bin/TestRunner.wsf, lib/unittest.vbs: Unit-Test framework and
+	test runner.
+
 	* lib/stdlib.vbs: ListBuffer class. shortcut property for last
 	item.
 

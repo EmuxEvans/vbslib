@@ -1,12 +1,8 @@
-<?xml version="1.0" ?>
-<job id="test_stdlib_ObjectAccessor">
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript" src="../lib/unittest.vbs" />
-<script language="VBScript"><![CDATA[
+' stdlib.vbs: Object Accessor test.
+' @import ../lib/stdlib.vbs
+' @import ../lib/unittest.vbs
 
 Option Explicit
-
-UnitTest_Description "stdlib.vbs: Object Accessor test."
 
 Class Foo
   Private ivar_bar
@@ -33,25 +29,21 @@ Sub SetUp
   Set obj_foo = New Foo
   Set obj_bar = New Bar
 End Sub
-UnitTest_SetUp "SetUp"
 
 Sub TearDown
   Set obj_foo = Nothing
   Set obj_bar = Nothing
 End Sub
-UnitTest_TearDown "TearDown"
 
 Sub TestGetObjectProeprty_Value
   obj_foo.Bar = "Hello world."
   AssertEqual "Hello world.", GetObjectProperty(obj_foo, "Bar")
 End Sub
-UnitTest_TestCase "TestGetObjectProeprty_Value"
 
 Sub TestGetObjectProeprty_Object
   Set obj_foo.Bar = obj_bar
   AssertSame obj_bar, GetObjectProperty(obj_foo, "Bar")
 End Sub
-UnitTest_TestCase "TestGetObjectProeprty_Object"
 
 Sub TestGetObjectProperty_NoProperty
   Dim v, errNum
@@ -62,13 +54,11 @@ Sub TestGetObjectProperty_NoProperty
 
   AssertEqual 438, errNum
 End Sub
-UnitTest_TestCase "TestGetObjectProperty_NoProperty"
 
 Sub TestSetObjectProperty_Value
   SetObjectProperty obj_foo, "Bar", "Hello world."
   AssertEqual "Hello world.", obj_foo.Bar
 End Sub
-UnitTest_TestCase "TestSetObjectProperty_Value"
 
 Sub TestSetObjectProperty_ValueNoProperty
   Dim errNum
@@ -79,13 +69,11 @@ Sub TestSetObjectProperty_ValueNoProperty
 
   AssertEqual 438, errNum
 End Sub
-UnitTest_TestCase "TestSetObjectProperty_ValueNoProperty"
 
 Sub TestSetObjectProperty_Object
   SetObjectProperty obj_foo, "Bar", obj_bar
   AssertSame obj_bar, obj_foo.Bar
 End Sub
-UnitTest_TestCase "TestSetObjectProperty_Object"
 
 Sub TestSetObjectProperty_ObjectNoProperty
   Dim errNum
@@ -96,31 +84,22 @@ Sub TestSetObjectProperty_ObjectNoProperty
 
   AssertEqual 438, errNum
 End Sub
-UnitTest_TestCase "TestSetObjectProperty_ObjectNoProperty"
 
 Sub TestExistsObjectProperty_Exists
   AssertEqual True, ExistsObjectProperty(obj_foo, "Bar")
 End Sub
-UnitTest_TestCase "TestExistsObjectProperty_Exists"
 
 Sub TestExistsObjectProperty_NotExists
   AssertEqual False, ExistsObjectProperty(obj_foo, "Baz")
 End Sub
-UnitTest_TestCase "TestExistsObjectProperty_NotExists"
 
 Sub TestObjectPropertyUpDownCase
   SetObjectProperty obj_foo, "bar", "Hello world."
   AssertEqual "Hello world.", GetObjectProperty(obj_foo, "BAR")
   AssertEqual True, ExistsObjectProperty(obj_foo, "bAr")
 End Sub
-UnitTest_TestCase "TestObjectPropertyUpDownCase"
 
-UnitTest_ConsoleRun
-
-]]></script>
-</job>
-
-<!-- Local Variables: -->
-<!-- mode: Visual-Basic -->
-<!-- indent-tabs-mode: nil -->
-<!-- End: -->
+' Local Variables:
+' mode: Visual-Basic
+' indent-tabs-mode: nil
+' End:

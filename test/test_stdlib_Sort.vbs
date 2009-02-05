@@ -1,12 +1,8 @@
-<?xml version="1.0" ?>
-<job id="test_stdlib_Sort">
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript" src="../lib/unittest.vbs" />
-<script language="VBScript"><![CDATA[
+' stdlib.vbs: Sort function test.
+' @import ../lib/stdlib.vbs
+' @import ../lib/unittest.vbs
 
 Option Explicit
-
-UnitTest_Description "stdlib.vbs: Sort function test."
 
 Sub TestSwapArrayItem_ValueAndValue
   Dim a(1)
@@ -16,7 +12,6 @@ Sub TestSwapArrayItem_ValueAndValue
   AssertEqual "bar", a(0)
   AssertEqual "foo", a(1)
 End Sub
-UnitTest_TestCase "TestSwapArrayItem_ValueAndValue"
 
 Sub TestSwapArrayItem_ObjectAndObject
   Dim a(1)
@@ -28,22 +23,18 @@ Sub TestSwapArrayItem_ObjectAndObject
   AssertSame obj2, a(0)
   AssertSame obj1, a(1)
 End Sub
-UnitTest_TestCase "TestSwapArrayItem_ObjectAndObject"
 
 Sub TestNumberCompare_Equal
   Assert NumberCompare(1, 1) = 0
 End Sub
-UnitTest_TestCase "TestNumberCompare_Equal"
 
 Sub TestNumberCompare_Greater
   Assert NumberCompare(2, 1) > 0
 End Sub
-UnitTest_TestCase "TestNumberCompare_Greater"
 
 Sub TestNumberCompare_Less
   Assert NumberCompare(1, 2) < 0
 End Sub
-UnitTest_TestCase "TestNumberCompare_Less"
 
 Sub TestSort_1
   Dim a(0)
@@ -51,7 +42,6 @@ Sub TestSort_1
   Sort a, NumberCompare
   AssertEqual 0, a(0)
 End Sub
-UnitTest_TestCase "TestSort_1"
 
 Sub TestSort_2
   Dim a(1)
@@ -61,7 +51,6 @@ Sub TestSort_2
   AssertEqual 0, a(0)
   AssertEqual 1, a(1)
 End Sub
-UnitTest_TestCase "TestSort_2"
 
 Sub TestSort_3
   Dim a(2)
@@ -73,7 +62,6 @@ Sub TestSort_3
   AssertEqual 1, a(1)
   AssertEqual 3, a(2)
 End Sub
-UnitTest_TestCase "TestSort_3"
 
 Const COUNT_OF_MANY_ITEMS = 2000
 
@@ -91,7 +79,6 @@ Sub TestSort_Many
     Assert a(i) <= a(i + 1)
   Next
 End Sub
-UnitTest_TestCase "TestSort_Many"
 
 Sub TestSort_SortedList
   Dim i
@@ -108,14 +95,8 @@ Sub TestSort_SortedList
     Assert a(i) <= a(i + 1)
   Next
 End Sub
-UnitTest_TestCase "TestSort_Many"
 
-UnitTest_ConsoleRun
-
-]]></script>
-</job>
-
-<!-- Local Variables: -->
-<!-- mode: Visual-Basic -->
-<!-- indent-tabs-mode: nil -->
-<!-- End: -->
+' Local Variables:
+' mode: Visual-Basic
+' indent-tabs-mode: nil
+' End:
