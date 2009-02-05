@@ -174,9 +174,14 @@ Function GetHistory(hist, indexExpr)
   GetHistory = Empty
 End Function
 
+Dim REPL_ScriptControl
+Set REPL_ScriptControl = CreateObject("ScriptControl")
+REPL_ScriptControl.Language = "VBScript"
+REPL_ScriptControl.AddObject "WScript", WScript
+
 Sub REPL_Execute(expr)
   On Error Resume Next
-  ExecuteGlobal expr
+  REPL_ScriptControl.ExecuteStatement expr
   If Err.Number <> 0 Then
     PopupError
   End If
@@ -185,7 +190,7 @@ End Sub
 Sub REPL_Evaluate(expr)
   Dim result
   On Error Resume Next
-  result = ShowValue(Eval(expr))
+  result = ShowValue(REPL_ScriptControl.Eval(expr))
   If Err.Number = 0 Then
     PopupResult expr, result
   Else
