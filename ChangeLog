@@ -1,3 +1,8 @@
+2009-02-06  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: ListBuffer class. shortcut property for last
+	item.
+
 2009-02-05  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/repl.vbs: encapsulated runtime environment by ScriptControl.
