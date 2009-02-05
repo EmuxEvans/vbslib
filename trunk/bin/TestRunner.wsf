@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<job id="ConsoleTestRunner">
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript" src="../lib/unittest.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim loader
+Set loader = New UnitTest_TestCaseLoader
+
+Dim path
+For Each path In WScript.Arguments.Unnamed
+  WScript.StdOut.WriteLine "load " & path
+  loader.ImportTestCase path
+Next
+
+Dim testProcList, testCase
+Set testProcList = New ListBuffer
+For Each testCase In loader.Items
+  testProcList.Append testCase.Items
+Next
+
+Dim errorList
+Set errorList = New ListBuffer
+
+Dim testProc, testStat
+For Each testProc In testProcList.Items
+  testStat = "."
+  On Error Resume Next
+
+  testProc.SetUp
+  If Err.Number <> 0 Then
+    testStat = "E"
+    errorList.Add Array(testProc, "SetUp Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+  End If
+
+  If Err.Number = 0 Then
+    testProc.Execute
+    If Err.Number <> 0 Then
+      If UnitTest_IsAssertFail(Err) Then
+        testStat = "F"
+        errorList.Add Array(testProc, "Assertion Failed: " & Err.Description)
+      Else
+        testStat = "E"
+        errorList.Add Array(testProc, "Test Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+      End If
+    End If
+  End If
+  Err.Clear
+
+  testProc.TearDown
+  If Err.Number <> 0 Then
+    testStat = "E"
+    errorList.Add Array(testProc, "TearDown Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+  End If
+
+  On Error GoTo 0
+  WScript.StdOut.Write testStat
+Next
+WScript.StdOut.WriteBlankLines 1
+
+Dim count, errPair
+count = 0
+
+For Each errPair In errorList.Items
+  count = count + 1
+  WScript.StdOut.WriteLine "(" & count & ") " & errPair(0).ModuleName & ": " & errPair(0).Name
+  WScript.StdOut.WriteLine "  " & errPair(1)
+Next
+
+If count > 0 Then
+  WScript.Quit 1
+Else
+  WScript.Quit 0
+End If
+
+]]></script>
+</job>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->

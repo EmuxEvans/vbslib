@@ -1,12 +1,8 @@
-<?xml version="1.0" ?>
-<job id="test_stdlib_ShowValue">
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript" src="../lib/unittest.vbs" />
-<script language="VBScript"><![CDATA[
+' stdlib.vbs: ShowValue function test.
+' @import ../lib/stdlib.vbs
+' @import ../lib/unittest.vbs
 
 Option Explicit
-
-UnitTest_Description "stdlib.vbs: ShowValue function test."
 
 Class Foo
 End Class
@@ -14,72 +10,58 @@ End Class
 Sub TestShowValue_Empty
   AssertEqual "<empty>", ShowValue(Empty)
 End Sub
-UnitTest_TestCase "TestShowValue_Empty"
 
 Sub TestShowValue_Null
   AssertEqual "<null>", ShowValue(Null)
 End Sub
-UnitTest_TestCase "TestShowValue_Null"
 
 Sub TestShowValue_BoolTrue
   AssertEqual "True", ShowValue(True)
 End Sub
-UnitTest_TestCase "TestShowValue_BoolTrue"
 
 Sub TestShowValue_BoolFalse
   AssertEqual "False", ShowValue(False)
 End Sub
-UnitTest_TestCase "TestShowValue_BoolFalse"
 
 Sub TestShowValue_Byte
   AssertEqual "1", ShowValue(CByte(1))
 End Sub
-UnitTest_TestCase "TestShowValue_Byte"
 
 Sub TestShowValue_Int
   AssertEqual "1000", ShowValue(CInt(1000))
 End Sub
-UnitTest_TestCase "TestShowValue_Int"
 
 Sub TestShowValue_Currency
   AssertEqual "1000", ShowValue(CCur(1000))
 End Sub
-UnitTest_TestCase "TestShowValue_Currency"
 
 Sub TestShowValue_Long
   AssertEqual "100000", ShowValue(CLng(100000))
 End Sub
-UnitTest_TestCase "TestShowValue_Long"
 
 Sub TestShowValue_Single
   AssertEqual "1.23", ShowValue(CSng(1.23))
 End Sub
-UnitTest_TestCase "TestShowValue_Single"
 
 Sub TestShowValue_Double
   AssertEqual "1.23", ShowValue(CDbl(1.23))
 End Sub
-UnitTest_TestCase "TestShowValue_Double"
 
 Sub TestShowValue_Date
   AssertEqual "2009/01/24 18:12:04", ShowValue(#2009-01-24 18:12:04#)
 End Sub
-UnitTest_TestCase "TestShowValue_Date"
 
 Sub TestShowValue_String
   AssertEqual """foo""", ShowValue("foo")
 End Sub
-UnitTest_TestCase "TestShowValue_String"
 
 Sub TestShowValue_StringQuote
   AssertEqual """foo""""bar""", ShowValue("foo""bar")
 End Sub
-UnitTest_TestCase "TestShowValue_StringQuote"
 
 Sub TestShowValue_Object
   AssertEqual "<Foo>", ShowValue(New Foo)
 End Sub
-UnitTest_TestCase "TestShowValue_Object"
 
 Sub TestShowValue_ObjectDictionary
   Dim d: Set d = CreateObject("Scripting.Dictionary")
@@ -88,12 +70,10 @@ Sub TestShowValue_ObjectDictionary
   d("baz") = "Orange"
   AssertEqual "{""foo""=>""Apple"",""bar""=>""Banana"",""baz""=>""Orange""}", ShowValue(d)
 End Sub
-UnitTest_TestCase "TestShowValue_ObjectDictionary"
 
 Sub TestShowValue_ObjectDictionaryEmpty
   AssertEqual "{}", ShowValue(CreateObject("Scripting.Dictionary"))
 End Sub
-UnitTest_TestCase "TestShowValue_ObjectDictionaryEmpty"
 
 Sub TestShowValue_Array
   Dim a(5)
@@ -111,14 +91,8 @@ Sub TestShowValue_Array
 
   AssertEqual "[1,""foo"",<empty>,<null>,{""bar""=>""Banana""},[""a"",""b""]]", ShowValue(a)
 End Sub
-UnitTest_TestCase "TestShowValue_Array"
 
-UnitTest_ConsoleRun
-
-]]></script>
-</job>
-
-<!-- Local Variables: -->
-<!-- mode: Visual-Basic -->
-<!-- indent-tabs-mode: nil -->
-<!-- End: -->
+' Local Variables:
+' mode: Visual-Basic
+' indent-tabs-mode: nil
+' End:

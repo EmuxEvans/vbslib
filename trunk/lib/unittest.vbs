@@ -3,130 +3,15 @@
 
 Option Explicit
 
-Const UNITTEST_FAIL_TYPE_E = "Error"
-Const UNITTEST_FAIL_TYPE_A = "Assert"
 Const UNITTEST_ASSERT_SOURCE_KEYWORD = "UnitTest Assertion"
 
-Dim UnitTest_Desc
-UnitTest_Desc = Empty
-
-Dim UnitTest_SetUpSubs
-Set UnitTest_SetUpSubs = New ListBuffer
-
-Dim UnitTest_TearDownSubs
-Set UnitTest_TearDownSubs = New ListBuffer
-
-Dim UnitTest_TestCaseSubs
-Set UnitTest_TestCaseSubs = New ListBuffer
-
-Sub UnitTest_Description(message)
-  UnitTest_Desc = message
-End Sub
-
-Sub UnitTest_SetUp(setupSub)
-  UnitTest_SetUpSubs.Add setupSub
-End Sub
-
-Sub UnitTest_TearDown(tearDownSub)
-  UnitTest_TearDownSubs.Add tearDownSub
-End Sub
-
-Sub UnitTest_TestCase(testCaseSub)
-  UnitTest_TestCaseSubs.Add testCaseSub
-End Sub
-
-Function UnitTest_MakeErrorEntry(testCaseSub, message)
-  ReDim entry(2)
-  entry(0) = UNITTEST_FAIL_TYPE_E
-  entry(1) = testCaseSub
-  entry(2) = message & ": " & _
-             "(" & Err.Number & ") " & "[" & Err.Source & "] " & Err.Description
-  UnitTest_MakeErrorEntry = entry
-End Function
-
-Function UnitTest_MakeAssertFailEntry(testCaseSub)
-  ReDim entry(2)
-  entry(0) = UNITTEST_FAIL_TYPE_A
-  entry(1) = testCaseSub
-  entry(2) = "Assertion Failed: " & Err.Description
-  UnitTest_MakeAssertFailEntry = entry
-End Function
-
-Sub UnitTest_RunSubs(subs)
-  Dim s
-  For Each s In subs.Items
-    ExecuteGlobal "Call " & s
-  Next
-End Sub
-
-Sub UnitTest_RunTestCase(testCaseSub, failList)
-  On Error Resume Next
-
-  UnitTest_RunSubs UnitTest_SetUpSubs
-  If Err.Number = 0 Then
-    ExecuteGlobal "Call " & testCaseSub
-    If Err.Number <> 0 Then
-      If Err.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
-        failList.Add UnitTest_MakeAssertFailEntry(testCaseSub)
-      Else
-        failList.Add UnitTest_MakeErrorEntry(testCaseSub, "TestCase Error")
-      End If
-      Err.Clear
-    End If
+Function UnitTest_IsAssertFail(error)
+  If error.Source = UNITTEST_ASSERT_SOURCE_KEYWORD Then
+    UnitTest_IsAssertFail = True
   Else
-    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "SetUp Error")
-    Err.Clear
+    UnitTest_IsAssertFail = False
   End If
-
-  UnitTest_RunSubs UnitTest_TearDownSubs
-  If Err.Number <> 0 Then
-    failList.Add UnitTest_MakeErrorEntry(testCaseSub, "TearDown Error")
-    Err.Clear
-  End If
-End Sub
-
-Sub UnitTest_ConsoleRun
-  Dim testCaseSub, failEntry, count
-  Dim failList: Set failList = New ListBuffer
-  Dim allFailList: Set allFailList = New ListBuffer
-  Dim startTime: startTime = Timer
-
-  If Not IsEmpty(UnitTest_Desc) Then
-    WScript.StdOut.WriteLine UnitTest_Desc
-  End If
-
-  For Each testCaseSub In UnitTest_TestCaseSubs.Items
-    UnitTest_RunTestCase testCaseSub, failList
-    If failList.Count = 0 Then
-      WScript.StdOut.Write "."
-    Else
-      WScript.StdOut.Write "E"
-    End If
-    For Each failEntry In failList.Items
-      allFailList.Add failEntry
-    Next
-    failList.RemoveAll
-  Next
-
-  Dim stopTime: stopTime = Timer
-  Dim elapsed: elapsed = stopTime - startTime
-  WScript.StdOut.Write(" " & FormatNumber(elapsed, 3, True) & "s")
-
-  WScript.StdOut.WriteBlankLines 1
-
-  count = 0
-  For Each failEntry In allFailList.Items
-    count = count + 1
-    WScript.StdOut.WriteLine "(" & count & ") [" & failEntry(1) & "] " & failEntry(2)
-  Next
-
-  If allFailList.Count = 0 Then
-    WScript.Quit 0
-  Else
-    WScript.StdOut.WriteLine "*"
-    WScript.Quit 1
-  End If
-End Sub
+End Function
 
 Sub Assert(result)
   AssertWithMessage result, Empty
@@ -203,6 +88,146 @@ Sub AssertFailWithMessage(message)
   End If
   Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
 End Sub
+
+Dim UnitTest_TestProcConvention
+Set UnitTest_TestProcConvention = New RegExp
+UnitTest_TestProcConvention.Pattern = "^Test"
+UnitTest_TestProcConvention.IgnoreCase = True
+
+Dim UnitTest_ImportAnnotation
+Set UnitTest_ImportAnnotation = New RegExp
+UnitTest_ImportAnnotation.Pattern = "^'\s*@import\s+(\S|\S.*\S)\s*$"
+UnitTest_ImportAnnotation.IgnoreCase = True
+UnitTest_ImportAnnotation.Global = True
+UnitTest_ImportAnnotation.Multiline = True
+
+Class UnitTest_TestProc
+  Private ivar_testModule
+  Private ivar_procName
+  Private ivar_hasSetUp
+  Private ivar_hasTearDown
+
+  Public Sub Build(testModule, procName, hasSetUp, hasTearDown)
+    Set ivar_testModule = testModule
+    ivar_procName = procName
+    ivar_hasSetUp = hasSetUp
+    ivar_hasTearDown = hasTearDown
+  End Sub
+
+  Public Property Get ModuleName
+    ModuleName = ivar_testModule.Name
+  End Property
+
+  Public Property Get Name
+    Name = ivar_procName
+  End Property
+
+  Public Sub SetUp
+    If ivar_hasSetUp Then
+      ivar_testModule.Run "SetUp"
+    End If
+  End Sub
+
+  Public Sub TearDown
+    If ivar_hasTearDown Then
+      ivar_testModule.Run "TearDown"
+    End If
+  End Sub
+
+  Public Sub Execute
+    ivar_testModule.Run ivar_procName
+  End Sub
+End Class
+
+Class UnitTest_TestCase
+  Private ivar_testModule
+
+  Public Sub Build(testModule)
+    Set ivar_testModule = testModule
+  End Sub
+
+  Public Function HasSetUp
+    Dim proc
+    For Each proc In ivar_testModule.Procedures
+      If UCase(proc.Name) = "SETUP" Then
+        HasSetUp = True
+        Exit Function
+      End If
+    Next
+    HasSetUp = False
+  End Function
+
+  Public Function HasTearDown
+    Dim proc
+    For Each proc In ivar_testModule.Procedures
+      If UCase(proc.Name) = "TEARDOWN" Then
+        HasTearDown = True
+        Exit Function
+      End If
+    Next
+    HasTearDown = False
+  End Function
+
+  Public Function Items
+    Dim hasSetUp_, hasTearDown_
+    hasSetUp_ = HasSetUp
+    hasTearDown_ = HasTearDown
+
+    Dim procList, proc
+    Set procList = New ListBuffer
+    For Each proc In ivar_testModule.Procedures
+      If UnitTest_TestProcConvention.Test(proc.Name) Then
+        procList.Add New UnitTest_TestProc
+        procList.LastItem.Build ivar_testModule, proc.Name, hasSetUp_, hasTearDown_
+      End If
+    Next
+
+    Items = procList.Items
+  End Function
+End Class
+
+Class UnitTest_TestCaseLoader
+  Private ivar_fso
+  Private ivar_scriptControl
+
+  Private Sub Class_Initialize
+    Set ivar_fso = CreateObject("Scripting.FileSystemObject")
+    Set ivar_scriptControl = CreateObject("ScriptControl")
+    ivar_scriptControl.Language = "VBScript"
+  End Sub
+
+  Public Sub ImportTestCase(path)
+    ivar_scriptControl.Modules.Add path
+    
+    Dim stream, code
+    Set stream = ivar_fso.OpenTextFile(path)
+    code = stream.ReadAll
+    stream.Close
+
+    Dim match, libPath
+    For Each match In UnitTest_ImportAnnotation.Execute(code)
+      libPath = match.SubMatches(0)
+      Set stream = ivar_fso.OpenTextFile(libPath)
+      ivar_scriptControl.Modules(path).AddCode stream.ReadAll
+      stream.Close
+    Next
+
+    ivar_scriptControl.Modules(path).AddCode code
+  End Sub
+
+  Public Function Items
+    Dim modList, mo
+    Set modList = New ListBuffer
+    For Each mo In ivar_scriptControl.Modules
+      If mo.Name <> "Global" Then
+        modList.Add New UnitTest_TestCase
+        modList.LastItem.Build mo
+      End If
+    Next
+
+    Items = modList.Items
+  End Function
+End Class
 
 ' Local Variables:
 ' mode: Visual-Basic

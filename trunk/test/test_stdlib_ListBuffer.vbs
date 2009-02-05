@@ -1,24 +1,18 @@
-<?xml version="1.0" ?>
-<job id="test_stdlib_ListBuffer">
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript" src="../lib/unittest.vbs" />
-<script language="VBScript"><![CDATA[
+' stdlib.vbs: ListBuffer class test.
+' @import ../lib/stdlib.vbs
+' @import ../lib/unittest.vbs
 
 Option Explicit
-
-UnitTest_Description "stdlib.vbs: ListBuffer class test."
 
 Dim listBuf
 
 Sub SetUp
   Set listBuf = New ListBuffer
 End Sub
-UnitTest_SetUp "SetUp"
 
 Sub TearDown
   Set listBuf = Nothing
 End Sub
-UnitTest_TearDown "TearDown"
 
 Sub TestListBuffer_Count
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -28,12 +22,10 @@ Sub TestListBuffer_Count
 
   AssertEqual 3, listBuf.Count
 End Sub
-UnitTest_TestCase "TestListBuffer_Count"
 
 Sub TestListBuffer_CountEmpty
   AssertEqual 0, listBuf.Count
 End Sub
-UnitTest_TestCase "TestListBuffer_CountEmpty"
 
 Sub TestListBuffer_GetItem
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -45,7 +37,6 @@ Sub TestListBuffer_GetItem
   AssertEqual "bar", listBuf(1)
   AssertSame obj, listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_GetItem"
 
 Sub TestListBuffer_GetItemOutOfRange
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -61,7 +52,6 @@ Sub TestListBuffer_GetItemOutOfRange
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_GetItemOutOfRange"
 
 Sub TestListBuffer_GetItemEmpty
   Dim errNum
@@ -72,7 +62,6 @@ Sub TestListBuffer_GetItemEmpty
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_GetItemEmpty"
 
 Sub TestListBuffer_LetItem
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -85,7 +74,6 @@ Sub TestListBuffer_LetItem
   AssertEqual "bar", listBuf(1)
   AssertEqual "baz", listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_LetItem"
 
 Sub TestListBuffer_LetItemOutOfRange
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -101,7 +89,6 @@ Sub TestListBuffer_LetItemOutOfRange
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_LetItemOutOfRange"
 
 Sub TestListBuffer_LetItemEmpty
   Dim errNum
@@ -112,7 +99,6 @@ Sub TestListBuffer_LetItemEmpty
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_LetItemEmpty"
 
 Sub TestListBuffer_SetItem
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -125,7 +111,6 @@ Sub TestListBuffer_SetItem
   AssertEqual "bar", listBuf(1)
   AssertSame obj, listBuf(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_SetItem"
 
 Sub TestListBuffer_SetItemOutOfRange
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -141,7 +126,6 @@ Sub TestListBuffer_SetItemOutOfRange
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_SetItemOutOfRange"
 
 Sub TestListBuffer_SetItemEmpty
   Dim errNum
@@ -152,7 +136,6 @@ Sub TestListBuffer_SetItemEmpty
 
   AssertEqual 9, errNum
 End Sub
-UnitTest_TestCase "TestListBuffer_SetItemEmpty"
 
 Sub TestListBuffer_Items
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -169,7 +152,6 @@ Sub TestListBuffer_Items
   AssertEqual "bar", a(1)
   AssertSame obj, a(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_Items"
 
 Sub TestListBuffer_ItemsEmpty
   Dim a
@@ -178,7 +160,6 @@ Sub TestListBuffer_ItemsEmpty
   AssertEqual 0, LBound(a)
   AssertEqual -1, UBound(a)
 End Sub
-UnitTest_TestCase "TestListBuffer_ItemsEmpty"
 
 Sub TestListBuffer_Exists
   Dim obj: Set obj = CreateObject("Scripting.Dictionary")
@@ -191,12 +172,10 @@ Sub TestListBuffer_Exists
   Assert listBuf.Exists(2)
   Assert Not listBuf.Exists(3)
 End Sub
-UnitTest_TestCase "TestListBuffer_Exists"
 
 Sub TestListBuffer_ExistsEmpty
   Assert Not listBuf.Exists(0)
 End Sub
-UnitTest_TestCase "TestListBuffer_ExistsEmpty"
 
 Sub TestListBuffer_Append
   listBuf.Append Array(1, 2, 3, "a", "b")
@@ -220,7 +199,6 @@ Sub TestListBuffer_RemoveAll
   Assert Not listBuf.Exists(1)
   Assert Not listBuf.Exists(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_RemoveAll"
 
 Sub TestListBuffer_RemoveAllEmpty
   listBuf.RemoveAll
@@ -229,14 +207,8 @@ Sub TestListBuffer_RemoveAllEmpty
   Assert Not listBuf.Exists(1)
   Assert Not listBuf.Exists(2)
 End Sub
-UnitTest_TestCase "TestListBuffer_RemoveAllEmpty"
 
-UnitTest_ConsoleRun
-
-]]></script>
-</job>
-
-<!-- Local Variables: -->
-<!-- mode: Visual-Basic -->
-<!-- indent-tabs-mode: nil -->
-<!-- End: -->
+' Local Variables:
+' mode: Visual-Basic
+' indent-tabs-mode: nil
+' End:

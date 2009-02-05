@@ -1,12 +1,8 @@
-<?xml version="1.0" ?>
-<job id="test_stdlib_ObjectMethod">
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript" src="../lib/unittest.vbs" />
-<script language="VBScript"><![CDATA[
+' stdlib.vbs: Object Method test.
+' @import ../lib/stdlib.vbs
+' @import ../lib/unittest.vbs
 
 Option Explicit
-
-UnitTest_Description "stdlib.vbs: Object Method test."
 
 Class Foo
   Private ivar_method0_countCall
@@ -82,18 +78,15 @@ Dim obj_foo
 Sub SetUp
   Set obj_foo = New Foo
 End Sub
-UnitTest_SetUp "SetUp"
 
 Sub TearDown
   Set obj_foo = Nothing
 End Sub
-UnitTest_TearDown "TearDown"
 
 Sub TestInvokeObjectMethod0
   InvokeObjectMethod obj_foo, "method0", Array()
   AssertEqual 1, obj_foo.method0_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod0"
 
 Sub TestInvokeObjectMethod0_manyCall
   Dim i
@@ -102,13 +95,11 @@ Sub TestInvokeObjectMethod0_manyCall
   Next
   AssertEqual 100, obj_foo.method0_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod0_manyCall"
 
 Sub TestInvokeObjectMethod1
   InvokeObjectMethod obj_foo, "method1", Array("a")
   AssertEqual 1, obj_foo.method1_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod1"
 
 Sub TestInvokeObjectMethod1_manyCall
   Dim i
@@ -117,13 +108,11 @@ Sub TestInvokeObjectMethod1_manyCall
   Next
   AssertEqual 100, obj_foo.method1_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod1_manyCall"
 
 Sub TestInvokeObjectMethod2
   InvokeObjectMethod obj_foo, "method2", Array("a", "b")
   AssertEqual 1, obj_foo.method2_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod2"
 
 Sub TestInvokeObjectMethod2_manyCall
   Dim i
@@ -132,13 +121,11 @@ Sub TestInvokeObjectMethod2_manyCall
   Next
   AssertEqual 100, obj_foo.method2_countCall
 End Sub
-UnitTest_TestCase "TestInvokeObjectMethod2_manyCall"
 
 Sub TestFuncallObjectMethod0
   AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
   AssertEqual 1, obj_foo.func0_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod0"
 
 Sub TestFuncallObjectMethod0_manyCall
   Dim i
@@ -147,13 +134,11 @@ Sub TestFuncallObjectMethod0_manyCall
   Next
   AssertEqual 100, obj_foo.func0_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod0_manyCall"
 
 Sub TestFuncallObjectMethod1
   AssertEqual "func1:a", FuncallObjectMethod(obj_foo, "func1", Array("a"))
   AssertEqual 1, obj_foo.func1_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod1"
 
 Sub TestFuncallObjectMethod1_manyCall
   Dim i
@@ -162,13 +147,11 @@ Sub TestFuncallObjectMethod1_manyCall
   Next
   AssertEqual 100, obj_foo.func1_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod1_manyCall"
 
 Sub TestFuncallObjectMethod2
   AssertEqual "func2:a,b", FuncallObjectMethod(obj_foo, "func2", Array("a", "b"))
   AssertEqual 1, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod2"
 
 Sub TestFuncallObjectMethod2_manyCall
   Dim i
@@ -177,7 +160,6 @@ Sub TestFuncallObjectMethod2_manyCall
   Next
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestFuncallObjectMethod2_manyCall"
 
 Sub TestGetObjectMethodSubProc0
   Dim proc
@@ -185,7 +167,6 @@ Sub TestGetObjectMethodSubProc0
   proc
   AssertEqual 1, obj_foo.method0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc0"
 
 Sub TestGetObjectMethodSubProc0_manyCall
   Dim proc
@@ -196,7 +177,6 @@ Sub TestGetObjectMethodSubProc0_manyCall
   Next
   AssertEqual 100, obj_foo.method0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc0_manyCall"
 
 Sub TestGetObjectMethodSubProc0_manyGet
   Dim i, proc
@@ -206,7 +186,6 @@ Sub TestGetObjectMethodSubProc0_manyGet
   Next
   AssertEqual 100, obj_foo.method0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc0_manyGet"
 
 Sub TestGetObjectMethodSubProc1
   Dim proc
@@ -214,7 +193,6 @@ Sub TestGetObjectMethodSubProc1
   proc "a"
   AssertEqual 1, obj_foo.method1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1"
 
 Sub TestGetObjectMethodSubProc1_manyCall
   Dim proc
@@ -225,7 +203,6 @@ Sub TestGetObjectMethodSubProc1_manyCall
   Next
   AssertEqual 100, obj_foo.method1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1_manyCall"
 
 Sub TestGetObjectMethodSubProc1_manyGet
   Dim i, proc
@@ -235,36 +212,32 @@ Sub TestGetObjectMethodSubProc1_manyGet
   Next
   AssertEqual 100, obj_foo.method1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1_manyGet"
 
 Sub TestGetObjectMethodSubProc2
   Dim proc
-  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 2)
   proc "a", "b"
   AssertEqual 1, obj_foo.method2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1"
 
 Sub TestGetObjectMethodSubProc2_manyCall
   Dim proc
-  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+  Set proc = GetObjectMethodSubProc(obj_foo, "method2", 2)
   Dim i
   For i = 1 To 100
     proc "a", "b"
   Next
   AssertEqual 100, obj_foo.method2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1_manyCall"
 
 Sub TestGetObjectMethodSubProc2_manyGet
   Dim i, proc
   For i = 1 To 100
-    Set proc = GetObjectMethodSubProc(obj_foo, "method2", 1)
+    Set proc = GetObjectMethodSubProc(obj_foo, "method2", 2)
     proc "a", "b"
   Next
   AssertEqual 100, obj_foo.method2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodSubProc1_manyGet"
 
 Sub TestGetObjectMethodFuncProc0
   Dim proc
@@ -272,7 +245,6 @@ Sub TestGetObjectMethodFuncProc0
   AssertEqual "func0", proc
   AssertEqual 1, obj_foo.func0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc0"
 
 Sub TestGetObjectMethodFuncProc0_manyCall
   Dim proc
@@ -283,7 +255,6 @@ Sub TestGetObjectMethodFuncProc0_manyCall
   Next
   AssertEqual 100, obj_foo.func0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc0_manyCall"
 
 Sub TestGetObjectMethodFuncProc0_manyGet
   Dim i, proc
@@ -293,7 +264,6 @@ Sub TestGetObjectMethodFuncProc0_manyGet
   Next
   AssertEqual 100, obj_foo.func0_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc0_manyGet"
 
 Sub TestGetObjectMethodFuncProc1
   Dim proc
@@ -301,7 +271,6 @@ Sub TestGetObjectMethodFuncProc1
   AssertEqual "func1:a", proc("a")
   AssertEqual 1, obj_foo.func1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc1"
 
 Sub TestGetObjectMethodFuncProc1_manyCall
   Dim proc
@@ -312,7 +281,6 @@ Sub TestGetObjectMethodFuncProc1_manyCall
   Next
   AssertEqual 100, obj_foo.func1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc1_manyCall"
 
 Sub TestGetObjectMethodFuncProc1_manyGet
   Dim i, proc
@@ -322,7 +290,6 @@ Sub TestGetObjectMethodFuncProc1_manyGet
   Next
   AssertEqual 100, obj_foo.func1_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc1_manyGet"
 
 Sub TestGetObjectMethodFuncProc2
   Dim proc
@@ -330,7 +297,6 @@ Sub TestGetObjectMethodFuncProc2
   AssertEqual "func2:a,b", proc("a", "b")
   AssertEqual 1, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc2"
 
 Sub TestGetObjectMethodFuncProc2_manyCall
   Dim proc
@@ -341,7 +307,6 @@ Sub TestGetObjectMethodFuncProc2_manyCall
   Next
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc2_manyCall"
 
 Sub TestGetObjectMethodFuncProc2_manyGet
   Dim i, proc
@@ -351,14 +316,8 @@ Sub TestGetObjectMethodFuncProc2_manyGet
   Next
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
-UnitTest_TestCase "TestGetObjectMethodFuncProc2_manyGet"
 
-UnitTest_ConsoleRun
-
-]]></script>
-</job>
-
-<!-- Local Variables: -->
-<!-- mode: Visual-Basic -->
-<!-- indent-tabs-mode: nil -->
-<!-- End: -->
+' Local Variables:
+' mode: Visual-Basic
+' indent-tabs-mode: nil
+' End:
