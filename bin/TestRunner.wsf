@@ -24,6 +24,9 @@ Next
 Dim errorList
 Set errorList = New ListBuffer
 
+Dim startTime
+startTime = Timer
+
 Dim testProc, testStat
 For Each testProc In testProcList.Items
   testStat = "."
@@ -60,16 +63,31 @@ For Each testProc In testProcList.Items
 Next
 WScript.StdOut.WriteBlankLines 1
 
+WScript.StdOut.Write "result "
+If errorList.Count = 0 Then
+  WScript.StdOut.WriteLine "OK"
+Else
+  WScript.StdOut.WriteLine "NG"
+End If
+
+Dim endTime, elapsed
+endTime = Timer
+elapsed = endTime - startTime
+WScript.StdOut.WriteLine "elapsed " & elapsed & "s"
+
 Dim count, errPair
 count = 0
 
+If errorList.Count > 0 Then
+  WScript.StdOut.WriteBlankLines 1
+End If
 For Each errPair In errorList.Items
   count = count + 1
   WScript.StdOut.WriteLine "(" & count & ") " & errPair(0).ModuleName & ": " & errPair(0).Name
   WScript.StdOut.WriteLine "  " & errPair(1)
 Next
 
-If count > 0 Then
+If errorList.Count > 0 Then
   WScript.Quit 1
 Else
   WScript.Quit 0
