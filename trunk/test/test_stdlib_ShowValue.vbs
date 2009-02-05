@@ -1,6 +1,5 @@
 ' stdlib.vbs: ShowValue function test.
 ' @import ../lib/stdlib.vbs
-' @import ../lib/unittest.vbs
 
 Option Explicit
 
