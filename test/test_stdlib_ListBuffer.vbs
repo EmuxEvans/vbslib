@@ -1,6 +1,5 @@
 ' stdlib.vbs: ListBuffer class test.
 ' @import ../lib/stdlib.vbs
-' @import ../lib/unittest.vbs
 
 Option Explicit
 

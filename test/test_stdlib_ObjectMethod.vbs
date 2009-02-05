@@ -1,6 +1,5 @@
 ' stdlib.vbs: Object Method test.
 ' @import ../lib/stdlib.vbs
-' @import ../lib/unittest.vbs
 
 Option Explicit
 
