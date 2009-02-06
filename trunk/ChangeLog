@@ -1,3 +1,7 @@
+2009-02-07  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/TestRunner.wsf: command line options and usage.
+
 2009-02-06  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/TestRunner.wsf, lib/unittest.vbs: Unit-Test framework and
