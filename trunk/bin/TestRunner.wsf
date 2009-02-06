@@ -6,11 +6,23 @@
 
 Option Explicit
 
+Dim fileList
+Set fileList = New ListBuffer
+
+If WScript.Arguments.Named.Exists("stdin") Then
+  If IsEmpty(WScript.Arguments.Named("stdin")) Or WScript.Arguments.Named("stdin") Then
+    Do Until WScript.StdIn.AtEndOfStream
+      fileList.Add WScript.StdIn.ReadLine
+    Loop
+  End If
+End If
+fileList.Append WScript.Arguments.Unnamed
+
 Dim loader
 Set loader = New UnitTest_TestCaseLoader
 
 Dim path
-For Each path In WScript.Arguments.Unnamed
+For Each path In fileList.Items
   WScript.StdOut.WriteLine "load " & path
   loader.ImportTestCase path
 Next
