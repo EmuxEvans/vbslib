@@ -1,19 +1,56 @@
 <?xml version="1.0" ?>
 <job id="ConsoleTestRunner">
+<runtime>
+<named name="stdin" type="boolean" required="false"
+       helpstring="read VBScript test case filename(s) from standard input." />
+<unnamed name="filename" many="true" required="false"
+         helpstring="VBScript test case." />
+<description>Console test runner of VBScript Unit Test.</description>
+<example>
+EXAMPLE
+
+  (1) Run test case from command line arguments.
+
+        cscript TestRunner.wsf test_foo.vbs test_bar.vbs
+
+  (2) Run test case from standard input.
+
+        dir /b test_*.vbs | cscript TestRunner.wsf /stdin+
+</example>
+</runtime>
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript" src="../lib/unittest.vbs" />
 <script language="VBScript"><![CDATA[
 
 Option Explicit
 
+Dim key
+Dim optStdIn: optStdIn = False
+
+For Each key In WScript.Arguments.Named
+  Select Case UCase(key)
+    Case "STDIN":
+      If IsEmpty(WScript.Arguments.Named(key)) Or WScript.Arguments.Named(key) Then
+        optStdIn = True
+      Else
+        optStdIn = False
+      End If
+    Case Else:
+      Err.Raise RuntimeError, "TestRunner.wsf", "Unknown command line option: " & key
+  End Select
+Next
+
 Dim fileList
 Set fileList = New ListBuffer
 
-If WScript.Arguments.Named.Exists("stdin") Then
-  If IsEmpty(WScript.Arguments.Named("stdin")) Or WScript.Arguments.Named("stdin") Then
-    Do Until WScript.StdIn.AtEndOfStream
-      fileList.Add WScript.StdIn.ReadLine
-    Loop
+If optStdIn Then
+  Do Until WScript.StdIn.AtEndOfStream
+    fileList.Add WScript.StdIn.ReadLine
+  Loop
+Else
+  If WScript.Arguments.Unnamed.Count = 0 Then
+    WScript.Arguments.ShowUsage
+    WScript.Quit 255
   End If
 End If
 fileList.Append WScript.Arguments.Unnamed
