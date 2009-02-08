@@ -2,6 +2,7 @@
 
 	* lib/stdlib.vbs: `Dictionary' function.
 	`re' function (RegExp constructer).
+	list tool.
 
 	* bin/tool.wsf: ListJob, ListWmiObject.
 

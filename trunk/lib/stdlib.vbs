@@ -226,6 +226,230 @@ Function ShowValue(value)
 End Function
 
 
+'===========================================
+'################ list tool ################
+'-------------------------------------------
+
+Class ValueEqualFunction
+  Private ivar_expectedValue
+
+  Public Property Let ExpectedValue(value)
+    ivar_expectedValue = value
+  End Property
+
+  Public Default Function Apply(value)
+    If value = ivar_expectedValue Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Function ValueEqual(expectedValue)
+  Dim func
+  Set func = New ValueEqualFunction
+  func.Expectedvalue = expectedvalue
+  Set ValueEqual = func
+End Function
+
+Class ValueGreaterThanFunction
+  Private ivar_lowerBound
+
+  Public Property Let LowerBound(value)
+    ivar_lowerBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If value > ivar_lowerBound Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Class ValueGreaterThanEqualFunction
+  Private ivar_lowerBound
+
+  Public Property Let LowerBound(value)
+    ivar_lowerBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If value >= ivar_lowerBound Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Function ValueGreaterThan(lowerBound, exclude)
+  Dim func
+  If exclude Then
+    Set func = New ValueGreaterThanFunction
+  Else
+    Set func = New ValueGreaterThanEqualFunction
+  End If
+  func.Lowerbound = lowerBound
+  Set ValueGreaterThan = func
+End Function
+
+Class ValueLessThanFunction
+  Private ivar_upperBound
+
+  Public Property Let UpperBound(value)
+    ivar_upperBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If value < ivar_upperBound Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Class ValueLessThanEqualFunction
+  Private ivar_upperBound
+
+  Public Property Let UpperBound(value)
+    ivar_upperBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If value <= ivar_upperBound Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Function ValueLessThan(upperBound, exclude)
+  Dim func
+  If exclude Then
+    Set func = New ValueLessThanFunction
+  Else
+    Set func = New ValueLessThanEqualFunction
+  End If
+  func.UpperBound = upperBound
+  Set ValueLessThan = func
+End Function
+
+Class ValueBetweenFunction
+  Private ivar_lowerBound
+  Private ivar_upperBound
+
+  Public Property Let LowerBound(value)
+    ivar_lowerBound = value
+  End Property
+
+  Public Property Let UpperBound(value)
+    ivar_upperBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If (ivar_lowerBound <= value) And (value <= ivar_upperBound) Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Class ValueBetweenExcludeUpperBoundFunction
+  Private ivar_lowerBound
+  Private ivar_upperBound
+
+  Public Property Let LowerBound(value)
+    ivar_lowerBound = value
+  End Property
+
+  Public Property Let UpperBound(value)
+    ivar_upperBound = value
+  End Property
+
+  Public Default Function Apply(value)
+    If (ivar_lowerBound <= value) And (value < ivar_upperBound) Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Function ValueBetween(lowerBound, upperBound, exclude)
+  Dim func
+  If exclude Then
+    Set func = New ValueBetweenExcludeUpperBoundFunction
+  Else
+    Set func = New ValueBetweenFunction
+  End If
+  func.LowerBound = lowerBound
+  func.UpperBound = upperBound
+  Set ValueBetween = func
+End Function
+
+Class RegExpMatchFunction
+  Private ivar_regexp
+
+  Public Property Set RegExp(value)
+    Set ivar_regexp = value
+  End Property
+
+  Public Default Function Apply(value)
+    If ivar_regexp.Test(value) Then
+      Apply = True
+    Else
+      Apply = False
+    End If
+  End Function
+End Class
+
+Function RegExpMatch(regex)
+  Dim func
+  Set func = New RegexpMatchFunction
+  Set func.RegExp = regex
+  Set RegExpMatch = func
+End Function
+
+Function Find(list, equalFunc)
+  Dim i
+  For Each i In list
+    If equalFunc(i) Then
+      Bind Find, i
+      Exit Function
+    End If
+  Next
+End Function
+
+Function FindPos(list, equalFunc)
+  Dim pos, i
+  pos = 0
+  For Each i In list
+    If equalFunc(i) Then
+      FindPos = pos
+      Exit Function
+    End If
+    pos = pos + 1
+  Next
+End Function
+
+Function FindAll(list, equalFunc)
+  Dim findList, i
+  Set findList = New ListBuffer
+  For Each i In list
+    If equalFunc(i) Then
+      findList.Add i
+    End If
+  Next
+  FindAll = findList.Items
+End Function
+
+
 '=================================================
 '################ object accessor ################
 '-------------------------------------------------
