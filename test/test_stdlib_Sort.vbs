@@ -1,4 +1,4 @@
-' stdlib.vbs: Sort function test.
+' stdlib.vbs: Sort procedure test.
 ' @import ../lib/stdlib.vbs
 
 Option Explicit

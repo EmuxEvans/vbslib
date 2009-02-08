@@ -1,4 +1,4 @@
-' stdlib.vbs: ShowValue function test.
+' stdlib.vbs: ShowValue procedure test.
 ' @import ../lib/stdlib.vbs
 
 Option Explicit

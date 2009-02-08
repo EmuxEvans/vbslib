@@ -1,4 +1,4 @@
-' stdlib.vbs: Bind subroutine test.
+' stdlib.vbs: Bind procedure test.
 ' @import ../lib/stdlib.vbs
 
 Option Explicit
