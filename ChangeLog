@@ -1,6 +1,7 @@
 2009-02-08  TOKI Yoshinori  <toki@freedom.ne.jp>
 
-	* lib/stdlib.vbs: Dictionary function.
+	* lib/stdlib.vbs: `Dictionary' function.
+	`re' function (RegExp constructer).
 
 	* bin/tool.wsf: ListJob, ListWmiObject.
 
