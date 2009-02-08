@@ -1,4 +1,4 @@
-' stdlib.vbs: list search test.
+' stdlib.vbs: Find test.
 ' @import ../lib/stdlib.vbs
 
 Sub TestValueEqual
