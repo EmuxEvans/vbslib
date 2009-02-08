@@ -49,6 +49,23 @@ Function D(keyValueList)
   Set D = Dictionary(keyValueList)
 End Function
 
+Function re(regexpPattern, regexpOptions)
+  Dim regex
+  Set regex = New RegExp
+  regex.Pattern = regexpPattern
+  regexpOptions = LCase(regexpOptions)
+  If InStr(regexpOptions, "i") > 0 Then
+    regex.IgnoreCase = True
+  End If
+  If InStr(regexpOptions, "g") > 0 Then
+    regex.Global = True
+  End If
+  If InStr(regexpOptions, "m") > 0 Then
+    regex.Multiline = True
+  End If
+  Set re = regex
+End Function
+
 Class ListBuffer
   Private ivar_dict
 
