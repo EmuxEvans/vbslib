@@ -57,6 +57,7 @@ fileList.Append WScript.Arguments.Unnamed
 
 Dim loader
 Set loader = New UnitTest_TestCaseLoader
+loader.AddObject "WScript", WScript
 
 Dim path
 For Each path In fileList.Items

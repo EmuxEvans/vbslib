@@ -206,6 +206,10 @@ Class UnitTest_TestCaseLoader
     ivar_scriptControl.Language = "VBScript"
   End Sub
 
+  Public Sub AddObject(name, object)
+    ivar_scriptControl.AddObject name, object
+  End Sub
+
   Public Sub ImportTestCase(path)
     ivar_scriptControl.Modules.Add path
     ivar_scriptControl.Modules(path).AddCode UnitTest_AssertProcCode
