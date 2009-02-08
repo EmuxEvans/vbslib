@@ -511,6 +511,25 @@ Function CreateObjectPropertyCompare(propertyName, propertyCompare)
   Set New_ObjectPropertyCompare = compare
 End Function
 
+'========================================================
+'################ command line arguments ################
+'--------------------------------------------------------
+
+Function GetNamedArgumentBool(name, namedArgs, default)
+  If namedArgs.Exists(name) Then
+    If IsEmpty(namedArgs(name)) Then
+      GetNamedArgumentBool = True
+    ElseIf VarType(namedArgs(name)) = vbBoolean Then
+      GetNamedArgumentBool = namedArgs(name)
+    Else
+      Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentBool", _
+        "not a boolean type named argument: " & name & ":" & ShowValue(namedArgs(name))
+    End If
+  Else
+    GetNamedArgumentBool = default
+  End If
+End Function
+
 
 ' Local Variables:
 ' mode: Visual-Basic
