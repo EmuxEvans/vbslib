@@ -1,4 +1,4 @@
-' stdlib.vbs: Dictionary function test.
+' stdlib.vbs: Dictionary procedure test.
 ' @import ../lib/stdlib.vbs
 
 Option Explicit
