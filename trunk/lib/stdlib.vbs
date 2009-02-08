@@ -102,7 +102,7 @@ Class ListBuffer
       Add i
     Next
   End Sub
-  
+
   Public Function Exists(index)
     Exists = ivar_dict.Exists(index)
   End Function
@@ -297,7 +297,7 @@ Function ObjectMethod_CreateHandler(name, argCount)
   Set classExpr = New ListBuffer
 
   classExpr.Add "Class " & className
-  classExpr.Add "  Public Sub InvokeMethod(obj, args)" 
+  classExpr.Add "  Public Sub InvokeMethod(obj, args)"
   classExpr.Add "    obj." & name & " " & argList
   classExpr.Add "  End Sub"
   classExpr.Add ""
