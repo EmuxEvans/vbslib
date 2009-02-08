@@ -28,6 +28,8 @@ WScript.Arguments.ShowUsage
 <description>List WMI object.</description>
 <named name="ns" type="string" required="false"
        helpstring="target namespace." />
+<named name="security" type="boolean" required="false"
+       helpstring="enable Security SID." />
 <unnamed name="class" required="true" many="false"
          helpstring="class of WMI object." />
 </runtime>
@@ -38,10 +40,13 @@ Option Explicit
 
 Dim optName
 Dim nameSpace: nameSpace = "\root\cimv2"
+Dim isSecurity: isSecurity = False
 For Each optName In WScript.Arguments.Named
   Select Case UCase(optName)
     Case "NS":
       nameSpace = WScript.Arguments.Named(optName)
+    Case "SECURITY":
+      isSecurity = GetNamedArgumentBool(optName, WScript.Arguments.Named, False)
     Case Else:
       Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
   End Select
@@ -57,8 +62,16 @@ klassName = WScript.Arguments.Unnamed(0)
 Dim computerName
 computerName = "."
 
+Dim path
+path = "winmgmts:"
+If isSecurity Then
+  path = path & "{(Security)}!"
+End If
+path = path & "\\" & computerName & nameSpace
+WScript.StdOut.WriteLine "access to " & path
+
 Dim services, klass
-Set services = GetObject("winmgmts:\\" & computerName & "\root\cimv2")
+Set services = GetObject(path)
 Set klass = services.Get(klassName)
 
 Sub PrintSeparator(message)
