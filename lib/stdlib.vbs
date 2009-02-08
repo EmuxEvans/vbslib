@@ -24,6 +24,31 @@ Sub BindAt(toStore, index, value)
   End If
 End Sub
 
+Function Dictionary(keyValueList)
+  Dim dict
+  Set dict = CreateObject("Scripting.Dictionary")
+
+  Dim count, i, key
+  count = 0
+
+  For Each i In keyValueList
+    If (count Mod 2) = 0 Then
+      Bind key, i
+      dict.Add key, Empty
+    Else
+      BindAt dict, key, i
+    End If
+    count = count + 1
+  Next
+
+  Set Dictionary = dict
+End Function
+
+' shortcut
+Function D(keyValueList)
+  Set D = Dictionary(keyValueList)
+End Function
+
 Class ListBuffer
   Private ivar_dict
 
