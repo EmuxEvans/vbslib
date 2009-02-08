@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <job id="ConsoleTestRunner">
 <runtime>
+<description>Console test runner of VBScript Unit Test.</description>
 <named name="stdin" type="boolean" required="false"
        helpstring="read VBScript test case filename(s) from standard input." />
 <unnamed name="filename" many="true" required="false"
          helpstring="VBScript test case." />
-<description>Console test runner of VBScript Unit Test.</description>
 <example>
 EXAMPLE
 
