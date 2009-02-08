@@ -26,13 +26,26 @@ WScript.Arguments.ShowUsage
 <job id="ListWmiObject">
 <runtime>
 <description>List WMI object.</description>
-<unnamed name="CLASS" required="true" many="false"
+<named name="ns" type="string" required="false"
+       helpstring="target namespace." />
+<unnamed name="class" required="true" many="false"
          helpstring="class of WMI object." />
 </runtime>
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
 
 Option Explicit
+
+Dim optName
+Dim nameSpace: nameSpace = "\root\cimv2"
+For Each optName In WScript.Arguments.Named
+  Select Case UCase(optName)
+    Case "NS":
+      nameSpace = WScript.Arguments.Named(optName)
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
+  End Select
+Next
 
 Dim klassName
 If WScript.Arguments.Unnamed.Count <> 1 Then
@@ -44,22 +57,54 @@ klassName = WScript.Arguments.Unnamed(0)
 Dim computerName
 computerName = "."
 
-Dim services, klass, obj, prop
+Dim services, klass
 Set services = GetObject("winmgmts:\\" & computerName & "\root\cimv2")
 Set klass = services.Get(klassName)
-
-Dim count
-count = 0
 
 Sub PrintSeparator(message)
   WScript.StdOut.WriteLine "---------------- " & message & " ----------------"
 End Sub
 
+Function GetQualifier(prop, name)
+  On Error Resume Next
+  Set GetQualifier = prop.Qualifiers_(name)
+  If Err.Number <> 0 Then
+    Set GetQualifier = Nothing
+  End If
+End Function
+
+Function OptionalPropertyInfo(propName, klass)
+  Dim prop
+  Set prop = klass.Properties_(propName)
+
+  Dim units
+  Set units = GetQualifier(prop, "Units")
+
+  Dim valueMap
+  Set valueMap = GetQualifier(prop, "ValueMap")
+
+  Dim info
+  info = ""
+  If Not units Is Nothing Then
+    info = info & " (" & units.Value & ")"
+  End If
+  If Not valueMap Is Nothing Then
+    info = info & " [" & Join(valueMap.Value, "|") & "]"
+  End If
+
+  OptionalPropertyInfo = info
+End Function
+
+Dim count, obj, prop
+count = 0
+
 For Each obj In klass.Instances_
   count = count + 1
   PrintSeparator Now & ": " & klassName & ": " & count
   For Each prop In obj.Properties_
-    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value)
+    WScript.StdOut.WriteLine prop.Name & ": " & _
+      ShowValue(prop.Value) & _
+      OptionalPropertyInfo(prop.Name, klass)
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
