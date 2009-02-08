@@ -534,7 +534,7 @@ Function ObjectMethod_CreateHandler(name, argCount)
   Next
 
   Dim className, classExpr
-  className = "ObjectMethod_Handler_" & name & "_" & argCount
+  className = "ObjectMethod_Handler_" & name & "_Arg" & argCount
   Set classExpr = New ListBuffer
 
   classExpr.Add "Class " & className
@@ -597,7 +597,7 @@ Function ObjectMethod_CreateProcBuilder(name, argCount)
   Next
 
   Dim className, classExpr
-  className = "ObjectMethod_Proc_" & name & "_" & argCount
+  className = "ObjectMethod_Proc_" & name & "_Arg" & argCount
   Set classExpr = New ListBuffer
 
   classExpr.Add "Class " & className & "_SubProc"
@@ -670,7 +670,7 @@ Set ProcSubset_ProcBuilderPool = CreateObject("Scripting.Dictionary")
 
 Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   Dim className, classExpr
-  className = "ProcSubset_arg" & argCount & "_" & Join(paramIndexList, "_")
+  className = "ProcSubset_Arg" & argCount & "_" & Join(paramIndexList, "_")
   Set classExpr = New ListBuffer
 
   Dim argList, applyArgList, i
@@ -705,8 +705,8 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
     classExpr.Add "  Public Property Set Arg" & i & "(value)"
     classExpr.Add "    Set ivar_arg" & i & " = value"
     classExpr.Add "  End Property"
+    classExpr.Add ""
   Next
-  classExpr.Add ""
   classExpr.Add "  Public Default Sub Apply(" & argList & ")"
   classExpr.Add "    Call ivar_proc(" & applyArgList & ")"
   classExpr.Add "  End Sub"
@@ -730,8 +730,8 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
     classExpr.Add "  Public Property Set Arg" & i & "(value)"
     classExpr.Add "    Set ivar_arg" & i & " = value"
     classExpr.Add "  End Property"
+    classExpr.Add ""
   Next
-  classExpr.Add ""
   classExpr.Add "  Public Default Function Apply(" & argList & ")"
   classExpr.Add "    Bind Apply, ivar_proc(" & applyArgList & ")"
   classExpr.Add "  End Function"
@@ -753,8 +753,6 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   classExpr.Add "  End Function"
   classExpr.Add "End Class"
 
-  'WScript.Echo "debug:" & vbNewLine & Join(classExpr.Items, vbNewLine)
-
   ExecuteGlobal Join(classExpr.Items, vbNewLine)
   Set ProcSubset_CreateProcBuilder = Eval("New " & className & "_Builder")
 End Function
@@ -768,9 +766,10 @@ Function ProcSubset_GetProcBuilder(argCount, paramIndexList)
   Set ProcSubset_GetProcBuilder = ProcSubset_ProcBuilderPool(key)
 End Function
 
-Function GetSubProcSubset(proc, argCount, params)
+Function ProcSubset_BuildParamsPair(argCount, params)
   Dim paramIndexList, paramDict, i
   Set paramIndexList = New ListBuffer
+
   If IsArray(params) Then
     Set paramDict = CreateObject("Scripting.Dictionary")
     For i = 0 To UBound(params)
@@ -783,43 +782,40 @@ Function GetSubProcSubset(proc, argCount, params)
       paramIndexList.Add i
     Next
   End If
+
   paramIndexList = paramIndexList.Items
   Sort paramIndexList, NumberCompare
 
-  Dim builder, subset
-  Set builder = ProcSubset_GetProcBuilder(argCount, paramIndexList)
-  Set subset = builder.CreateSubProc(proc)
+  ProcSubset_BuildParamsPair = Array(paramIndexList, paramDict)
+End Function
+
+Sub ProcSubset_SetParams(subset, paramDict)
+  Dim i
   For Each i In paramDict.Keys
     SetObjectProperty subset, "arg" & i, paramDict(i)
   Next
+End Sub
+
+Function GetSubProcSubset(proc, argCount, params)
+  Dim paramsPair
+  paramsPair = ProcSubset_BuildParamsPair(argCount, params)
+
+  Dim builder, subset
+  Set builder = ProcSubset_GetProcBuilder(argCount, paramsPair(0))
+  Set subset = builder.CreateSubProc(proc)
+  ProcSubset_SetParams subset, paramsPair(1)
 
   Set GetSubProcSubset = subset
 End Function
 
 Function GetFuncProcSubset(proc, argCount, params)
-  Dim paramIndexList, paramDict, i
-  Set paramIndexList = New ListBuffer
-  If IsArray(params) Then
-    Set paramDict = CreateObject("Scripting.Dictionary")
-    For i = 0 To UBound(params)
-      paramIndexList.Add i
-      paramDict.Add i, params(i)
-    Next
-  Else
-    Set paramDict = params
-    For Each i In paramDict.Keys
-      paramIndexList.Add i
-    Next
-  End If
-  paramIndexList = paramIndexList.Items
-  Sort paramIndexList, NumberCompare
+  Dim paramsPair
+  paramsPair = ProcSubset_BuildParamsPair(argCount, params)
 
   Dim builder, subset
-  Set builder = ProcSubset_GetProcBuilder(argCount, paramIndexList)
+  Set builder = ProcSubset_GetProcBuilder(argCount, paramsPair(0))
   Set subset = builder.CreateFuncProc(proc)
-  For Each i In paramDict.Keys
-    SetObjectProperty subset, "arg" & i, paramDict(i)
-  Next
+  ProcSubset_SetParams subset, paramsPair(1)
 
   Set GetFuncProcSubset = subset
 End Function
