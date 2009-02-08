@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<package>
+
+<job id="ListJob">
+<runtime>
+<description>
+List job of tool.wsf.
+These jobs are defined.
+
+    ListJob
+    ListWmiObject
+</description>
+<example>
+EXAMPLE: cscript tool.wsf
+</example>
+</runtime>
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+WScript.Arguments.ShowUsage
+
+]]></script>
+</job>
+
+<job id="ListWmiObject">
+<runtime>
+<description>List WMI object.</description>
+<unnamed name="CLASS" required="true" many="false"
+         helpstring="class of WMI object." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim klassName
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+klassName = WScript.Arguments.Unnamed(0)
+
+Dim computerName
+computerName = "."
+
+Dim services, klass, obj, prop
+Set services = GetObject("winmgmts:\\" & computerName & "\root\cimv2")
+Set klass = services.Get(klassName)
+
+Dim count
+count = 0
+
+Sub PrintSeparator(message)
+  WScript.StdOut.WriteLine "---------------- " & message & " ----------------"
+End Sub
+
+For Each obj In klass.Instances_
+  count = count + 1
+  PrintSeparator Now & ": " & klassName & ": " & count
+  For Each prop In obj.Properties_
+    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value)
+  Next
+Next
+PrintSeparator Now & ": End of" & klassName
+
+]]></script>
+</job>
+
+</package>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->
