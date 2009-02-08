@@ -73,27 +73,48 @@ Function GetQualifier(prop, name)
   End If
 End Function
 
-Function OptionalPropertyInfo(propName, klass)
-  Dim prop
-  Set prop = klass.Properties_(propName)
+Class OptionalPropertyInfoGetter
+  Private ivar_klass
+  Private ivar_cache
 
-  Dim units
-  Set units = GetQualifier(prop, "Units")
+  Private Sub Class_Initialize
+    Set ivar_cache = CreateObject("Scripting.Dictionary")
+  End Sub
 
-  Dim valueMap
-  Set valueMap = GetQualifier(prop, "ValueMap")
+  Public Property Set Class_(value)
+    Set ivar_klass = value
+  End Property
 
-  Dim info
-  info = ""
-  If Not units Is Nothing Then
-    info = info & " (" & units.Value & ")"
-  End If
-  If Not valueMap Is Nothing Then
-    info = info & " [" & Join(valueMap.Value, "|") & "]"
-  End If
+  Public Default Function GetInfo(propName)
+    If Not ivar_cache.Exists(propName) Then
+      Dim prop
+      Set prop = klass.Properties_(propName)
 
-  OptionalPropertyInfo = info
-End Function
+      Dim units
+      Set units = GetQualifier(prop, "Units")
+
+      Dim valueMap
+      Set valueMap = GetQualifier(prop, "ValueMap")
+
+      Dim info
+      info = ""
+      If Not units Is Nothing Then
+        info = info & " (" & units.Value & ")"
+      End If
+      If Not valueMap Is Nothing Then
+        info = info & " [" & Join(valueMap.Value, "|") & "]"
+      End If
+
+      ivar_cache.Add propName, info
+    End If
+
+    GetInfo = ivar_cache(propName)
+  End Function
+End Class
+
+Dim OptionalPropertyInfo
+Set OptionalPropertyInfo = New OptionalPropertyInfoGetter
+Set OptionalPropertyInfo.Class_ = klass
 
 Dim count, obj, prop
 count = 0
@@ -104,7 +125,7 @@ For Each obj In klass.Instances_
   For Each prop In obj.Properties_
     WScript.StdOut.WriteLine prop.Name & ": " & _
       ShowValue(prop.Value) & _
-      OptionalPropertyInfo(prop.Name, klass)
+      OptionalPropertyInfo(prop.Name)
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
