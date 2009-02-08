@@ -230,6 +230,39 @@ End Function
 '################ list tool ################
 '-------------------------------------------
 
+Function Find(list, equalFunc)
+  Dim i
+  For Each i In list
+    If equalFunc(i) Then
+      Bind Find, i
+      Exit Function
+    End If
+  Next
+End Function
+
+Function FindPos(list, equalFunc)
+  Dim pos, i
+  pos = 0
+  For Each i In list
+    If equalFunc(i) Then
+      FindPos = pos
+      Exit Function
+    End If
+    pos = pos + 1
+  Next
+End Function
+
+Function FindAll(list, equalFunc)
+  Dim findList, i
+  Set findList = New ListBuffer
+  For Each i In list
+    If equalFunc(i) Then
+      findList.Add i
+    End If
+  Next
+  FindAll = findList.Items
+End Function
+
 Class ValueEqualFunction
   Private ivar_expectedValue
 
@@ -414,39 +447,6 @@ Function RegExpMatch(regex)
   Set func = New RegexpMatchFunction
   Set func.RegExp = regex
   Set RegExpMatch = func
-End Function
-
-Function Find(list, equalFunc)
-  Dim i
-  For Each i In list
-    If equalFunc(i) Then
-      Bind Find, i
-      Exit Function
-    End If
-  Next
-End Function
-
-Function FindPos(list, equalFunc)
-  Dim pos, i
-  pos = 0
-  For Each i In list
-    If equalFunc(i) Then
-      FindPos = pos
-      Exit Function
-    End If
-    pos = pos + 1
-  Next
-End Function
-
-Function FindAll(list, equalFunc)
-  Dim findList, i
-  Set findList = New ListBuffer
-  For Each i In list
-    If equalFunc(i) Then
-      findList.Add i
-    End If
-  Next
-  FindAll = findList.Items
 End Function
 
 
