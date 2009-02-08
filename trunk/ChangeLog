@@ -1,3 +1,7 @@
+2009-02-09  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: procedure subset.
+
 2009-02-08  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: `Dictionary' function.
