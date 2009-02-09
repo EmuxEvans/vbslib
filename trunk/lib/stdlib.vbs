@@ -449,6 +449,95 @@ Function RegExpMatch(regex)
   Set RegExpMatch = cond
 End Function
 
+Function Map(list, func)
+  Dim newList, i
+  Set newList = New ListBuffer
+  For Each i In list
+    newList.Add func(i)
+  Next
+  Map = newList.Items
+End Function
+
+Function RegExpReplace(regex, replace)
+  Set RegExpReplace = _
+      GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, _
+                        D(Array(1, replace)))
+End Function
+
+' aliases of the VBScript functions to GetRef().
+Sub MapFunc_DefineAliases
+  Dim aliases
+  Set aliases = New ListBuffer
+
+  ' Data Type
+  aliases.Add Array("CBool", 1)
+  aliases.Add Array("CByte", 1)
+  aliases.Add Array("CCur", 1)
+  aliases.Add Array("CDate", 1)
+  aliases.Add Array("CDbl", 1)
+  aliases.Add Array("CInt", 1)
+  aliases.Add Array("CLng", 1)
+  aliases.Add Array("CSng", 1)
+  aliases.Add Array("CStr", 1)
+  aliases.Add Array("TypeName", 1)
+  aliases.Add Array("VarType", 1)
+
+  ' String
+  aliases.Add Array("Asc", 1)
+  aliases.Add Array("Chr", 1)
+  aliases.Add Array("Len", 1)
+  aliases.Add Array("LCase", 1)
+  aliases.Add Array("UCase", 1)
+  aliases.Add Array("Trim", 1)
+  aliases.Add Array("LTrim", 1)
+  aliases.Add Array("RTrim", 1)
+  aliases.Add Array("Space", 1)
+  aliases.Add Array("StrReverse", 1)
+
+  ' Number
+  aliases.Add Array("Hex", 1)
+  aliases.Add Array("Oct", 1)
+  aliases.Add Array("Sgn", 1)
+  aliases.Add Array("Int", 1)
+  aliases.Add Array("Fix", 1)
+
+  ' DateTime
+  aliases.Add Array("DateValue", 1)
+  aliases.Add Array("TimeValue", 1)
+  aliases.Add Array("Year", 1)
+  aliases.Add Array("Day", 1)
+  aliases.Add Array("Month", 1)
+  aliases.Add Array("Hour", 1)
+  aliases.Add Array("Minute", 1)
+  aliases.Add Array("Second", 1)
+
+  ' Eval
+  aliases.Add Array("Eval", 1)
+  aliases.Add Array("GetRef", 1)
+
+  Dim aliasPair, aliasExpr, name, argCount, argList, sep, i
+  For Each aliasPair In aliases.Items
+    name = aliasPair(0)
+    argCount = aliasPair(1)
+
+    argList = ""
+    sep = ""
+    For i = 0 To argCount - 1
+      argList = argList & sep & "arg" & i
+      sep = ", "
+    Next
+
+    Set aliasExpr = New ListBuffer
+    aliasExpr.Add "Function " & name & "_(" & argList & ")"
+    aliasExpr.Add "  Bind " & name & "_, " & name & "(" & argList & ")"
+    aliasExpr.Add "End Function"
+
+    ExecuteGlobal Join(aliasExpr.Items, vbNewLine)
+  Next
+End Sub
+
+MapFunc_DefineAliases
+
 
 '=================================================
 '################ object accessor ################
