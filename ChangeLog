@@ -1,12 +1,13 @@
 2009-02-09  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: procedure subset.
+	`Map' function of list tool.
 
 2009-02-08  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: `Dictionary' function.
 	`re' function (RegExp constructer).
-	list tool.
+	`Find' function of list tool.
 
 	* bin/tool.wsf: ListJob, ListWmiObject.
 
