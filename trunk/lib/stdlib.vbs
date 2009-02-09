@@ -358,6 +358,82 @@ Function RegExpMatch(regex)
   Set RegExpMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
+Function Max(list, compare)
+  Dim first
+  first = True
+
+  Dim x, maxValue
+  For Each x In list
+    If first Then
+      Bind maxValue, x
+    Else
+      If compare(x, maxValue) > 0 Then
+        Bind maxValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Max, maxValue
+End Function
+
+Function Min(list, compare)
+  Dim first
+  first = True
+
+  Dim x, minValue
+  For Each x In list
+    If first Then
+      Bind minValue, x
+    Else
+      If compare(x, minValue) < 0 Then
+        Bind minValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Min, minValue
+End Function
+
+Function NumberCompare(a, b)
+  NumberCompare = a - b
+End Function
+
+Function TextStringCompare(a, b)
+  TextStringCompare = StrComp(a, b, vbTextCompare)
+End Function
+
+Function BinaryStringCompare(a, b)
+  BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
+End Function
+
+Class ObjectPropertyCompareFunction
+  Private ivar_propName
+  Private ivar_propComp
+
+  Public Property Let PropertyName(value)
+    ivar_propName = value
+  End Property
+
+  Public Property Set PropertyCompare(value)
+    Set ivar_propComp = value
+  End Property
+
+  Public Default Function Compare(a, b)
+    Compare = ivar_propComp(GetObjectProperty(a, ivar_propName), _
+                            GetObjectProperty(b, ivar_propName))
+  End Function
+End Class
+
+Function ObjectPropertyCompare(propertyName, propertyCompare)
+  Dim compare
+  Set compare = New ObjectPropertyCompareFunction
+  compare.PropertyName = propertyName
+  Set compare.PropertyCompare = propertyCompare
+  Set ObjectPropertyCompare = compare
+End Function
+
 Function Map(list, func)
   Dim newList, i
   Set newList = New ListBuffer
@@ -775,6 +851,9 @@ Function ProcSubset_GetProcBuilder(argCount, paramIndexList)
   Set ProcSubset_GetProcBuilder = ProcSubset_ProcBuilderPool(key)
 End Function
 
+Dim ProcSubset_NumberCompare
+Set ProcSubset_NumberCompare = GetRef("NumberCompare")
+
 Function ProcSubset_BuildParamsPair(argCount, params)
   Dim paramIndexList, paramDict, i
   Set paramIndexList = New ListBuffer
@@ -793,7 +872,7 @@ Function ProcSubset_BuildParamsPair(argCount, params)
   End If
 
   paramIndexList = paramIndexList.Items
-  Sort paramIndexList, NumberCompare
+  Sort paramIndexList, ProcSubset_NumberCompare
 
   ProcSubset_BuildParamsPair = Array(paramIndexList, paramDict)
 End Function
@@ -892,59 +971,6 @@ End Sub
 
 Dim Sort
 Set Sort = GetRef("HeapSort")
-
-Dim NumberCompare
-Set NumberCompare = GetRef("NumberCompareFunction")
-
-Function NumberCompareFunction(a, b)
-  NumberCompareFunction = a - b
-End Function
-
-Dim TextStringCompare
-Set TextStringCompare = GetRef("TextStringCompareFunction")
-
-Function TextStringCompareFunction(a, b)
-  TextStringCompareFunction = StrComp(a, b, vbTextCompare)
-End Function
-
-Dim BinaryStringCompare
-Set BinaryStringCompare = GetRef("BinaryStringCompareFunction")
-
-Function BinaryStringCompareFunction(a, b)
-  BinaryStringCompareFunction = StrComp(a, b, vbBinaryCompare)
-End Function
-
-Class ObjectPropertyCompare
-  Private ivar_propName
-  Private ivar_propComp
-
-  Public Property Let PropertyName(value)
-    ivar_propName = value
-  End Property
-
-  Public Property Set PropertyCompare(value)
-    Set ivar_propComp = value
-  End Property
-
-  Public Default Function Compare(a, b)
-    If IsEmpty(ivar_propName) Then
-      Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyName'."
-    End If
-    If IsEmpty(ivar_propComp) Then
-      Err.Raise RuntimeError, "stdlib.vbs:ObjectPropertyCompare", "Not defined `PropertyCompare'."
-    End If
-    Compare = ivar_propComp(GetObjectProperty(a, ivar_propName), _
-                            GetObjectProperty(b, ivar_propName))
-  End Function
-End Class
-
-Function CreateObjectPropertyCompare(propertyName, propertyCompare)
-  Dim compare
-  Set compare = New ObjectPropertyCompare
-  compare.PropertyName = propertyName
-  Set compare.PropertyCompare = propertyCompare
-  Set New_ObjectPropertyCompare = compare
-End Function
 
 '========================================================
 '################ command line arguments ################
