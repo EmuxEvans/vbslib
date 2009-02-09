@@ -263,190 +263,99 @@ Function FindAll(list, cond)
   FindAll = findList.Items
 End Function
 
-Class ValueEqualCondition
-  Private ivar_expectedValue
-
-  Public Property Let ExpectedValue(value)
-    ivar_expectedValue = value
-  End Property
-
-  Public Default Function Apply(value)
-    If value = ivar_expectedValue Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
+Function Equal(value, expectedValue)
+  If value = expectedValue Then
+    Equal = True
+  Else
+    Equal = False
+  End If
+End Function
 
 Function ValueEqual(expectedValue)
-  Dim cond
-  Set cond = New ValueEqualCondition
-  cond.Expectedvalue = expectedvalue
-  Set ValueEqual = cond
+  Set ValueEqual = _
+      GetFuncProcSubset(GetRef("Equal"), 2, D(Array(1, expectedValue)))
 End Function
 
-Class ValueGreaterThanCondition
-  Private ivar_lowerBound
+Function GreaterThan(value, lowerBound)
+  If value > lowerBound Then
+    GreaterThan = True
+  Else
+    GreaterThan = False
+  End If
+End Function
 
-  Public Property Let LowerBound(value)
-    ivar_lowerBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If value > ivar_lowerBound Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
-
-Class ValueGreaterThanEqualCondition
-  Private ivar_lowerBound
-
-  Public Property Let LowerBound(value)
-    ivar_lowerBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If value >= ivar_lowerBound Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
+Function GreaterThanEqual(value, lowerBound)
+  If value >= lowerBound Then
+    GreaterThanEqual = True
+  Else
+    GreaterThanEqual = False
+  End If
+End Function
 
 Function ValueGreaterThan(lowerBound, exclude)
-  Dim cond
   If exclude Then
-    Set cond = New ValueGreaterThanCondition
+    Set ValueGreaterThan = _
+        GetFuncProcSubset(GetRef("GreaterThan"), 2, D(Array(1, lowerBound)))
   Else
-    Set cond = New ValueGreaterThanEqualCondition
+    Set ValueGreaterThan = _
+        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, D(Array(1, lowerBound)))
   End If
-  cond.Lowerbound = lowerBound
-  Set ValueGreaterThan = cond
 End Function
 
-Class ValueLessThanCondition
-  Private ivar_upperBound
+Function LessThan(value, upperBound)
+  If value < upperBound Then
+    LessThan = True
+  Else
+    LessThan = False
+  End If
+End Function
 
-  Public Property Let UpperBound(value)
-    ivar_upperBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If value < ivar_upperBound Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
-
-Class ValueLessThanEqualCondition
-  Private ivar_upperBound
-
-  Public Property Let UpperBound(value)
-    ivar_upperBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If value <= ivar_upperBound Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
+Function LessThanEqual(value, upperBound)
+  If value <= upperBound Then
+    LessThanEqual = True
+  Else
+    LessThanEqual = False
+  End If
+End Function
 
 Function ValueLessThan(upperBound, exclude)
-  Dim cond
   If exclude Then
-    Set cond = New ValueLessThanCondition
+    Set ValueLessThan = _
+        GetFuncProcSubset(GetRef("LessThan"), 2, D(Array(1, upperBound)))
   Else
-    Set cond = New ValueLessThanEqualCondition
+    Set ValueLessThan = _
+        GetFuncProcSubset(GetRef("LessThanEqual"), 2, D(Array(1, upperBound)))
   End If
-  cond.UpperBound = upperBound
-  Set ValueLessThan = cond
 End Function
 
-Class ValueBetweenCondition
-  Private ivar_lowerBound
-  Private ivar_upperBound
+Function Between(value, lowerBound, upperBound)
+  If (lowerBound <= value) And (value <= upperBound) Then
+    Between = True
+  Else
+    Between = False
+  End If
+End Function
 
-  Public Property Let LowerBound(value)
-    ivar_lowerBound = value
-  End Property
-
-  Public Property Let UpperBound(value)
-    ivar_upperBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If (ivar_lowerBound <= value) And (value <= ivar_upperBound) Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
-
-Class ValueBetweenExcludeUpperBoundCondition
-  Private ivar_lowerBound
-  Private ivar_upperBound
-
-  Public Property Let LowerBound(value)
-    ivar_lowerBound = value
-  End Property
-
-  Public Property Let UpperBound(value)
-    ivar_upperBound = value
-  End Property
-
-  Public Default Function Apply(value)
-    If (ivar_lowerBound <= value) And (value < ivar_upperBound) Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
+Function BetweenExcludeUpperBound(value, lowerBound, upperBound)
+  If (lowerBound <= value) And (value < upperBound) Then
+    BetweenExcludeUpperBound = True
+  Else
+    BetweenExcludeUpperBound = False
+  End If
+End Function
 
 Function ValueBetween(lowerBound, upperBound, exclude)
-  Dim cond
   If exclude Then
-    Set cond = New ValueBetweenExcludeUpperBoundCondition
+    Set ValueBetween = _
+        GetFuncProcSubset(GetRef("BetweenExcludeUpperBound"), 3, D(Array(1, lowerBound, 2, upperBound)))
   Else
-    Set cond = New ValueBetweenCondition
+    Set ValueBetween = _
+        GetFuncProcSubset(GetRef("Between"), 3, D(Array(1, lowerBound, 2, upperBound)))
   End If
-  cond.LowerBound = lowerBound
-  cond.UpperBound = upperBound
-  Set ValueBetween = cond
 End Function
 
-Class RegExpMatchCondition
-  Private ivar_regexp
-
-  Public Property Set RegExp(value)
-    Set ivar_regexp = value
-  End Property
-
-  Public Default Function Apply(value)
-    If ivar_regexp.Test(value) Then
-      Apply = True
-    Else
-      Apply = False
-    End If
-  End Function
-End Class
-
 Function RegExpMatch(regex)
-  Dim cond
-  Set cond = New RegExpMatchCondition
-  Set cond.RegExp = regex
-  Set RegExpMatch = cond
+  Set RegExpMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
 Function Map(list, func)
@@ -757,6 +666,17 @@ End Function
 Dim ProcSubset_ProcBuilderPool
 Set ProcSubset_ProcBuilderPool = CreateObject("Scripting.Dictionary")
 
+Function ProcSubset_IndexExists(paramIndexList, index)
+  Dim i
+  For Each i In paramIndexList
+    If i = index Then
+      ProcSubset_IndexExists = True
+      Exit Function
+    End If
+  Next
+  ProcSubset_IndexExists = False
+End Function
+
 Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   Dim className, classExpr
   className = "ProcSubset_Arg" & argCount & "_" & Join(paramIndexList, "_")
@@ -766,11 +686,11 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   Set argList = New ListBuffer
   Set applyArgList = New ListBuffer
   For i = 0 To argCount - 1
-    If IsEmpty(Find(paramIndexList, ValueEqual(i))) Then
+    If ProcSubset_IndexExists(paramIndexList, i) Then
+      applyArgList.Add "ivar_arg" & i
+    Else
       argList.Add "arg" & i
       applyArgList.Add "arg" & i
-    Else
-      applyArgList.Add "ivar_arg" & i
     End If
   Next
   argList = Join(argList.Items, ", ")
