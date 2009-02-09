@@ -1,4 +1,4 @@
-' stdlib.vbs: list search test.
+' stdlib.vbs: Map test.
 ' @import ../lib/stdlib.vbs
 
 Sub TestRegExpReplace
