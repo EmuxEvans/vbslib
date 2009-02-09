@@ -230,21 +230,21 @@ End Function
 '################ list tool ################
 '-------------------------------------------
 
-Function Find(list, equalFunc)
+Function Find(list, cond)
   Dim i
   For Each i In list
-    If equalFunc(i) Then
+    If cond(i) Then
       Bind Find, i
       Exit Function
     End If
   Next
 End Function
 
-Function FindPos(list, equalFunc)
+Function FindPos(list, cond)
   Dim pos, i
   pos = 0
   For Each i In list
-    If equalFunc(i) Then
+    If cond(i) Then
       FindPos = pos
       Exit Function
     End If
@@ -252,18 +252,18 @@ Function FindPos(list, equalFunc)
   Next
 End Function
 
-Function FindAll(list, equalFunc)
+Function FindAll(list, cond)
   Dim findList, i
   Set findList = New ListBuffer
   For Each i In list
-    If equalFunc(i) Then
+    If cond(i) Then
       findList.Add i
     End If
   Next
   FindAll = findList.Items
 End Function
 
-Class ValueEqualFunction
+Class ValueEqualCondition
   Private ivar_expectedValue
 
   Public Property Let ExpectedValue(value)
@@ -280,13 +280,13 @@ Class ValueEqualFunction
 End Class
 
 Function ValueEqual(expectedValue)
-  Dim func
-  Set func = New ValueEqualFunction
-  func.Expectedvalue = expectedvalue
-  Set ValueEqual = func
+  Dim cond
+  Set cond = New ValueEqualCondition
+  cond.Expectedvalue = expectedvalue
+  Set ValueEqual = cond
 End Function
 
-Class ValueGreaterThanFunction
+Class ValueGreaterThanCondition
   Private ivar_lowerBound
 
   Public Property Let LowerBound(value)
@@ -302,7 +302,7 @@ Class ValueGreaterThanFunction
   End Function
 End Class
 
-Class ValueGreaterThanEqualFunction
+Class ValueGreaterThanEqualCondition
   Private ivar_lowerBound
 
   Public Property Let LowerBound(value)
@@ -319,17 +319,17 @@ Class ValueGreaterThanEqualFunction
 End Class
 
 Function ValueGreaterThan(lowerBound, exclude)
-  Dim func
+  Dim cond
   If exclude Then
-    Set func = New ValueGreaterThanFunction
+    Set cond = New ValueGreaterThanCondition
   Else
-    Set func = New ValueGreaterThanEqualFunction
+    Set cond = New ValueGreaterThanEqualCondition
   End If
-  func.Lowerbound = lowerBound
-  Set ValueGreaterThan = func
+  cond.Lowerbound = lowerBound
+  Set ValueGreaterThan = cond
 End Function
 
-Class ValueLessThanFunction
+Class ValueLessThanCondition
   Private ivar_upperBound
 
   Public Property Let UpperBound(value)
@@ -345,7 +345,7 @@ Class ValueLessThanFunction
   End Function
 End Class
 
-Class ValueLessThanEqualFunction
+Class ValueLessThanEqualCondition
   Private ivar_upperBound
 
   Public Property Let UpperBound(value)
@@ -362,17 +362,17 @@ Class ValueLessThanEqualFunction
 End Class
 
 Function ValueLessThan(upperBound, exclude)
-  Dim func
+  Dim cond
   If exclude Then
-    Set func = New ValueLessThanFunction
+    Set cond = New ValueLessThanCondition
   Else
-    Set func = New ValueLessThanEqualFunction
+    Set cond = New ValueLessThanEqualCondition
   End If
-  func.UpperBound = upperBound
-  Set ValueLessThan = func
+  cond.UpperBound = upperBound
+  Set ValueLessThan = cond
 End Function
 
-Class ValueBetweenFunction
+Class ValueBetweenCondition
   Private ivar_lowerBound
   Private ivar_upperBound
 
@@ -393,7 +393,7 @@ Class ValueBetweenFunction
   End Function
 End Class
 
-Class ValueBetweenExcludeUpperBoundFunction
+Class ValueBetweenExcludeUpperBoundCondition
   Private ivar_lowerBound
   Private ivar_upperBound
 
@@ -415,18 +415,18 @@ Class ValueBetweenExcludeUpperBoundFunction
 End Class
 
 Function ValueBetween(lowerBound, upperBound, exclude)
-  Dim func
+  Dim cond
   If exclude Then
-    Set func = New ValueBetweenExcludeUpperBoundFunction
+    Set cond = New ValueBetweenExcludeUpperBoundCondition
   Else
-    Set func = New ValueBetweenFunction
+    Set cond = New ValueBetweenCondition
   End If
-  func.LowerBound = lowerBound
-  func.UpperBound = upperBound
-  Set ValueBetween = func
+  cond.LowerBound = lowerBound
+  cond.UpperBound = upperBound
+  Set ValueBetween = cond
 End Function
 
-Class RegExpMatchFunction
+Class RegExpMatchCondition
   Private ivar_regexp
 
   Public Property Set RegExp(value)
@@ -443,10 +443,10 @@ Class RegExpMatchFunction
 End Class
 
 Function RegExpMatch(regex)
-  Dim func
-  Set func = New RegexpMatchFunction
-  Set func.RegExp = regex
-  Set RegExpMatch = func
+  Dim cond
+  Set cond = New RegExpMatchCondition
+  Set cond.RegExp = regex
+  Set RegExpMatch = cond
 End Function
 
 
