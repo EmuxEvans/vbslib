@@ -13,91 +13,83 @@ Function UnitTest_IsAssertFail(error)
   End If
 End Function
 
-Dim assertExpr
-Set assertExpr = New ListBuffer
+Class UnitTest_Assertion
+  Public Sub Assert(result)
+    AssertWithMessage result, Empty
+  End Sub
 
-assertExpr.Add "Sub Assert(result)"
-assertExpr.Add "  AssertWithMessage result, Empty"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertWithMessage(result, message)"
-assertExpr.Add "  If Not result Then"
-assertExpr.Add "    Dim errMsg"
-assertExpr.Add "    errMsg = ""Assert NG."""
-assertExpr.Add "    If Not IsEmpty(message) Then"
-assertExpr.Add "      errMsg = errMsg & "" ["" & message & ""]"""
-assertExpr.Add "    End If"
-assertExpr.Add "    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg"
-assertExpr.Add "  End If"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertEqual(expected, actual)"
-assertExpr.Add "  AssertEqualWithMessage expected, actual, Empty"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertEqualWithMessage(expected, actual, message)"
-assertExpr.Add "  If expected <> actual Then"
-assertExpr.Add "    Dim errMsg"
-assertExpr.Add "    errMsg = ""AssertEqual NG: expected <"" & ShowValue(expected) & ""> but was <"" & ShowValue(actual) & "">."""
-assertExpr.Add "    If Not IsEmpty(message) Then"
-assertExpr.Add "      errMsg = errMsg & "" ["" & message & ""]"""
-assertExpr.Add "    End If"
-assertExpr.Add "    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg"
-assertExpr.Add "  End If"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertSame(expected, actual)"
-assertExpr.Add "  AssertSameWithMessage expected, actual, Empty"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertSameWithMessage(expected, actual, message)"
-assertExpr.Add "  If Not actual Is expected Then"
-assertExpr.Add "    Dim errMsg"
-assertExpr.Add "    errMsg = ""AssertSame NG: expected <"" & TypeName(expected) & ""> but was <"" & TypeName(actual) & "">."""
-assertExpr.Add "    If Not IsEmpty(message) Then"
-assertExpr.Add "      errMsg = errMsg & ""["" & message & ""]"""
-assertExpr.Add "    End If"
-assertExpr.Add "    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg"
-assertExpr.Add "  End If"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertMatch(pattern, text)"
-assertExpr.Add "  AssertMatchWithMessage pattern, text, Empty"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertMatchWithMessage(pattern, text, message)"
-assertExpr.Add "  Dim re"
-assertExpr.Add "  Set re = New RegExp"
-assertExpr.Add "  re.Pattern = pattern"
-assertExpr.Add "  If Not re.Test(text) Then"
-assertExpr.Add "    Dim errMsg"
-assertExpr.Add "    errMsg = ""AssertMatch NG: <"" & text & ""> expected to be match <"" & pattern & "">."""
-assertExpr.Add "    If Not IsEmpty(message) Then"
-assertExpr.Add "      errMsg = errMsg & ""["" & message & ""]"""
-assertExpr.Add "    End If"
-assertExpr.Add "    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg"
-assertExpr.Add "  End If"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertFail"
-assertExpr.Add "  AssertFailWithMessage Empty"
-assertExpr.Add "End Sub"
-assertExpr.Add ""
-assertExpr.Add "Sub AssertFailWithMessage(message)"
-assertExpr.Add "  Dim errMsg"
-assertExpr.Add "  errMsg = ""AssertFail NG."""
-assertExpr.Add "  If Not IsEmpty(message) Then"
-assertExpr.Add "    errMsg = errMsg & ""["" & message & ""]"""
-assertExpr.Add "  End If"
-assertExpr.Add "  Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg"
-assertExpr.Add "End Sub"
+  Public Sub AssertWithMessage(result, message)
+    If Not result Then
+      Dim errMsg
+      errMsg = "Assert NG."
+      If Not IsEmpty(message) Then
+        errMsg = errMsg & " [" & message & "]"
+      End If
+      Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+    End If
+  End Sub
 
-Dim UnitTest_AssertProcCode
-UnitTest_AssertProcCode = Replace(Join(assertExpr.Items, vbNewLine), _
-                                  "UNITTEST_ASSERT_SOURCE_KEYWORD", _
-                                  """" & UNITTEST_ASSERT_SOURCE_KEYWORD & """")
-Set assertExpr = Nothing
-ExecuteGlobal UnitTest_AssertProcCode
+  Public Sub AssertEqual(expected, actual)
+    AssertEqualWithMessage expected, actual, Empty
+  End Sub
+
+  Public Sub AssertEqualWithMessage(expected, actual, message)
+    If expected <> actual Then
+      Dim errMsg
+      errMsg = "AssertEqual NG: expected <" & ShowValue(expected) & "> but was <" & ShowValue(actual) & ">."
+      If Not IsEmpty(message) Then
+        errMsg = errMsg & " [" & message & "]"
+      End If
+      Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+    End If
+  End Sub
+
+  Public Sub AssertSame(expected, actual)
+    AssertSameWithMessage expected, actual, Empty
+  End Sub
+
+  Public Sub AssertSameWithMessage(expected, actual, message)
+    If Not actual Is expected Then
+      Dim errMsg
+      errMsg = "AssertSame NG: expected <" & TypeName(expected) & "> but was <" & TypeName(actual) & ">."
+      If Not IsEmpty(message) Then
+        errMsg = errMsg & "[" & message & "]"
+      End If
+      Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+    End If
+  End Sub
+
+  Public Sub AssertMatch(pattern, text)
+    AssertMatchWithMessage pattern, text, Empty
+  End Sub
+
+  Public Sub AssertMatchWithMessage(pattern, text, message)
+    Dim re
+    Set re = New RegExp
+    re.Pattern = pattern
+    If Not re.Test(text) Then
+      Dim errMsg
+      errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
+      If Not IsEmpty(message) Then
+        errMsg = errMsg & "[" & message & "]"
+      End If
+      Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+    End If
+  End Sub
+
+  Public Sub AssertFail
+    AssertFailWithMessage Empty
+  End Sub
+
+  Public Sub AssertFailWithMessage(message)
+    Dim errMsg
+    errMsg = "AssertFail NG."
+    If Not IsEmpty(message) Then
+      errMsg = errMsg & "[" & message & "]"
+    End If
+    Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
+  End Sub
+End Class
 
 Dim UnitTest_TestProcConvention
 Set UnitTest_TestProcConvention = New RegExp
@@ -204,6 +196,7 @@ Class UnitTest_TestCaseLoader
     Set ivar_fso = CreateObject("Scripting.FileSystemObject")
     Set ivar_scriptControl = CreateObject("ScriptControl")
     ivar_scriptControl.Language = "VBScript"
+    ivar_scriptControl.AddObject "__UnitTest_Assertion__", New UnitTest_Assertion, True
   End Sub
 
   Public Sub AddObject(name, object)
@@ -212,7 +205,6 @@ Class UnitTest_TestCaseLoader
 
   Public Sub ImportTestCase(path)
     ivar_scriptControl.Modules.Add path
-    ivar_scriptControl.Modules(path).AddCode UnitTest_AssertProcCode
     
     Dim stream, code
     Set stream = ivar_fso.OpenTextFile(path)
