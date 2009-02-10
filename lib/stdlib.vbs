@@ -418,8 +418,8 @@ Class ObjectPropertyCompareFunction
     Set ivar_propComp = value
   End Property
 
-  Public Default Function Compare(a, b)
-    Compare = ivar_propComp(GetObjectProperty(a, ivar_propName), _
+  Public Default Function Execute(a, b)
+    Execute = ivar_propComp(GetObjectProperty(a, ivar_propName), _
                             GetObjectProperty(b, ivar_propName))
   End Function
 End Class
@@ -679,7 +679,7 @@ Function ObjectMethod_CreateProcBuilder(name, argCount)
   classExpr.Add "    Set ivar_obj = obj"
   classExpr.Add "  End Property"
   classExpr.Add ""
-  classExpr.Add "  Public Default Sub Apply(" & argList & ")"
+  classExpr.Add "  Public Default Sub Execute(" & argList & ")"
   classExpr.Add "    ivar_obj." & name & " " & argList
   classExpr.Add "  End Sub"
   classExpr.Add "End Class"
@@ -691,8 +691,8 @@ Function ObjectMethod_CreateProcBuilder(name, argCount)
   classExpr.Add "    Set ivar_obj = obj"
   classExpr.Add "  End Property"
   classExpr.Add ""
-  classExpr.Add "  Public Default Function Apply(" & argList & ")"
-  classExpr.Add "    Bind Apply, ivar_obj." & name & "(" & argList & ")"
+  classExpr.Add "  Public Default Function Execute(" & argList & ")"
+  classExpr.Add "    Bind Execute, ivar_obj." & name & "(" & argList & ")"
   classExpr.Add "  End Function"
   classExpr.Add "End Class"
   classExpr.Add ""
@@ -790,7 +790,7 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
     classExpr.Add "  End Property"
     classExpr.Add ""
   Next
-  classExpr.Add "  Public Default Sub Apply(" & argList & ")"
+  classExpr.Add "  Public Default Sub Execute(" & argList & ")"
   classExpr.Add "    Call ivar_proc(" & applyArgList & ")"
   classExpr.Add "  End Sub"
   classExpr.Add "End Class"
@@ -815,8 +815,8 @@ Function ProcSubset_CreateProcBuilder(argCount, paramIndexList)
     classExpr.Add "  End Property"
     classExpr.Add ""
   Next
-  classExpr.Add "  Public Default Function Apply(" & argList & ")"
-  classExpr.Add "    Bind Apply, ivar_proc(" & applyArgList & ")"
+  classExpr.Add "  Public Default Function Execute(" & argList & ")"
+  classExpr.Add "    Bind Execute, ivar_proc(" & applyArgList & ")"
   classExpr.Add "  End Function"
   classExpr.Add "End Class"
   classExpr.Add ""
