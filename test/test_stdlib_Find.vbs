@@ -62,9 +62,9 @@ Sub TestValueBetweenExcludeUpperBound
   Assert Not btwn(5)
 End Sub
 
-Sub TestRegExpMatch
+Sub TestValueMatch
   Dim ma
-  Set ma = RegExpMatch(re("foo", ""))
+  Set ma = ValueMatch(re("foo", ""))
   Assert ma("foo, bar, baz")
   Assert Not ma("bar, baz")
 End Sub
@@ -78,7 +78,7 @@ End Sub
 
 Sub TestAndCond
   Dim cond
-  Set cond = AndCond(RegExpMatch(re("foo", "")), RegExpMatch(re("bar", "")))
+  Set cond = AndCond(ValueMatch(re("foo", "")), ValueMatch(re("bar", "")))
   Assert Not cond("foo")
   Assert Not cond("bar")
   Assert cond("foo, bar")
@@ -86,7 +86,7 @@ End Sub
 
 Sub TestOrCond
   Dim cond
-  Set cond = OrCond(RegExpMatch(re("foo", "")), RegExpMatch(re("bar", "")))
+  Set cond = OrCond(ValueMatch(re("foo", "")), ValueMatch(re("bar", "")))
   Assert cond("foo")
   Assert cond("bar")
   Assert Not cond("baz")
@@ -118,7 +118,7 @@ End Sub
 
 Sub TestFindAll_Found
   Dim r
-  r = FindAll(Array("foo", "Foo", "FOO", "bar", "baz"), RegExpMatch(re("foo", "i")))
+  r = FindAll(Array("foo", "Foo", "FOO", "bar", "baz"), ValueMatch(re("foo", "i")))
   AssertEqual 2, UBound(r)
   AssertEqual "foo", r(0)
   AssertEqual "Foo", r(1)
@@ -127,13 +127,13 @@ End Sub
 
 Sub TestFindAll_NotFound
   Dim r
-  r = FindAll(Array("bar", "baz"), RegExpMatch(re("foo", "i")))
+  r = FindAll(Array("bar", "baz"), ValueMatch(re("foo", "i")))
   AssertEqual -1, UBound(r)
 End Sub
 
 Sub TestFindAll_EmptyList
   Dim r
-  r = FindAll(Array(), RegExpMatch(re("foo", "i")))
+  r = FindAll(Array(), ValueMatch(re("foo", "i")))
   AssertEqual -1, UBound(r)
 End Sub
 

@@ -1,15 +1,15 @@
 ' stdlib.vbs: Map test.
 ' @import ../lib/stdlib.vbs
 
-Sub TestRegExpReplace
+Sub TestValueReplace
   Dim func
-  Set func = RegExpReplace(re("xyz", ""), "XYZ")
+  Set func = ValueReplace(re("xyz", ""), "XYZ")
   AssertEqual "abcXYZdef", func("abcxyzdef")
 End Sub
 
-Sub TestMap_RegExpReplace
+Sub TestMap_ValueReplace
   Dim a
-  a = Map(Array("foo", "bar", "baz"), RegExpReplace(re("ba", ""), "BA"))
+  a = Map(Array("foo", "bar", "baz"), ValueReplace(re("ba", ""), "BA"))
   AssertEqual 2, UBound(a)
   AssertEqual "foo", a(0)
   AssertEqual "BAr", a(1)
