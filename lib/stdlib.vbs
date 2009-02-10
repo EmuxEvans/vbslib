@@ -406,30 +406,14 @@ Function BinaryStringCompare(a, b)
   BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
 End Function
 
-Class ObjectPropertyCompareFunction
-  Private ivar_propName
-  Private ivar_propComp
-
-  Public Property Let PropertyName(value)
-    ivar_propName = value
-  End Property
-
-  Public Property Set PropertyCompare(value)
-    Set ivar_propComp = value
-  End Property
-
-  Public Default Function Execute(a, b)
-    Execute = ivar_propComp(GetObjectProperty(a, ivar_propName), _
-                            GetObjectProperty(b, ivar_propName))
-  End Function
-End Class
+Function ObjectPropertyCompare_(propName, propComp, a, b)
+  ObjectPropertyCompare_ = propComp(GetObjectProperty(a, propName), _
+                                    GetObjectProperty(b, propName))
+End Function
 
 Function ObjectPropertyCompare(propertyName, propertyCompare)
-  Dim compare
-  Set compare = New ObjectPropertyCompareFunction
-  compare.PropertyName = propertyName
-  Set compare.PropertyCompare = propertyCompare
-  Set ObjectPropertyCompare = compare
+  Set ObjectPropertyCompare = GetFuncProcSubset(GetRef("ObjectPropertyCompare_"), 4, _
+                                                Array(propertyName, propertyCompare))
 End Function
 
 Function Map(list, func)
