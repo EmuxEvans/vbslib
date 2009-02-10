@@ -30,11 +30,7 @@ Dim optStdIn: optStdIn = False
 For Each key In WScript.Arguments.Named
   Select Case UCase(key)
     Case "STDIN":
-      If IsEmpty(WScript.Arguments.Named(key)) Or WScript.Arguments.Named(key) Then
-        optStdIn = True
-      Else
-        optStdIn = False
-      End If
+      optStdIn = GetNamedArgumentBool(key, WScript.Arguments.Named, False)
     Case Else:
       Err.Raise RuntimeError, "TestRunner.wsf", "Unknown command line option: " & key
   End Select
@@ -42,18 +38,17 @@ Next
 
 Dim fileList
 Set fileList = New ListBuffer
-
+fileList.Append WScript.Arguments.Unnamed
 If optStdIn Then
   Do Until WScript.StdIn.AtEndOfStream
     fileList.Add WScript.StdIn.ReadLine
   Loop
-Else
-  If WScript.Arguments.Unnamed.Count = 0 Then
-    WScript.Arguments.ShowUsage
-    WScript.Quit 255
-  End If
 End If
-fileList.Append WScript.Arguments.Unnamed
+
+If fileList.Count = 0 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
 
 Dim loader
 Set loader = New UnitTest_TestCaseLoader
