@@ -64,15 +64,14 @@ Class UnitTest_Assertion
   End Sub
 
   Public Sub AssertMatchWithMessage(pattern, text, message)
-    Dim re
+    Dim regex
     If IsObject(pattern) Then
-      Set re = pattern
+      Set regex = pattern
     Else
-      Set re = New RegExp
-      re.Pattern = pattern
+      Set regex = re(pattern, "")
     End If
 
-    If Not re.Test(text) Then
+    If Not regex.Test(text) Then
       Dim errMsg
       errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
       If Not IsEmpty(message) Then
@@ -97,16 +96,10 @@ Class UnitTest_Assertion
 End Class
 
 Dim UnitTest_TestProcConvention
-Set UnitTest_TestProcConvention = New RegExp
-UnitTest_TestProcConvention.Pattern = "^Test"
-UnitTest_TestProcConvention.IgnoreCase = True
+Set UnitTest_TestProcConvention = re("^Test", "i")
 
 Dim UnitTest_ImportAnnotation
-Set UnitTest_ImportAnnotation = New RegExp
-UnitTest_ImportAnnotation.Pattern = "^'\s*@import\s+(\S|\S.*\S)\s*$"
-UnitTest_ImportAnnotation.IgnoreCase = True
-UnitTest_ImportAnnotation.Global = True
-UnitTest_ImportAnnotation.Multiline = True
+Set UnitTest_ImportAnnotation = re("^'\s*@import\s+(\S|\S.*\S)\s*$", "igm")
 
 Class UnitTest_TestProc
   Private ivar_testModule

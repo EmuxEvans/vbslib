@@ -139,9 +139,7 @@ Class ListBuffer
 End Class
 
 Dim ShowString_Quote
-Set ShowString_Quote = New RegExp
-ShowString_Quote.Pattern = """"
-ShowString_Quote.Global = True
+Set ShowString_Quote = re("""", "g")
 
 Function ShowString(value)
   ShowString = """" & ShowString_Quote.Replace(value, """""") & """"
