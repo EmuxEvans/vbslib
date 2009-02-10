@@ -87,21 +87,21 @@ Function GetQualifier(prop, name)
 End Function
 
 Class OptionalPropertyInfoGetter
-  Private ivar_klass
+  Private ivar_class
   Private ivar_cache
 
   Private Sub Class_Initialize
     Set ivar_cache = CreateObject("Scripting.Dictionary")
   End Sub
 
-  Public Property Set Class_(value)
-    Set ivar_klass = value
+  Public Property Set [Class](value)
+    Set ivar_class = value
   End Property
 
   Public Default Function GetInfo(propName)
     If Not ivar_cache.Exists(propName) Then
       Dim prop
-      Set prop = klass.Properties_(propName)
+      Set prop = ivar_class.Properties_(propName)
 
       Dim units
       Set units = GetQualifier(prop, "Units")
@@ -127,7 +127,7 @@ End Class
 
 Dim OptionalPropertyInfo
 Set OptionalPropertyInfo = New OptionalPropertyInfoGetter
-Set OptionalPropertyInfo.Class_ = klass
+Set OptionalPropertyInfo.Class = klass
 
 Dim count, obj, prop
 count = 0
