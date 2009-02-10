@@ -352,8 +352,8 @@ Function ValueBetween(lowerBound, upperBound, exclude)
   End If
 End Function
 
-Function RegExpMatch(regex)
-  Set RegExpMatch = GetObjectMethodFuncProc(regex, "Test", 1)
+Function ValueMatch(regex)
+  Set ValueMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
 Function NotFunc(cond, value)
@@ -461,8 +461,8 @@ Function Map(list, func)
   Map = newList.Items
 End Function
 
-Function RegExpReplace(regex, replace)
-  Set RegExpReplace = _
+Function ValueReplace(regex, replace)
+  Set ValueReplace = _
       GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, _
                         D(Array(1, replace)))
 End Function
