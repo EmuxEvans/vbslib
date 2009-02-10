@@ -201,22 +201,21 @@ Class UnitTest_TestCaseLoader
     ivar_scriptControl.AddObject name, object
   End Sub
 
+  Private Function ReadAll(path)
+    Dim stream
+    Set stream = ivar_fso.OpenTextFile(path)
+    ReadAll = stream.ReadAll
+    stream.Close
+  End Function
+
   Public Sub ImportTestCase(path)
     ivar_scriptControl.Modules.Add path
-    
-    Dim stream, code
-    Set stream = ivar_fso.OpenTextFile(path)
-    code = stream.ReadAll
-    stream.Close
-
+    Dim code: code = ReadAll(path)
     Dim match, libPath
     For Each match In UnitTest_ImportAnnotation.Execute(code)
       libPath = match.SubMatches(0)
-      Set stream = ivar_fso.OpenTextFile(libPath)
-      ivar_scriptControl.Modules(path).AddCode stream.ReadAll
-      stream.Close
+      ivar_scriptControl.Modules(path).AddCode ReadAll(libPath)
     Next
-
     ivar_scriptControl.Modules(path).AddCode code
   End Sub
 
