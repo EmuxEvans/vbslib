@@ -356,6 +356,42 @@ Function RegExpMatch(regex)
   Set RegExpMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
+Function NotFunc(cond, value)
+  If Not cond(value) Then
+    NotFunc = True
+  Else
+    NotFunc = False
+  End If
+End Function
+
+Function NotCond(cond)
+  Set NotCond = GetFuncProcSubset(GetRef("NotFunc"), 2, Array(cond))
+End Function
+
+Function AndFunc(cond1, cond2, value)
+  If cond1(value) And cond2(value) Then
+    AndFunc = True
+  Else
+    AndFunc = False
+  End If
+End Function
+
+Function AndCond(cond1, cond2)
+  Set AndCond = GetFuncProcSubset(GetRef("AndFunc"), 3, Array(cond1, cond2))
+End Function
+
+Function OrFunc(cond1, cond2, value)
+  If cond1(value) Or cond2(value) Then
+    OrFunc = True
+  Else
+    OrFunc = False
+  End If
+End Function
+
+Function OrCond(cond1, cond2)
+  Set OrCond = GetFuncProcSubset(GetRef("OrFunc"), 3, Array(cond1, cond2))
+End Function
+
 Function Max(list, compare)
   Dim first
   first = True

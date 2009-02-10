@@ -69,6 +69,29 @@ Sub TestRegExpMatch
   Assert Not ma("bar, baz")
 End Sub
 
+Sub TestNotCond
+  Dim cond
+  Set cond = NotCond(ValueEqual("foo"))
+  Assert Not cond("foo")
+  Assert cond("bar")
+End Sub
+
+Sub TestAndCond
+  Dim cond
+  Set cond = AndCond(RegExpMatch(re("foo", "")), RegExpMatch(re("bar", "")))
+  Assert Not cond("foo")
+  Assert Not cond("bar")
+  Assert cond("foo, bar")
+End Sub
+
+Sub TestOrCond
+  Dim cond
+  Set cond = OrCond(RegExpMatch(re("foo", "")), RegExpMatch(re("bar", "")))
+  Assert cond("foo")
+  Assert cond("bar")
+  Assert Not cond("baz")
+End Sub
+
 Sub TestFind_Found
   AssertEqual "bar", Find(Array("foo", "bar", "baz"), ValueEqual("bar"))
 End Sub
