@@ -448,8 +448,8 @@ Function ObjectPropertyCompare_(propName, propComp, a, b)
 End Function
 
 Function ObjectPropertyCompare(propertyName, propertyCompare)
-  Set ObjectPropertyCompare = GetFuncProcSubset(GetRef("ObjectPropertyCompare_"), 4, _
-                                                Array(propertyName, propertyCompare))
+  Set ObjectPropertyCompare = _
+      GetFuncProcSubset(GetRef("ObjectPropertyCompare_"), 4, Array(propertyName, propertyCompare))
 End Function
 
 Function Map(list, func)
@@ -463,8 +463,23 @@ End Function
 
 Function ValueReplace(regex, replace)
   Set ValueReplace = _
-      GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, _
-                        D(Array(1, replace)))
+      GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, D(Array(1, replace)))
+End Function
+
+Function ValueObjectProperty(propertyName)
+  Set ValueObjectProperty = _
+      GetFuncProcSubset(GetRef("GetObjectProperty"), 2, D(Array(1, propertyName)))
+End Function
+
+Function GetDictionaryItem(key, dictionary)
+  If dictionary.Exists(key) Then
+    Bind GetDictionaryItem, dictionary(key)
+  End If
+End Function
+
+Function ValueDictionaryItem(key)
+  Set ValueDictionaryItem = _
+      GetFuncProcSubset(GetRef("GetDictionaryItem"), 2, Array(key))
 End Function
 
 ' aliases of the VBScript functions to GetRef().
