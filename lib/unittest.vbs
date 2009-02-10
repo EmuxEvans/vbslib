@@ -65,8 +65,13 @@ Class UnitTest_Assertion
 
   Public Sub AssertMatchWithMessage(pattern, text, message)
     Dim re
-    Set re = New RegExp
-    re.Pattern = pattern
+    If IsObject(pattern) Then
+      Set re = pattern
+    Else
+      Set re = New RegExp
+      re.Pattern = pattern
+    End If
+
     If Not re.Test(text) Then
       Dim errMsg
       errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
