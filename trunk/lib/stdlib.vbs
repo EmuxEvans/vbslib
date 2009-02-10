@@ -261,20 +261,20 @@ Function FindAll(list, cond)
   FindAll = findList.Items
 End Function
 
-Function Equal(value, expectedValue)
-  If value = expectedValue Then
+Function Equal(expected, value)
+  If value = expected Then
     Equal = True
   Else
     Equal = False
   End If
 End Function
 
-Function ValueEqual(expectedValue)
+Function ValueEqual(expected)
   Set ValueEqual = _
-      GetFuncProcSubset(GetRef("Equal"), 2, D(Array(1, expectedValue)))
+      GetFuncProcSubset(GetRef("Equal"), 2, Array(expected))
 End Function
 
-Function GreaterThan(value, lowerBound)
+Function GreaterThan(lowerBound, value)
   If value > lowerBound Then
     GreaterThan = True
   Else
@@ -282,7 +282,7 @@ Function GreaterThan(value, lowerBound)
   End If
 End Function
 
-Function GreaterThanEqual(value, lowerBound)
+Function GreaterThanEqual(lowerBound, value)
   If value >= lowerBound Then
     GreaterThanEqual = True
   Else
@@ -293,14 +293,14 @@ End Function
 Function ValueGreaterThan(lowerBound, exclude)
   If exclude Then
     Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThan"), 2, D(Array(1, lowerBound)))
+        GetFuncProcSubset(GetRef("GreaterThan"), 2, Array(lowerBound))
   Else
     Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, D(Array(1, lowerBound)))
+        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, Array(lowerBound))
   End If
 End Function
 
-Function LessThan(value, upperBound)
+Function LessThan(upperBound, value)
   If value < upperBound Then
     LessThan = True
   Else
@@ -308,7 +308,7 @@ Function LessThan(value, upperBound)
   End If
 End Function
 
-Function LessThanEqual(value, upperBound)
+Function LessThanEqual(upperBound, value)
   If value <= upperBound Then
     LessThanEqual = True
   Else
@@ -319,14 +319,14 @@ End Function
 Function ValueLessThan(upperBound, exclude)
   If exclude Then
     Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThan"), 2, D(Array(1, upperBound)))
+        GetFuncProcSubset(GetRef("LessThan"), 2, Array(upperBound))
   Else
     Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThanEqual"), 2, D(Array(1, upperBound)))
+        GetFuncProcSubset(GetRef("LessThanEqual"), 2, Array(upperBound))
   End If
 End Function
 
-Function Between(value, lowerBound, upperBound)
+Function Between(lowerBound, upperBound, value)
   If (lowerBound <= value) And (value <= upperBound) Then
     Between = True
   Else
@@ -334,7 +334,7 @@ Function Between(value, lowerBound, upperBound)
   End If
 End Function
 
-Function BetweenExcludeUpperBound(value, lowerBound, upperBound)
+Function BetweenExcludeUpperBound(lowerBound, upperBound, value)
   If (lowerBound <= value) And (value < upperBound) Then
     BetweenExcludeUpperBound = True
   Else
@@ -345,10 +345,10 @@ End Function
 Function ValueBetween(lowerBound, upperBound, exclude)
   If exclude Then
     Set ValueBetween = _
-        GetFuncProcSubset(GetRef("BetweenExcludeUpperBound"), 3, D(Array(1, lowerBound, 2, upperBound)))
+        GetFuncProcSubset(GetRef("BetweenExcludeUpperBound"), 3, Array(lowerBound, upperBound))
   Else
     Set ValueBetween = _
-        GetFuncProcSubset(GetRef("Between"), 3, D(Array(1, lowerBound, 2, upperBound)))
+        GetFuncProcSubset(GetRef("Between"), 3, Array(lowerBound, upperBound))
   End If
 End Function
 
