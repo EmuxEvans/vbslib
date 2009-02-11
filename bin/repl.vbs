@@ -198,6 +198,39 @@ Sub REPL_Evaluate(expr)
   End If
 End Sub
 
+Dim fso
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+Function FileReadAll(path)
+  Dim stream
+  Set stream = fso.OpenTextFile(path)
+  FileReadAll = stream.ReadAll
+  stream.Close
+End Function
+
+Dim binDir: binDir = fso.GetParentFolderName(WScript.ScriptFullName)
+Dim baseDir: baseDir = fso.GetParentFolderName(binDir)
+Dim libDir: libDir = fso.BuildPath(baseDir, "lib")
+
+Sub ImportFile(path)
+  If Not fso.FileExists(path) Then
+    Dim libPath
+    libPath = fso.BuildPath(libDir, path)
+    If Not fso.FileExists(libPath) Then
+      MsgBox "not found a file to import: " & path, _
+             vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
+      Exit Sub
+    End If
+    path = libPath
+  End If
+
+  On Error Resume Next
+  REPL_ScriptControl.AddCode FileReadAll(path)
+  If Err.Number <> 0 Then
+    PopupError
+  End If
+End Sub
+
 Dim execCommand
 Set execCommand = New RegExp
 execCommand.Pattern = "^e\s+"
@@ -212,6 +245,11 @@ Dim histCommand
 Set histCommand = New RegExp
 histCommand.Pattern = "^h$|^hh$|^h\s+"
 histCommand.IgnoreCase = True
+
+Dim importCommand
+Set importCommand = New RegExp
+importCommand.Pattern = "^@import\s+"
+importCommand.IgnoreCase = True
 
 Dim hist
 Set hist = New History
@@ -247,6 +285,9 @@ Do
       Case Else:
         defaultExpr = GetHistory(hist, histCommand.Replace(expr, ""))
     End Select
+  ElseIf importCommand.Test(expr) Then
+    expr = importCommand.Replace(expr, "")
+    ImportFile expr
   Else
     REPL_Execute expr
   End If
