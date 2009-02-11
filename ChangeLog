@@ -1,3 +1,7 @@
+2009-02-12  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: tool for command line arguments.
+
 2009-02-11  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/repl.vbs: import command.
