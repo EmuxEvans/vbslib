@@ -69,6 +69,15 @@ Sub TestValueMatch
   Assert Not ma("bar, baz")
 End Sub
 
+Sub TestValueFilter
+  Dim f
+  Set f = ValueFilter(GetRef("UCase_"), ValueEqual("FOO"))
+  Assert f("foo")
+  Assert f("Foo")
+  Assert f("FOO")
+  Assert Not f("bar")
+End Sub
+
 Sub TestNotCond
   Dim cond
   Set cond = NotCond(ValueEqual("foo"))

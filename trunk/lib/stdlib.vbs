@@ -356,6 +356,14 @@ Function ValueMatch(regex)
   Set ValueMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
+Function ValueFilterFunc(filter, cond, value)
+  ValueFilterFunc = cond(filter(value))
+End Function
+
+Function ValueFilter(filter, cond)
+  Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, cond))
+End Function
+
 Function NotFunc(cond, value)
   If Not cond(value) Then
     NotFunc = True
@@ -442,14 +450,14 @@ Function BinaryStringCompare(a, b)
   BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
 End Function
 
-Function ObjectPropertyCompare_(propName, propComp, a, b)
-  ObjectPropertyCompare_ = propComp(GetObjectProperty(a, propName), _
-                                    GetObjectProperty(b, propName))
+Function ObjectPropertyCompareFunc(propName, propComp, a, b)
+  ObjectPropertyCompareFunc = propComp(GetObjectProperty(a, propName), _
+                                       GetObjectProperty(b, propName))
 End Function
 
 Function ObjectPropertyCompare(propertyName, propertyCompare)
   Set ObjectPropertyCompare = _
-      GetFuncProcSubset(GetRef("ObjectPropertyCompare_"), 4, Array(propertyName, propertyCompare))
+      GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
 End Function
 
 Function Map(list, func)
