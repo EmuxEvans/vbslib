@@ -1010,6 +1010,24 @@ Set Sort = GetRef("HeapSort")
 '################ command line arguments ################
 '--------------------------------------------------------
 
+Function GetNamedArgumentString(name, namedArgs, default)
+  If namedArgs.Exsits(name) Then
+    If IsEmpty(namedArgs(name)) Then
+      Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentString", "need for value of string option: " & name
+    ElseIf VarType(namedArgs(name)) = vbString Then
+      GetNamedArgumentString = namedArgs(name)
+    Else
+      Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentString", _
+        "not a string type named argument: " & name & ": " & ShowValue(namedArgs(name))
+    End If
+  Else
+    If default Is Nothing Then
+      Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentString", "need for string option: " & name
+    End If
+    GetNamedArgumentString = default
+  End If
+End Function
+
 Function GetNamedArgumentBool(name, namedArgs, default)
   If namedArgs.Exists(name) Then
     If IsEmpty(namedArgs(name)) Then
@@ -1021,6 +1039,9 @@ Function GetNamedArgumentBool(name, namedArgs, default)
         "not a boolean type named argument: " & name & ":" & ShowValue(namedArgs(name))
     End If
   Else
+    If default Is Nothing Then
+      Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentBool", "need for boolean option: " & name
+    End If
     GetNamedArgumentBool = default
   End If
 End Function
