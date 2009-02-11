@@ -885,7 +885,7 @@ End Function
 
 Function ProcSubset_GetProcBuilder(argCount, paramIndexList)
   Dim key
-  key = "arg" & argCount & "_" & Join(paramIndexList, " ")
+  key = "arg" & argCount & "_" & Join(paramIndexList, "_")
   If Not ProcSubset_ProcBuilderPool.Exists(key) Then
     Set ProcSubset_ProcBuilderPool(key) = ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   End If
