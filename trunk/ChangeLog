@@ -1,3 +1,7 @@
+2009-02-11  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: import command.
+
 2009-02-10  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/unittest.vbs: assertion procedure definition changed from
