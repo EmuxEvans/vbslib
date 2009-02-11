@@ -28,17 +28,17 @@ Function Dictionary(keyValueList)
   Dim dict
   Set dict = CreateObject("Scripting.Dictionary")
 
-  Dim count, i, key
-  count = 0
+  Dim isKey, key, i
+  isKey = True
 
   For Each i In keyValueList
-    If (count Mod 2) = 0 Then
+    If isKey Then
       Bind key, i
       dict.Add key, Empty
     Else
       BindAt dict, key, i
     End If
-    count = count + 1
+    isKey = Not isKey
   Next
 
   Set Dictionary = dict
