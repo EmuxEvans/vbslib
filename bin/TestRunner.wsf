@@ -4,6 +4,14 @@
 <description>Console test runner of VBScript Unit Test.</description>
 <named name="stdin" type="boolean" required="false"
        helpstring="read VBScript test case filename(s) from standard input." />
+<named name="testCaseName" type="string" required="false"
+       helpstring="run test case of name."/>
+<named name="testCaseMatch" type="string" required="false"
+       helpstring="run test case matching regexp."/>
+<named name="testProcName" type="string" required="false"
+       helpstring="run test procedure of name."/>
+<named name="testProcMatch" type="string" required="false"
+       helpstring="run test procedure matching regexp."/>
 <unnamed name="filename" many="true" required="false"
          helpstring="VBScript test case." />
 <example>
@@ -26,11 +34,23 @@ Option Explicit
 
 Dim key
 Dim optStdIn: optStdIn = False
+Dim optTestCaseName
+Dim optTestCaseMatch
+Dim optTestProcName
+Dim optTestProcMatch
 
 For Each key In WScript.Arguments.Named
   Select Case UCase(key)
     Case "STDIN":
-      optStdIn = GetNamedArgumentBool(key, WScript.Arguments.Named, False)
+      optStdIn = GetNamedArgumentBool(key, WScript.Arguments.Named, Empty)
+    Case "TESTCASENAME":
+      optTestCaseName = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTCASEMATCH":
+      optTestCaseMatch = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTPROCNAME":
+      optTestProcName = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTPROCMATCH":
+      optTestProcMatch = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
     Case Else:
       Err.Raise RuntimeError, "TestRunner.wsf", "Unknown command line option: " & key
   End Select
@@ -66,6 +86,30 @@ For Each testCase In loader.Items
   testProcList.Append testCase.Items
 Next
 
+testProcList = testProcList.Items
+If Not IsEmpty(optTestCaseName) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("ModuleName"), _
+                                     ValueFilter(GetRef("UCase_"), _
+                                                 ValueEqual(UCase(optTestCaseName)))))
+End If
+If Not IsEmpty(optTestCaseMatch) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("ModuleName"), _
+                                     ValueMatch(re(optTestCaseMatch, "i"))))
+End If
+If Not IsEmpty(optTestProcName) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("Name"), _
+                                     ValueFilter(GetRef("UCase_"), _
+                                                 ValueEqual(UCase(optTestProcName)))))
+End If
+If Not IsEmpty(optTestProcMatch) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("Name"), _
+                                     ValueMatch(re(optTestProcMatch, "i"))))
+End If
+
 Dim errorList
 Set errorList = New ListBuffer
 
@@ -73,7 +117,7 @@ Dim startTime
 startTime = Timer
 
 Dim testProc, testStat
-For Each testProc In testProcList.Items
+For Each testProc In testProcList
   testStat = "."
   On Error Resume Next
 
