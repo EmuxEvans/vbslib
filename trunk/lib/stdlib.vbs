@@ -730,7 +730,7 @@ Function ObjectMethod_CreateProcBuilder(name, argCount)
   classExpr.Add "Class " & className & "_FuncProc"
   classExpr.Add "  Private ivar_obj"
   classExpr.Add ""
-  classExpr.Add "  Public Property Set self(obj)"
+  classExpr.Add "  Public Property Set Self(obj)"
   classExpr.Add "    Set ivar_obj = obj"
   classExpr.Add "  End Property"
   classExpr.Add ""
