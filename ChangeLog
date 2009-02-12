@@ -44,21 +44,7 @@
 
 	* bin/repl.vbs: encapsulated runtime environment by ScriptControl.
 
-2009-01-18  TOKI Yoshinori  <toki@freedom.ne.jp>
-
-	* GetProcessInfo.wsf: Process Information tool.
-
-	* wmiutils.vbs: DefinedObjectProperty Function. GetObjectProperty
-	Function. ObjectPropertyCompare Class.
-
-	* wmiutils.vbs: WMIServiceInstancesOf Function, ShowObjectProperty
-	Function, MessageWriter Object, Sort Subroutines.
-
 2009-01-17  TOKI Yoshinori  <toki@freedom.ne.jp>
-
-	* GetCPUInfo.wsf: CPU Information tool.
-
-	* wmiutils.vbs: WMI Utilities.
 
 	* repl.vbs: Read Eval Print Loop.
 
