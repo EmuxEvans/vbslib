@@ -162,6 +162,64 @@ Sub TestValueFilter
   Assert Not f("bar")
 End Sub
 
+Sub TestValueCompare_Equal
+  Dim comp
+  Set comp = ValueCompare("eq", "Banana", GetRef("StrComp_"))
+
+  Assert Not comp("Apple")
+  Assert comp("Banana")
+  Assert Not comp("Orange")
+End Sub
+
+Sub TestValueCompare_GreaterThan
+  Dim comp
+  Set comp = ValueCompare("gt", "Banana", GetRef("StrComp_"))
+
+  Assert Not comp("Apple")
+  Assert Not comp("Banana")
+  Assert comp("Orange")
+End Sub
+
+Sub TestValueCompare_GreaterThanEqual
+  Dim comp
+  Set comp = ValueCompare("ge", "Banana", GetRef("StrComp_"))
+
+  Assert Not comp("Apple")
+  Assert comp("Banana")
+  Assert comp("Orange")
+End Sub
+
+Sub TestValueCompare_LessThan
+  Dim comp
+  Set comp = ValueCompare("lt", "Banana", GetRef("StrComp_"))
+
+  Assert comp("Apple")
+  Assert Not comp("Banana")
+  Assert Not comp("Orange")
+End Sub
+
+Sub TestValueCompare_LessThanEqual
+  Dim comp
+  Set comp = ValueCompare("le", "Banana", GetRef("StrComp_"))
+
+  Assert comp("Apple")
+  Assert comp("Banana")
+  Assert Not comp("Orange")
+End Sub
+
+Sub TestValueCompare_UnknownOperatorType
+  Dim comp, errNum, errSrc
+  On Error Resume Next
+  Set comp = ValueCompare("foo", "Banana", GetRef("StrComp_"))
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 5, errNum
+  AssertEqual "stdlib.vbs:ValueCompare", errSrc
+End Sub
+
 Sub TestNotCond
   Dim cond
   Set cond = NotCond(ValueEqual("foo"))
