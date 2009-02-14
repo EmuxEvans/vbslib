@@ -43,16 +43,16 @@ Sub TestValueDictionaryItem
   AssertEqual "Banana", func(d)
 End Sub
 
-Sub TestNumberCompare_LessThan
-  Assert NumberCompare(1, 2) < 0
+Sub TestNumericCompare_LessThan
+  Assert NumericCompare(1, 2) < 0
 End Sub
 
-Sub TestNumberCompare_Equal
-  Assert NumberCompare(1, 1) = 0
+Sub TestNumericCompare_Equal
+  Assert NumericCompare(1, 1) = 0
 End Sub
 
-Sub TestNumberCompare_GreaterThan
-  Assert NumberCompare(2, 1) > 0
+Sub TestNumericCompare_GreaterThan
+  Assert NumericCompare(2, 1) > 0
 End Sub
 
 Sub TestObjectPropertyCompare_LessThan
@@ -60,7 +60,7 @@ Sub TestObjectPropertyCompare_LessThan
   Dim b: Set b = New Foo: b.Name = "Banana"
 
   Dim comp
-  Set comp = ObjectPropertyCompare("Name", GetRef("TextStringCompare"))
+  Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
 
   Assert comp(a, b) < 0
 End Sub
@@ -70,7 +70,7 @@ Sub TestObjectPropertyCompare_Equal
   Dim b: Set b = New Foo: b.Name = "Apple"
 
   Dim comp
-  Set comp = ObjectPropertyCompare("Name", GetRef("TextStringCompare"))
+  Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
 
   Assert comp(a, b) = 0
 End Sub
@@ -80,7 +80,7 @@ Sub TestObjectPropertyCompare_GreaterThan
   Dim b: Set b = New Foo: b.Name = "Apple"
 
   Dim comp
-  Set comp = ObjectPropertyCompare("Name", GetRef("TextStringCompare"))
+  Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
 
   Assert comp(a, b) > 0
 End Sub
@@ -175,6 +175,7 @@ Sub TestAndCond
   Assert Not cond("foo")
   Assert Not cond("bar")
   Assert cond("foo, bar")
+  Assert Not cond("baz")
 End Sub
 
 Sub TestOrCond
@@ -182,6 +183,7 @@ Sub TestOrCond
   Set cond = OrCond(ValueMatch(re("foo", "")), ValueMatch(re("bar", "")))
   Assert cond("foo")
   Assert cond("bar")
+  Assert cond("foo, bar")
   Assert Not cond("baz")
 End Sub
 
