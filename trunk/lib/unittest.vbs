@@ -53,7 +53,7 @@ Class UnitTest_Assertion
       Dim errMsg
       errMsg = "AssertSame NG: expected <" & TypeName(expected) & "> but was <" & TypeName(actual) & ">."
       If Not IsEmpty(message) Then
-        errMsg = errMsg & "[" & message & "]"
+        errMsg = errMsg & " [" & message & "]"
       End If
       Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
     End If
@@ -75,7 +75,7 @@ Class UnitTest_Assertion
       Dim errMsg
       errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
       If Not IsEmpty(message) Then
-        errMsg = errMsg & "[" & message & "]"
+        errMsg = errMsg & " [" & message & "]"
       End If
       Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
     End If
@@ -89,7 +89,7 @@ Class UnitTest_Assertion
     Dim errMsg
     errMsg = "AssertFail NG."
     If Not IsEmpty(message) Then
-      errMsg = errMsg & "[" & message & "]"
+      errMsg = errMsg & " [" & message & "]"
     End If
     Err.Raise RuntimeError, UNITTEST_ASSERT_SOURCE_KEYWORD, errMsg
   End Sub
