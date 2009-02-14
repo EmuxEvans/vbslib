@@ -48,7 +48,8 @@ Sub TestGetObjectProperty_NoProperty
   Dim v, errNum
   On Error Resume Next
   v = GetObjectProperty(obj_bar, "Baz")
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 438, errNum
@@ -63,7 +64,8 @@ Sub TestSetObjectProperty_ValueNoProperty
   Dim errNum
   On Error Resume Next
   SetObjectProperty obj_foo, "Baz", "Hello world."
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 438, errNum
@@ -78,7 +80,8 @@ Sub TestSetObjectProperty_ObjectNoProperty
   Dim errNum
   On Error Resume Next
   SetObjectProperty obj_foo, "Baz", obj_bar
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 438, errNum

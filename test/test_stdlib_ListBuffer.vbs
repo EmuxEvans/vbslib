@@ -43,23 +43,29 @@ Sub TestListBuffer_GetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add obj
 
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   listBuf(3)
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Get)", errSrc
 End Sub
 
 Sub TestListBuffer_GetItemEmpty
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   listBuf(0)
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Get)", errSrc
 End Sub
 
 Sub TestListBuffer_LetItem
@@ -80,23 +86,29 @@ Sub TestListBuffer_LetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add obj
 
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   listBuf(3) = "baz"
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Let)", errSrc
 End Sub
 
 Sub TestListBuffer_LetItemEmpty
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   listBuf(0) = "foo"
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Let)", errSrc
 End Sub
 
 Sub TestListBuffer_SetItem
@@ -117,23 +129,29 @@ Sub TestListBuffer_SetItemOutOfRange
   listBuf.Add "bar"
   listBuf.Add obj
 
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   Set listBuf(3) = Nothing
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Set)", errSrc
 End Sub
 
 Sub TestListBuffer_SetItemEmpty
-  Dim errNum
+  Dim errNum, errSrc
   On Error Resume Next
   Set listBuf(0) = Nothing
-  errNum = Err.Number: Err.Clear
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
 
   AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.Item(Set)", errSrc
 End Sub
 
 Sub TestListBuffer_Items
