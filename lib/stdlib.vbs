@@ -1035,6 +1035,34 @@ Function ValueDictionaryItem(key)
       GetFuncProcSubset(GetRef("GetDictionaryItem"), 2, Array(key))
 End Function
 
+Function Add(number1, number2)
+  Add = number1 + number2
+End Function
+
+Function Subtract(number1, number2)
+  Subtract = number1 - number2
+End Function
+
+Function Multiply(number1, number2)
+  Multiply = number1 * number2
+End Function
+
+Function Divide(number1, number2)
+  Divide = number1 / number2
+End Function
+
+Function Mod_(number1, number2)
+  Mod_ = number1 Mod number2
+End Function
+
+Function Power(number, exponent)
+  Power = number ^ exponent
+End Function
+
+Function Concat(string1, string2)
+  Concat = string1 & string2
+End Function
+
 
 '======================================
 '################ sort ################
