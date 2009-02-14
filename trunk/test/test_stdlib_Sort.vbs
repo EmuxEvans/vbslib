@@ -23,22 +23,10 @@ Sub TestSwapArrayItem_ObjectAndObject
   AssertSame obj1, a(1)
 End Sub
 
-Sub TestNumberCompare_Equal
-  Assert NumberCompare(1, 1) = 0
-End Sub
-
-Sub TestNumberCompare_Greater
-  Assert NumberCompare(2, 1) > 0
-End Sub
-
-Sub TestNumberCompare_Less
-  Assert NumberCompare(1, 2) < 0
-End Sub
-
 Sub TestSort_1
   Dim a(0)
   a(0) = 0
-  Sort a, GetRef("NumberCompare")
+  Sort a, GetRef("NumericCompare")
   AssertEqual 0, a(0)
 End Sub
 
@@ -46,7 +34,7 @@ Sub TestSort_2
   Dim a(1)
   a(0) = 1
   a(1) = 0
-  Sort a, GetRef("NumberCompare")
+  Sort a, GetRef("NumericCompare")
   AssertEqual 0, a(0)
   AssertEqual 1, a(1)
 End Sub
@@ -56,7 +44,7 @@ Sub TestSort_3
   a(0) = 1
   a(1) = 3
   a(2) = 0
-  Sort a, GetRef("NumberCompare")
+  Sort a, GetRef("NumericCompare")
   AssertEqual 0, a(0)
   AssertEqual 1, a(1)
   AssertEqual 3, a(2)
@@ -72,7 +60,7 @@ Sub TestSort_Many
     a(i) = Int(Rnd * COUNT_OF_MANY_ITEMS)
   Next
 
-  Sort a, GetRef("NumberCompare")
+  Sort a, GetRef("NumericCompare")
 
   For i = 0 To COUNT_OF_MANY_ITEMS - 2
     Assert a(i) <= a(i + 1)
@@ -87,8 +75,8 @@ Sub TestSort_SortedList
     a(i) = Int(Rnd * COUNT_OF_MANY_ITEMS)
   Next
 
-  Sort a, GetRef("NumberCompare")
-  Sort a, GetRef("NumberCompare")
+  Sort a, GetRef("NumericCompare")
+  Sort a, GetRef("NumericCompare")
 
   For i = 0 To COUNT_OF_MANY_ITEMS - 2
     Assert a(i) <= a(i + 1)
