@@ -224,347 +224,6 @@ Function ShowValue(value)
 End Function
 
 
-'===========================================
-'################ list tool ################
-'-------------------------------------------
-
-Function Find(list, cond)
-  Dim i
-  For Each i In list
-    If cond(i) Then
-      Bind Find, i
-      Exit Function
-    End If
-  Next
-End Function
-
-Function FindPos(list, cond)
-  Dim pos, i
-  pos = 0
-  For Each i In list
-    If cond(i) Then
-      FindPos = pos
-      Exit Function
-    End If
-    pos = pos + 1
-  Next
-End Function
-
-Function FindAll(list, cond)
-  Dim findList, i
-  Set findList = New ListBuffer
-  For Each i In list
-    If cond(i) Then
-      findList.Add i
-    End If
-  Next
-  FindAll = findList.Items
-End Function
-
-Function Equal(expected, value)
-  If value = expected Then
-    Equal = True
-  Else
-    Equal = False
-  End If
-End Function
-
-Function ValueEqual(expected)
-  Set ValueEqual = _
-      GetFuncProcSubset(GetRef("Equal"), 2, Array(expected))
-End Function
-
-Function GreaterThan(lowerBound, value)
-  If value > lowerBound Then
-    GreaterThan = True
-  Else
-    GreaterThan = False
-  End If
-End Function
-
-Function GreaterThanEqual(lowerBound, value)
-  If value >= lowerBound Then
-    GreaterThanEqual = True
-  Else
-    GreaterThanEqual = False
-  End If
-End Function
-
-Function ValueGreaterThan(lowerBound, exclude)
-  If exclude Then
-    Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThan"), 2, Array(lowerBound))
-  Else
-    Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, Array(lowerBound))
-  End If
-End Function
-
-Function LessThan(upperBound, value)
-  If value < upperBound Then
-    LessThan = True
-  Else
-    LessThan = False
-  End If
-End Function
-
-Function LessThanEqual(upperBound, value)
-  If value <= upperBound Then
-    LessThanEqual = True
-  Else
-    LessThanEqual = False
-  End If
-End Function
-
-Function ValueLessThan(upperBound, exclude)
-  If exclude Then
-    Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThan"), 2, Array(upperBound))
-  Else
-    Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThanEqual"), 2, Array(upperBound))
-  End If
-End Function
-
-Function Between(lowerBound, upperBound, value)
-  If (lowerBound <= value) And (value <= upperBound) Then
-    Between = True
-  Else
-    Between = False
-  End If
-End Function
-
-Function BetweenExcludeUpperBound(lowerBound, upperBound, value)
-  If (lowerBound <= value) And (value < upperBound) Then
-    BetweenExcludeUpperBound = True
-  Else
-    BetweenExcludeUpperBound = False
-  End If
-End Function
-
-Function ValueBetween(lowerBound, upperBound, exclude)
-  If exclude Then
-    Set ValueBetween = _
-        GetFuncProcSubset(GetRef("BetweenExcludeUpperBound"), 3, Array(lowerBound, upperBound))
-  Else
-    Set ValueBetween = _
-        GetFuncProcSubset(GetRef("Between"), 3, Array(lowerBound, upperBound))
-  End If
-End Function
-
-Function ValueMatch(regex)
-  Set ValueMatch = GetObjectMethodFuncProc(regex, "Test", 1)
-End Function
-
-Function ValueFilterFunc(filter, cond, value)
-  ValueFilterFunc = cond(filter(value))
-End Function
-
-Function ValueFilter(filter, cond)
-  Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, cond))
-End Function
-
-Function NotFunc(cond, value)
-  If Not cond(value) Then
-    NotFunc = True
-  Else
-    NotFunc = False
-  End If
-End Function
-
-Function NotCond(cond)
-  Set NotCond = GetFuncProcSubset(GetRef("NotFunc"), 2, Array(cond))
-End Function
-
-Function AndFunc(cond1, cond2, value)
-  If cond1(value) And cond2(value) Then
-    AndFunc = True
-  Else
-    AndFunc = False
-  End If
-End Function
-
-Function AndCond(cond1, cond2)
-  Set AndCond = GetFuncProcSubset(GetRef("AndFunc"), 3, Array(cond1, cond2))
-End Function
-
-Function OrFunc(cond1, cond2, value)
-  If cond1(value) Or cond2(value) Then
-    OrFunc = True
-  Else
-    OrFunc = False
-  End If
-End Function
-
-Function OrCond(cond1, cond2)
-  Set OrCond = GetFuncProcSubset(GetRef("OrFunc"), 3, Array(cond1, cond2))
-End Function
-
-Function Max(list, compare)
-  Dim first
-  first = True
-
-  Dim x, maxValue
-  For Each x In list
-    If first Then
-      Bind maxValue, x
-    Else
-      If compare(x, maxValue) > 0 Then
-        Bind maxValue, x
-      End If
-    End If
-    first = False
-  Next
-
-  Bind Max, maxValue
-End Function
-
-Function Min(list, compare)
-  Dim first
-  first = True
-
-  Dim x, minValue
-  For Each x In list
-    If first Then
-      Bind minValue, x
-    Else
-      If compare(x, minValue) < 0 Then
-        Bind minValue, x
-      End If
-    End If
-    first = False
-  Next
-
-  Bind Min, minValue
-End Function
-
-Function NumberCompare(a, b)
-  NumberCompare = a - b
-End Function
-
-Function TextStringCompare(a, b)
-  TextStringCompare = StrComp(a, b, vbTextCompare)
-End Function
-
-Function BinaryStringCompare(a, b)
-  BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
-End Function
-
-Function ObjectPropertyCompareFunc(propName, propComp, a, b)
-  ObjectPropertyCompareFunc = propComp(GetObjectProperty(a, propName), _
-                                       GetObjectProperty(b, propName))
-End Function
-
-Function ObjectPropertyCompare(propertyName, propertyCompare)
-  Set ObjectPropertyCompare = _
-      GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
-End Function
-
-Function Map(list, func)
-  Dim newList, i
-  Set newList = New ListBuffer
-  For Each i In list
-    newList.Add func(i)
-  Next
-  Map = newList.Items
-End Function
-
-Function ValueReplace(regex, replace)
-  Set ValueReplace = _
-      GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, D(Array(1, replace)))
-End Function
-
-Function ValueObjectProperty(propertyName)
-  Set ValueObjectProperty = _
-      GetFuncProcSubset(GetRef("GetObjectProperty"), 2, D(Array(1, propertyName)))
-End Function
-
-Function GetDictionaryItem(key, dictionary)
-  If dictionary.Exists(key) Then
-    Bind GetDictionaryItem, dictionary(key)
-  End If
-End Function
-
-Function ValueDictionaryItem(key)
-  Set ValueDictionaryItem = _
-      GetFuncProcSubset(GetRef("GetDictionaryItem"), 2, Array(key))
-End Function
-
-' aliases of the VBScript functions to GetRef().
-Sub MapFunc_DefineAliases
-  Dim aliases
-  Set aliases = New ListBuffer
-
-  ' Data Type
-  aliases.Add Array("CBool", 1)
-  aliases.Add Array("CByte", 1)
-  aliases.Add Array("CCur", 1)
-  aliases.Add Array("CDate", 1)
-  aliases.Add Array("CDbl", 1)
-  aliases.Add Array("CInt", 1)
-  aliases.Add Array("CLng", 1)
-  aliases.Add Array("CSng", 1)
-  aliases.Add Array("CStr", 1)
-  aliases.Add Array("TypeName", 1)
-  aliases.Add Array("VarType", 1)
-
-  ' String
-  aliases.Add Array("Asc", 1)
-  aliases.Add Array("Chr", 1)
-  aliases.Add Array("Len", 1)
-  aliases.Add Array("LCase", 1)
-  aliases.Add Array("UCase", 1)
-  aliases.Add Array("Trim", 1)
-  aliases.Add Array("LTrim", 1)
-  aliases.Add Array("RTrim", 1)
-  aliases.Add Array("Space", 1)
-  aliases.Add Array("StrReverse", 1)
-
-  ' Number
-  aliases.Add Array("Hex", 1)
-  aliases.Add Array("Oct", 1)
-  aliases.Add Array("Sgn", 1)
-  aliases.Add Array("Int", 1)
-  aliases.Add Array("Fix", 1)
-
-  ' DateTime
-  aliases.Add Array("DateValue", 1)
-  aliases.Add Array("TimeValue", 1)
-  aliases.Add Array("Year", 1)
-  aliases.Add Array("Day", 1)
-  aliases.Add Array("Month", 1)
-  aliases.Add Array("Hour", 1)
-  aliases.Add Array("Minute", 1)
-  aliases.Add Array("Second", 1)
-
-  ' Eval
-  aliases.Add Array("Eval", 1)
-  aliases.Add Array("GetRef", 1)
-
-  Dim aliasPair, aliasExpr, name, argCount, argList, sep, i
-  For Each aliasPair In aliases.Items
-    name = aliasPair(0)
-    argCount = aliasPair(1)
-
-    argList = ""
-    sep = ""
-    For i = 0 To argCount - 1
-      argList = argList & sep & "arg" & i
-      sep = ", "
-    Next
-
-    Set aliasExpr = New ListBuffer
-    aliasExpr.Add "Function " & name & "_(" & argList & ")"
-    aliasExpr.Add "  Bind " & name & "_, " & name & "(" & argList & ")"
-    aliasExpr.Add "End Function"
-
-    ExecuteGlobal Join(aliasExpr.Items, vbNewLine)
-  Next
-End Sub
-
-MapFunc_DefineAliases
-
-
 '=================================================
 '################ object accessor ################
 '-------------------------------------------------
@@ -948,6 +607,347 @@ Function GetFuncProcSubset(proc, argCount, params)
 
   Set GetFuncProcSubset = subset
 End Function
+
+
+'===========================================
+'################ list tool ################
+'-------------------------------------------
+
+Function Find(list, cond)
+  Dim i
+  For Each i In list
+    If cond(i) Then
+      Bind Find, i
+      Exit Function
+    End If
+  Next
+End Function
+
+Function FindPos(list, cond)
+  Dim pos, i
+  pos = 0
+  For Each i In list
+    If cond(i) Then
+      FindPos = pos
+      Exit Function
+    End If
+    pos = pos + 1
+  Next
+End Function
+
+Function FindAll(list, cond)
+  Dim findList, i
+  Set findList = New ListBuffer
+  For Each i In list
+    If cond(i) Then
+      findList.Add i
+    End If
+  Next
+  FindAll = findList.Items
+End Function
+
+Function Equal(expected, value)
+  If value = expected Then
+    Equal = True
+  Else
+    Equal = False
+  End If
+End Function
+
+Function ValueEqual(expected)
+  Set ValueEqual = _
+      GetFuncProcSubset(GetRef("Equal"), 2, Array(expected))
+End Function
+
+Function GreaterThan(lowerBound, value)
+  If value > lowerBound Then
+    GreaterThan = True
+  Else
+    GreaterThan = False
+  End If
+End Function
+
+Function GreaterThanEqual(lowerBound, value)
+  If value >= lowerBound Then
+    GreaterThanEqual = True
+  Else
+    GreaterThanEqual = False
+  End If
+End Function
+
+Function ValueGreaterThan(lowerBound, exclude)
+  If exclude Then
+    Set ValueGreaterThan = _
+        GetFuncProcSubset(GetRef("GreaterThan"), 2, Array(lowerBound))
+  Else
+    Set ValueGreaterThan = _
+        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, Array(lowerBound))
+  End If
+End Function
+
+Function LessThan(upperBound, value)
+  If value < upperBound Then
+    LessThan = True
+  Else
+    LessThan = False
+  End If
+End Function
+
+Function LessThanEqual(upperBound, value)
+  If value <= upperBound Then
+    LessThanEqual = True
+  Else
+    LessThanEqual = False
+  End If
+End Function
+
+Function ValueLessThan(upperBound, exclude)
+  If exclude Then
+    Set ValueLessThan = _
+        GetFuncProcSubset(GetRef("LessThan"), 2, Array(upperBound))
+  Else
+    Set ValueLessThan = _
+        GetFuncProcSubset(GetRef("LessThanEqual"), 2, Array(upperBound))
+  End If
+End Function
+
+Function Between(lowerBound, upperBound, value)
+  If (lowerBound <= value) And (value <= upperBound) Then
+    Between = True
+  Else
+    Between = False
+  End If
+End Function
+
+Function BetweenExcludeUpperBound(lowerBound, upperBound, value)
+  If (lowerBound <= value) And (value < upperBound) Then
+    BetweenExcludeUpperBound = True
+  Else
+    BetweenExcludeUpperBound = False
+  End If
+End Function
+
+Function ValueBetween(lowerBound, upperBound, exclude)
+  If exclude Then
+    Set ValueBetween = _
+        GetFuncProcSubset(GetRef("BetweenExcludeUpperBound"), 3, Array(lowerBound, upperBound))
+  Else
+    Set ValueBetween = _
+        GetFuncProcSubset(GetRef("Between"), 3, Array(lowerBound, upperBound))
+  End If
+End Function
+
+Function ValueMatch(regex)
+  Set ValueMatch = GetObjectMethodFuncProc(regex, "Test", 1)
+End Function
+
+Function ValueFilterFunc(filter, cond, value)
+  ValueFilterFunc = cond(filter(value))
+End Function
+
+Function ValueFilter(filter, cond)
+  Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, cond))
+End Function
+
+Function NotFunc(cond, value)
+  If Not cond(value) Then
+    NotFunc = True
+  Else
+    NotFunc = False
+  End If
+End Function
+
+Function NotCond(cond)
+  Set NotCond = GetFuncProcSubset(GetRef("NotFunc"), 2, Array(cond))
+End Function
+
+Function AndFunc(cond1, cond2, value)
+  If cond1(value) And cond2(value) Then
+    AndFunc = True
+  Else
+    AndFunc = False
+  End If
+End Function
+
+Function AndCond(cond1, cond2)
+  Set AndCond = GetFuncProcSubset(GetRef("AndFunc"), 3, Array(cond1, cond2))
+End Function
+
+Function OrFunc(cond1, cond2, value)
+  If cond1(value) Or cond2(value) Then
+    OrFunc = True
+  Else
+    OrFunc = False
+  End If
+End Function
+
+Function OrCond(cond1, cond2)
+  Set OrCond = GetFuncProcSubset(GetRef("OrFunc"), 3, Array(cond1, cond2))
+End Function
+
+Function Max(list, compare)
+  Dim first
+  first = True
+
+  Dim x, maxValue
+  For Each x In list
+    If first Then
+      Bind maxValue, x
+    Else
+      If compare(x, maxValue) > 0 Then
+        Bind maxValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Max, maxValue
+End Function
+
+Function Min(list, compare)
+  Dim first
+  first = True
+
+  Dim x, minValue
+  For Each x In list
+    If first Then
+      Bind minValue, x
+    Else
+      If compare(x, minValue) < 0 Then
+        Bind minValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Min, minValue
+End Function
+
+Function NumberCompare(a, b)
+  NumberCompare = a - b
+End Function
+
+Function TextStringCompare(a, b)
+  TextStringCompare = StrComp(a, b, vbTextCompare)
+End Function
+
+Function BinaryStringCompare(a, b)
+  BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
+End Function
+
+Function ObjectPropertyCompareFunc(propName, propComp, a, b)
+  ObjectPropertyCompareFunc = propComp(GetObjectProperty(a, propName), _
+                                       GetObjectProperty(b, propName))
+End Function
+
+Function ObjectPropertyCompare(propertyName, propertyCompare)
+  Set ObjectPropertyCompare = _
+      GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
+End Function
+
+Function Map(list, func)
+  Dim newList, i
+  Set newList = New ListBuffer
+  For Each i In list
+    newList.Add func(i)
+  Next
+  Map = newList.Items
+End Function
+
+Function ValueReplace(regex, replace)
+  Set ValueReplace = _
+      GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, D(Array(1, replace)))
+End Function
+
+Function ValueObjectProperty(propertyName)
+  Set ValueObjectProperty = _
+      GetFuncProcSubset(GetRef("GetObjectProperty"), 2, D(Array(1, propertyName)))
+End Function
+
+Function GetDictionaryItem(key, dictionary)
+  If dictionary.Exists(key) Then
+    Bind GetDictionaryItem, dictionary(key)
+  End If
+End Function
+
+Function ValueDictionaryItem(key)
+  Set ValueDictionaryItem = _
+      GetFuncProcSubset(GetRef("GetDictionaryItem"), 2, Array(key))
+End Function
+
+' aliases of the VBScript functions to GetRef().
+Sub MapFunc_DefineAliases
+  Dim aliases
+  Set aliases = New ListBuffer
+
+  ' Data Type
+  aliases.Add Array("CBool", 1)
+  aliases.Add Array("CByte", 1)
+  aliases.Add Array("CCur", 1)
+  aliases.Add Array("CDate", 1)
+  aliases.Add Array("CDbl", 1)
+  aliases.Add Array("CInt", 1)
+  aliases.Add Array("CLng", 1)
+  aliases.Add Array("CSng", 1)
+  aliases.Add Array("CStr", 1)
+  aliases.Add Array("TypeName", 1)
+  aliases.Add Array("VarType", 1)
+
+  ' String
+  aliases.Add Array("Asc", 1)
+  aliases.Add Array("Chr", 1)
+  aliases.Add Array("Len", 1)
+  aliases.Add Array("LCase", 1)
+  aliases.Add Array("UCase", 1)
+  aliases.Add Array("Trim", 1)
+  aliases.Add Array("LTrim", 1)
+  aliases.Add Array("RTrim", 1)
+  aliases.Add Array("Space", 1)
+  aliases.Add Array("StrReverse", 1)
+
+  ' Number
+  aliases.Add Array("Hex", 1)
+  aliases.Add Array("Oct", 1)
+  aliases.Add Array("Sgn", 1)
+  aliases.Add Array("Int", 1)
+  aliases.Add Array("Fix", 1)
+
+  ' DateTime
+  aliases.Add Array("DateValue", 1)
+  aliases.Add Array("TimeValue", 1)
+  aliases.Add Array("Year", 1)
+  aliases.Add Array("Day", 1)
+  aliases.Add Array("Month", 1)
+  aliases.Add Array("Hour", 1)
+  aliases.Add Array("Minute", 1)
+  aliases.Add Array("Second", 1)
+
+  ' Eval
+  aliases.Add Array("Eval", 1)
+  aliases.Add Array("GetRef", 1)
+
+  Dim aliasPair, aliasExpr, name, argCount, argList, sep, i
+  For Each aliasPair In aliases.Items
+    name = aliasPair(0)
+    argCount = aliasPair(1)
+
+    argList = ""
+    sep = ""
+    For i = 0 To argCount - 1
+      argList = argList & sep & "arg" & i
+      sep = ", "
+    Next
+
+    Set aliasExpr = New ListBuffer
+    aliasExpr.Add "Function " & name & "_(" & argList & ")"
+    aliasExpr.Add "  Bind " & name & "_, " & name & "(" & argList & ")"
+    aliasExpr.Add "End Function"
+
+    ExecuteGlobal Join(aliasExpr.Items, vbNewLine)
+  Next
+End Sub
+
+MapFunc_DefineAliases
 
 
 '======================================
