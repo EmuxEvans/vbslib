@@ -698,8 +698,7 @@ End Function
 '################ utility function ################
 '--------------------------------------------------
 
-' aliases of the VBScript functions to GetRef().
-Sub UtilityFunction_DefineAliases
+Sub UtilityFunction_DefineVBScriptFunctionAliases
   Dim aliases
   Set aliases = New ListBuffer
 
@@ -713,8 +712,20 @@ Sub UtilityFunction_DefineAliases
   aliases.Add Array("CLng", 1)
   aliases.Add Array("CSng", 1)
   aliases.Add Array("CStr", 1)
+  aliases.Add Array("IsArray", 1)
+  aliases.Add Array("IsDate", 1)
+  aliases.Add Array("IsEmpty", 1)
+  aliases.Add Array("IsNull", 1)
+  aliases.Add Array("IsNumeric", 1)
+  aliases.Add Array("IsObject", 1)
   aliases.Add Array("TypeName", 1)
   aliases.Add Array("VarType", 1)
+  aliases.Add Array(Array("LBound", "LBound"), 1)
+  aliases.Add Array(Array("LBound", "LBound1"), 1)
+  aliases.Add Array(Array("LBound", "LBound2"), 2)
+  aliases.Add Array(Array("UBound", "UBound"), 1)
+  aliases.Add Array(Array("UBound", "UBound1"), 1)
+  aliases.Add Array(Array("UBound", "UBound2"), 2)
 
   ' String
   aliases.Add Array("Asc", 1)
@@ -727,6 +738,39 @@ Sub UtilityFunction_DefineAliases
   aliases.Add Array("RTrim", 1)
   aliases.Add Array("Space", 1)
   aliases.Add Array("StrReverse", 1)
+  aliases.Add Array("Join", 2)
+  aliases.Add Array("Left", 2)
+  aliases.Add Array("LeftB", 2)
+  aliases.Add Array("Right", 2)
+  aliases.Add Array("RightB", 2)
+  aliases.Add Array("String", 2)
+  aliases.Add Array(Array("InStr", "InStr"), 2)
+  aliases.Add Array(Array("InStr", "InStr2"), 2)
+  aliases.Add Array(Array("InStr", "InStr3"), 3)
+  aliases.Add Array(Array("InStr", "InStr4"), 4)
+  aliases.Add Array(Array("InStrRev", "InStrRev"), 2)
+  aliases.Add Array(Array("InStrRev", "InStrRev2"), 2)
+  aliases.Add Array(Array("InStrRev", "InStrRev3"), 3)
+  aliases.Add Array(Array("InStrRev", "InStrRev4"), 4)
+  aliases.Add Array(Array("Mid", "Mid"), 2)
+  aliases.Add Array(Array("Mid", "Mid2"), 2)
+  aliases.Add Array(Array("Mid", "Mid3"), 3)
+  aliases.Add Array(Array("MidB", "MidB"), 2)
+  aliases.Add Array(Array("MidB", "MidB2"), 2)
+  aliases.Add Array(Array("MidB", "MidB3"), 3)
+  aliases.Add Array(Array("Replace", "Replace"), 3)
+  aliases.Add Array(Array("Replace", "Replace3"), 3)
+  aliases.Add Array(Array("Replace", "Replace4"), 4)
+  aliases.Add Array(Array("Replace", "Replace5"), 5)
+  aliases.Add Array(Array("Replace", "Replace6"), 6)
+  aliases.Add Array(Array("Split", "Split"), 1)
+  aliases.Add Array(Array("Split", "Split1"), 1)
+  aliases.Add Array(Array("Split", "Split2"), 2)
+  aliases.Add Array(Array("Split", "Split3"), 3)
+  aliases.Add Array(Array("Split", "Split4"), 4)
+  aliases.Add Array(Array("StrComp", "StrComp"), 2)
+  aliases.Add Array(Array("StrComp", "StrComp2"), 2)
+  aliases.Add Array(Array("StrComp", "StrComp3"), 3)
 
   ' Number
   aliases.Add Array("Hex", 1)
@@ -734,6 +778,20 @@ Sub UtilityFunction_DefineAliases
   aliases.Add Array("Sgn", 1)
   aliases.Add Array("Int", 1)
   aliases.Add Array("Fix", 1)
+  aliases.Add Array("Rnd", 1)
+  aliases.Add Array(Array("Round", "Round"), 1)
+  aliases.Add Array(Array("Round", "Round1"), 1)
+  aliases.Add Array(Array("Round", "Round2"), 2)
+
+  ' Math
+  aliases.Add Array("Abs", 1)
+  aliases.Add Array("Atan", 1)
+  aliases.Add Array("Cos", 1)
+  aliases.Add Array("Exp", 1)
+  aliases.Add Array("Log", 1)
+  aliases.Add Array("Sin", 1)
+  aliases.Add Array("Sqr", 1)
+  aliases.Add Array("Tan", 1)
 
   ' DateTime
   aliases.Add Array("DateValue", 1)
@@ -744,15 +802,45 @@ Sub UtilityFunction_DefineAliases
   aliases.Add Array("Hour", 1)
   aliases.Add Array("Minute", 1)
   aliases.Add Array("Second", 1)
+  aliases.Add Array("DateSerial", 3)
+  aliases.Add Array("TimeSerial", 3)
+  aliases.Add Array("DateAdd", 3)
+  aliases.Add Array("WeekdayName", 3)
+  aliases.Add Array(Array("DateDiff", "DateDiff"), 3)
+  aliases.Add Array(Array("DateDiff", "DateDiff3"), 3)
+  aliases.Add Array(Array("DateDiff", "DateDiff4"), 4)
+  aliases.Add Array(Array("DateDiff", "DateDiff5"), 5)
+  aliases.Add Array(Array("DatePart", "DatePart"), 2)
+  aliases.Add Array(Array("DatePart", "DatePart2"), 2)
+  aliases.Add Array(Array("DatePart", "DatePart3"), 3)
+  aliases.Add Array(Array("DatePart", "DatePart4"), 4)
+  aliases.Add Array(Array("MonthName", "MonthName"), 1)
+  aliases.Add Array(Array("MonthName", "MonthName1"), 1)
+  aliases.Add Array(Array("MonthName", "MonthName2"), 2)
+  aliases.Add Array(Array("Weekday", "Weekday"), 1)
+  aliases.Add Array(Array("Weekday", "Weekday2"), 1)
+  aliases.Add Array(Array("Weekday", "Weekday2"), 2)
 
   ' Eval
   aliases.Add Array("Eval", 1)
   aliases.Add Array("GetRef", 1)
+  aliases.Add Array(Array("CreateObject", "CreateObject"), 1)
+  aliases.Add Array(Array("CreateObject", "CreateObject1"), 1)
+  aliases.Add Array(Array("CreateObject", "CreateObject2"), 2)
+  aliases.Add Array(Array("GetObject", "GetObject"), 1)
+  aliases.Add Array(Array("GetObject", "GetObject2"), 2)
 
-  Dim aliasPair, aliasExpr, name, argCount, argList, sep, i
+  Dim aliasPair, aliasExpr, name, alias, argCount, argList, sep, i
   For Each aliasPair In aliases.Items
-    name = aliasPair(0)
-    argCount = aliasPair(1)
+    If IsArray(aliasPair(0)) Then
+      name = aliasPair(0)(0)
+      alias = aliasPair(0)(1)
+      argCount = aliasPair(1)
+    Else
+      name = aliasPair(0)
+      alias = aliasPair(0)
+      argCount = aliasPair(1)
+    End If
 
     argList = ""
     sep = ""
@@ -762,14 +850,14 @@ Sub UtilityFunction_DefineAliases
     Next
 
     Set aliasExpr = New ListBuffer
-    aliasExpr.Add "Function " & name & "_(" & argList & ")"
-    aliasExpr.Add "  Bind " & name & "_, " & name & "(" & argList & ")"
+    aliasExpr.Add "Function " & alias & "_(" & argList & ")"
+    aliasExpr.Add "  Bind " & alias & "_, " & name & "(" & argList & ")"
     aliasExpr.Add "End Function"
 
     ExecuteGlobal Join(aliasExpr.Items, vbNewLine)
   Next
 End Sub
-UtilityFunction_DefineAliases
+UtilityFunction_DefineVBScriptFunctionAliases
 
 Function Equal(expected, value)
   If value = expected Then
