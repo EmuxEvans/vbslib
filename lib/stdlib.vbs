@@ -860,11 +860,7 @@ End Sub
 UtilityFunction_DefineVBScriptFunctionAliases
 
 Function Equal(expected, value)
-  If value = expected Then
-    Equal = True
-  Else
-    Equal = False
-  End If
+  Equal = (value = expected)
 End Function
 
 Function ValueEqual(expected)
@@ -873,19 +869,11 @@ Function ValueEqual(expected)
 End Function
 
 Function GreaterThan(lowerBound, value)
-  If value > lowerBound Then
-    GreaterThan = True
-  Else
-    GreaterThan = False
-  End If
+  GreaterThan = value > lowerBound
 End Function
 
 Function GreaterThanEqual(lowerBound, value)
-  If value >= lowerBound Then
-    GreaterThanEqual = True
-  Else
-    GreaterThanEqual = False
-  End If
+  GreaterThanEqual = value >= lowerBound
 End Function
 
 Function ValueGreaterThan(lowerBound, exclude)
@@ -899,19 +887,11 @@ Function ValueGreaterThan(lowerBound, exclude)
 End Function
 
 Function LessThan(upperBound, value)
-  If value < upperBound Then
-    LessThan = True
-  Else
-    LessThan = False
-  End If
+  LessThan = value < upperBound
 End Function
 
 Function LessThanEqual(upperBound, value)
-  If value <= upperBound Then
-    LessThanEqual = True
-  Else
-    LessThanEqual = False
-  End If
+  LessThanEqual = value <= upperBound
 End Function
 
 Function ValueLessThan(upperBound, exclude)
@@ -925,19 +905,11 @@ Function ValueLessThan(upperBound, exclude)
 End Function
 
 Function Between(lowerBound, upperBound, value)
-  If (lowerBound <= value) And (value <= upperBound) Then
-    Between = True
-  Else
-    Between = False
-  End If
+  Between = (lowerBound <= value) And (value <= upperBound)
 End Function
 
 Function BetweenExcludeUpperBound(lowerBound, upperBound, value)
-  If (lowerBound <= value) And (value < upperBound) Then
-    BetweenExcludeUpperBound = True
-  Else
-    BetweenExcludeUpperBound = False
-  End If
+  BetweenExcludeUpperBound = (lowerBound <= value) And (value < upperBound)
 End Function
 
 Function ValueBetween(lowerBound, upperBound, exclude)
@@ -962,40 +934,28 @@ Function ValueFilter(filter, cond)
   Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, cond))
 End Function
 
-Function NotFunc(cond, value)
-  If Not cond(value) Then
-    NotFunc = True
-  Else
-    NotFunc = False
-  End If
+Function NotCondFunc(cond, value)
+  NotCondFunc = Not cond(value)
 End Function
 
 Function NotCond(cond)
-  Set NotCond = GetFuncProcSubset(GetRef("NotFunc"), 2, Array(cond))
+  Set NotCond = GetFuncProcSubset(GetRef("NotCondFunc"), 2, Array(cond))
 End Function
 
-Function AndFunc(cond1, cond2, value)
-  If cond1(value) And cond2(value) Then
-    AndFunc = True
-  Else
-    AndFunc = False
-  End If
+Function AndCondFunc(cond1, cond2, value)
+  AndCondFunc = cond1(value) And cond2(value)
 End Function
 
 Function AndCond(cond1, cond2)
-  Set AndCond = GetFuncProcSubset(GetRef("AndFunc"), 3, Array(cond1, cond2))
+  Set AndCond = GetFuncProcSubset(GetRef("AndCondFunc"), 3, Array(cond1, cond2))
 End Function
 
-Function OrFunc(cond1, cond2, value)
-  If cond1(value) Or cond2(value) Then
-    OrFunc = True
-  Else
-    OrFunc = False
-  End If
+Function OrCondFunc(cond1, cond2, value)
+  OrCondFunc = cond1(value) Or cond2(value)
 End Function
 
 Function OrCond(cond1, cond2)
-  Set OrCond = GetFuncProcSubset(GetRef("OrFunc"), 3, Array(cond1, cond2))
+  Set OrCond = GetFuncProcSubset(GetRef("OrCondFunc"), 3, Array(cond1, cond2))
 End Function
 
 Function NumberCompare(a, b)
