@@ -1,48 +1,6 @@
 ' stdlib.vbs: Map test.
 ' @import ../lib/stdlib.vbs
 
-Class Foo
-  Private ivar_bar
-
-  Public Property Get Bar
-    Bar = ivar_bar
-  End Property
-
-  Public Property Let Bar(value)
-    ivar_bar = value
-  End Property
-End Class
-
-Sub TestValueReplace
-  Dim func
-  Set func = ValueReplace(re("xyz", ""), "XYZ")
-  AssertEqual "abcXYZdef", func("abcxyzdef")
-End Sub
-
-Sub TestValueObjectProperty
-  Dim func
-  Set func = ValueObjectProperty("Bar")
-
-  Dim foo
-  Set foo = New Foo
-  foo.Bar = "Hello world."
-
-  AssertEqual "Hello world.", func(foo)
-End Sub
-
-Sub TestValueDictionaryItem
-  Dim func
-  Set func = ValueDictionaryItem("bar")
-
-  Dim d
-  Set d = CreateObject("Scripting.Dictionary")
-  d("foo") = "Apple"
-  d("bar") = "Banana"
-  d("baz") = "Orange"
-
-  AssertEqual "Banana", func(d)
-End Sub
-
 Sub TestMap_ValueReplace
   Dim a
   a = Map(Array("foo", "bar", "baz"), ValueReplace(re("ba", ""), "BA"))
