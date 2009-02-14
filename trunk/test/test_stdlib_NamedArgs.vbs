@@ -8,21 +8,29 @@ Sub TestGetNamedArgumentString_ExistsString
 End Sub
 
 Sub TestGetNamedArgumentString_ExistsEmpty
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentString("foo", D(Array("foo", Empty)), "Banana")
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentString", errSrc
 End Sub
 
 Sub TestGetNamedArgumentString_ExistsBool
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentString("foo", D(Array("foo", True)), "Banana")
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentString", errSrc
 End Sub
 
 Sub TestGetNamedArgumentString_Default
@@ -30,12 +38,16 @@ Sub TestGetNamedArgumentString_Default
 End Sub
 
 Sub TestGetNamedArgumentString_NoDefault
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentString("foo", D(Array()), Empty)
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentString", errSrc
 End Sub
 
 Sub TestGetNamedArgumentBool_ExistsTrue
@@ -51,12 +63,16 @@ Sub TestGetNamedArgumentBool_ExistsEmpty
 End Sub
 
 Sub TestGetNamedArgumentBool_ExistsString
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentBool("foo", D(Array("foo", "Apple")), Empty)
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentBool", errSrc
 End Sub
 
 Sub TestGetNamedArgumentBool_DefaultTrue
@@ -68,12 +84,16 @@ Sub TestGetNamedArgumentBool_DefaultFalse
 End Sub
 
 Sub TestGetNamedArgumentBool_NoDefault
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentBool("foo", D(Array()), Empty)
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentBool", errSrc
 End Sub
 
 Sub TestGetNamedArgumentSimple_Exists
@@ -85,12 +105,16 @@ Sub TestGetNamedArgumentSimple_NotExists
 End Sub
 
 Sub TestGetNamedArgumentSimple_ExistsValue
-  Dim optValue, errNum
+  Dim optValue, errNum, errSrc
   On Error Resume Next
   optValue = GetNamedArgumentSimple("foo", D(Array("foo", "Apple")))
   errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
   On Error GoTo 0
+
   AssertEqual RuntimeError, errNum
+  AssertEqual "stdlib.vbs:GetNamedArgumentSimple", errSrc
 End Sub
 
 ' Local Variables:
