@@ -82,80 +82,80 @@ Sub TearDown
   Set obj_foo = Nothing
 End Sub
 
-Sub TestInvokeObjectMethod0
-  InvokeObjectMethod obj_foo, "method0", Array()
+Sub TestExecObjectMethodFuncProc0
+  ExecObjectMethodFuncProc obj_foo, "method0", Array()
   AssertEqual 1, obj_foo.method0_countCall
 End Sub
 
-Sub TestInvokeObjectMethod0_manyCall
+Sub TestExecObjectMethodFuncProc0_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method0", Array()
+    ExecObjectMethodFuncProc obj_foo, "method0", Array()
   Next
   AssertEqual 100, obj_foo.method0_countCall
 End Sub
 
-Sub TestInvokeObjectMethod1
-  InvokeObjectMethod obj_foo, "method1", Array("a")
+Sub TestExecObjectMethodFuncProc1
+  ExecObjectMethodFuncProc obj_foo, "method1", Array("a")
   AssertEqual 1, obj_foo.method1_countCall
 End Sub
 
-Sub TestInvokeObjectMethod1_manyCall
+Sub TestExecObjectMethodFuncProc1_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method1", Array("a")
+    ExecObjectMethodFuncProc obj_foo, "method1", Array("a")
   Next
   AssertEqual 100, obj_foo.method1_countCall
 End Sub
 
-Sub TestInvokeObjectMethod2
-  InvokeObjectMethod obj_foo, "method2", Array("a", "b")
+Sub TestExecObjectMethodFuncProc2
+  ExecObjectMethodFuncProc obj_foo, "method2", Array("a", "b")
   AssertEqual 1, obj_foo.method2_countCall
 End Sub
 
-Sub TestInvokeObjectMethod2_manyCall
+Sub TestExecObjectMethodFuncProc2_manyCall
   Dim i
   For i = 1 To 100
-    InvokeObjectMethod obj_foo, "method2", Array("a", "b")
+    ExecObjectMethodFuncProc obj_foo, "method2", Array("a", "b")
   Next
   AssertEqual 100, obj_foo.method2_countCall
 End Sub
 
-Sub TestFuncallObjectMethod0
-  AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
+Sub TestExecObjectMethodFuncProc0
+  AssertEqual "func0", ExecObjectMethodFuncProc(obj_foo, "func0", Array())
   AssertEqual 1, obj_foo.func0_countCall
 End Sub
 
-Sub TestFuncallObjectMethod0_manyCall
+Sub TestExecObjectMethodFuncProc0_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func0", FuncallObjectMethod(obj_foo, "func0", Array())
+    AssertEqual "func0", ExecObjectMethodFuncProc(obj_foo, "func0", Array())
   Next
   AssertEqual 100, obj_foo.func0_countCall
 End Sub
 
-Sub TestFuncallObjectMethod1
-  AssertEqual "func1:a", FuncallObjectMethod(obj_foo, "func1", Array("a"))
+Sub TestExecObjectMethodFuncProc1
+  AssertEqual "func1:a", ExecObjectMethodFuncProc(obj_foo, "func1", Array("a"))
   AssertEqual 1, obj_foo.func1_countCall
 End Sub
 
-Sub TestFuncallObjectMethod1_manyCall
+Sub TestExecObjectMethodFuncProc1_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func1:a", FuncallObjectMethod(obj_foo, "func1", Array("a"))
+    AssertEqual "func1:a", ExecObjectMethodFuncProc(obj_foo, "func1", Array("a"))
   Next
   AssertEqual 100, obj_foo.func1_countCall
 End Sub
 
-Sub TestFuncallObjectMethod2
-  AssertEqual "func2:a,b", FuncallObjectMethod(obj_foo, "func2", Array("a", "b"))
+Sub TestExecObjectMethodFuncProc2
+  AssertEqual "func2:a,b", ExecObjectMethodFuncProc(obj_foo, "func2", Array("a", "b"))
   AssertEqual 1, obj_foo.func2_countCall
 End Sub
 
-Sub TestFuncallObjectMethod2_manyCall
+Sub TestExecObjectMethodFuncProc2_manyCall
   Dim i
   For i = 1 To 100
-    AssertEqual "func2:a,b", FuncallObjectMethod(obj_foo, "func2", Array("a", "b"))
+    AssertEqual "func2:a,b", ExecObjectMethodFuncProc(obj_foo, "func2", Array("a", "b"))
   Next
   AssertEqual 100, obj_foo.func2_countCall
 End Sub
