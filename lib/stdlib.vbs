@@ -551,8 +551,8 @@ Function ProcSubset_GetProcBuilder(argCount, paramIndexList)
   Set ProcSubset_GetProcBuilder = ProcSubset_ProcBuilderPool(key)
 End Function
 
-Dim ProcSubset_NumberCompare
-Set ProcSubset_NumberCompare = GetRef("NumberCompare")
+Dim ProcSubset_NumericCompare
+Set ProcSubset_NumericCompare = GetRef("NumericCompare")
 
 Function ProcSubset_BuildParamsPair(argCount, params)
   Dim paramIndexList, paramDict, i
@@ -572,7 +572,7 @@ Function ProcSubset_BuildParamsPair(argCount, params)
   End If
 
   paramIndexList = paramIndexList.Items
-  Sort paramIndexList, ProcSubset_NumberCompare
+  Sort paramIndexList, ProcSubset_NumericCompare
 
   ProcSubset_BuildParamsPair = Array(paramIndexList, paramDict)
 End Function
@@ -958,16 +958,8 @@ Function OrCond(cond1, cond2)
   Set OrCond = GetFuncProcSubset(GetRef("OrCondFunc"), 3, Array(cond1, cond2))
 End Function
 
-Function NumberCompare(a, b)
-  NumberCompare = a - b
-End Function
-
-Function TextStringCompare(a, b)
-  TextStringCompare = StrComp(a, b, vbTextCompare)
-End Function
-
-Function BinaryStringCompare(a, b)
-  BinaryStringCompare = StrComp(a, b, vbBinaryCompare)
+Function NumericCompare(a, b)
+  NumericCompare = a - b
 End Function
 
 Function ObjectPropertyCompareFunc(propName, propComp, a, b)
