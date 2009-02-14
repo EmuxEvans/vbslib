@@ -312,12 +312,12 @@ Function ObjectMethod_CreateHandler(name, argCount)
   Set classExpr = New ListBuffer
 
   classExpr.Add "Class " & className
-  classExpr.Add "  Public Sub InvokeMethod(obj, args)"
+  classExpr.Add "  Public Sub ExecSubProc(obj, args)"
   classExpr.Add "    obj." & name & " " & argList
   classExpr.Add "  End Sub"
   classExpr.Add ""
-  classExpr.Add "  Public Function FuncallMethod(obj, args)"
-  classExpr.Add "    Bind FuncallMethod, obj." & name & "(" & argList & ")"
+  classExpr.Add "  Public Function ExecFuncProc(obj, args)"
+  classExpr.Add "    Bind ExecFuncProc, obj." & name & "(" & argList & ")"
   classExpr.Add "  End Function"
   classExpr.Add "End Class"
 
@@ -333,30 +333,30 @@ Function ObjectMethod_GetHandler(name, argCount)
   Set ObjectMethod_GetHandler = ObjectMethod_HandlerPool(key)
 End Function
 
-Sub InvokeObjectMethod(obj, name, args)
-  Dim argCount, handler
+Sub ExecObjectMethodSubProc(obj, name, args)
+  Dim argCount, method
   If IsArray(args) Then
     argCount = UBound(args) + 1
   ElseIf IsObject(args) Then
     argCount = args.Count
   Else
-    Err.Raise 13, "stdlib.vbs:InvokeObjectMethod", "args is not Array."
+    Err.Raise 13, "stdlib.vbs:ExecObjectMethodSubProc", "args is not Array."
   End If
-  Set handler = ObjectMethod_GetHandler(name, argCount)
-  handler.InvokeMethod obj, args
+  Set method = ObjectMethod_GetHandler(name, argCount)
+  method.ExecSubProc obj, args
 End Sub
 
-Function FuncallObjectMethod(obj, name, args)
-  Dim argCount, handler
+Function ExecObjectMethodFuncProc(obj, name, args)
+  Dim argCount, method
   If IsArray(args) Then
     argCount = UBound(args) + 1
   ElseIf IsObject(args) Then
     argCount = args.Count
   Else
-    Err.Raise 13, "stdlib.vbs:FuncallObjectMethod", "args is not Array."
+    Err.Raise 13, "stdlib.vbs:ExecObjectMethodFuncProc", "args is not Array."
   End If
-  Set handler = ObjectMethod_GetHandler(name, argCount)
-  Bind FuncallObjectMethod, handler.FuncallMethod(obj, args)
+  Set method = ObjectMethod_GetHandler(name, argCount)
+  Bind ExecObjectMethodFuncProc, method.ExecFuncProc(obj, args)
 End Function
 
 Dim ObjectMethod_ProcBuilderPool
