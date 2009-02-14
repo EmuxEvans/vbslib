@@ -87,18 +87,18 @@ Sub TestSetObjectProperty_ObjectNoProperty
   AssertEqual 438, errNum
 End Sub
 
-Sub TestExistsObjectProperty_Exists
-  AssertEqual True, ExistsObjectProperty(obj_foo, "Bar")
+Sub TestObjectPropertyExists_Exists
+  AssertEqual True, ObjectPropertyExists(obj_foo, "Bar")
 End Sub
 
-Sub TestExistsObjectProperty_NotExists
-  AssertEqual False, ExistsObjectProperty(obj_foo, "Baz")
+Sub TestObjectPropertyExists_NotExists
+  AssertEqual False, ObjectPropertyExists(obj_foo, "Baz")
 End Sub
 
 Sub TestObjectPropertyUpDownCase
   SetObjectProperty obj_foo, "bar", "Hello world."
   AssertEqual "Hello world.", GetObjectProperty(obj_foo, "BAR")
-  AssertEqual True, ExistsObjectProperty(obj_foo, "bAr")
+  AssertEqual True, ObjectPropertyExists(obj_foo, "bAr")
 End Sub
 
 ' Local Variables:

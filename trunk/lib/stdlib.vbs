@@ -270,16 +270,16 @@ Sub SetObjectProperty(obj, name, value)
   BindAt ObjectProperty_GetAccessor(name), obj, value
 End Sub
 
-Function ExistsObjectProperty(obj, name)
+Function ObjectPropertyExists(obj, name)
   On Error Resume Next
   ObjectProperty_GetAccessor(name)(obj)
   Select Case Err.Number
     Case 0:
       Err.Clear
-      ExistsObjectProperty = True
+      ObjectPropertyExists = True
     Case 438:
       Err.Clear
-      ExistsObjectProperty = False
+      ObjectPropertyExists = False
     Case Else:
       Dim errNum, errSrc, errDsc
       errNum = Err.Number
