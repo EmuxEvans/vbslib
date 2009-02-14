@@ -646,6 +646,58 @@ Function FindAll(list, cond)
   FindAll = findList.Items
 End Function
 
+Function Max(list, compare)
+  Dim first
+  first = True
+
+  Dim x, maxValue
+  For Each x In list
+    If first Then
+      Bind maxValue, x
+    Else
+      If compare(x, maxValue) > 0 Then
+        Bind maxValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Max, maxValue
+End Function
+
+Function Min(list, compare)
+  Dim first
+  first = True
+
+  Dim x, minValue
+  For Each x In list
+    If first Then
+      Bind minValue, x
+    Else
+      If compare(x, minValue) < 0 Then
+        Bind minValue, x
+      End If
+    End If
+    first = False
+  Next
+
+  Bind Min, minValue
+End Function
+
+Function Map(list, func)
+  Dim newList, i
+  Set newList = New ListBuffer
+  For Each i In list
+    newList.Add func(i)
+  Next
+  Map = newList.Items
+End Function
+
+
+'==================================================
+'################ utility function ################
+'--------------------------------------------------
+
 Function Equal(expected, value)
   If value = expected Then
     Equal = True
@@ -785,44 +837,6 @@ Function OrCond(cond1, cond2)
   Set OrCond = GetFuncProcSubset(GetRef("OrFunc"), 3, Array(cond1, cond2))
 End Function
 
-Function Max(list, compare)
-  Dim first
-  first = True
-
-  Dim x, maxValue
-  For Each x In list
-    If first Then
-      Bind maxValue, x
-    Else
-      If compare(x, maxValue) > 0 Then
-        Bind maxValue, x
-      End If
-    End If
-    first = False
-  Next
-
-  Bind Max, maxValue
-End Function
-
-Function Min(list, compare)
-  Dim first
-  first = True
-
-  Dim x, minValue
-  For Each x In list
-    If first Then
-      Bind minValue, x
-    Else
-      If compare(x, minValue) < 0 Then
-        Bind minValue, x
-      End If
-    End If
-    first = False
-  Next
-
-  Bind Min, minValue
-End Function
-
 Function NumberCompare(a, b)
   NumberCompare = a - b
 End Function
@@ -843,15 +857,6 @@ End Function
 Function ObjectPropertyCompare(propertyName, propertyCompare)
   Set ObjectPropertyCompare = _
       GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
-End Function
-
-Function Map(list, func)
-  Dim newList, i
-  Set newList = New ListBuffer
-  For Each i In list
-    newList.Add func(i)
-  Next
-  Map = newList.Items
 End Function
 
 Function ValueReplace(regex, replace)
