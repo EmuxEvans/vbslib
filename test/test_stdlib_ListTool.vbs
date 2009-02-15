@@ -1,6 +1,40 @@
 ' stdlib.vbs: List tool test.
 ' @import ../lib/stdlib.vbs
 
+Sub TestFirstItem_Found
+  AssertEqual "foo", FirstItem(Array("foo", "bar", "baz"))
+End Sub
+
+Sub TestFirstItem_NotFound
+  Dim errNum, errSrc
+  On Error Resume Next
+  FirstItem(Array())
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:FirstItem", errSrc
+End Sub
+
+Sub TestLastItem_Found
+  AssertEqual "baz", LastItem(Array("foo", "bar", "baz"))
+End Sub
+
+Sub TestLastItem_NotFound
+  Dim errNum, errSrc
+  On Error Resume Next
+  LastItem(Array())
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:LastItem", errSrc
+End Sub
+
 Sub TestFind_Found
   AssertEqual "bar", Find(Array("foo", "bar", "baz"), ValueEqual("bar"))
 End Sub

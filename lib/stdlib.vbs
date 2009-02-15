@@ -613,6 +613,27 @@ End Function
 '################ list tool ################
 '-------------------------------------------
 
+Function FirstItem(list)
+  Dim i
+  For Each i In list
+    Bind FirstItem, i
+    Exit Function
+  Next
+  Err.Raise 9, "stdlib.vbs:FirstItem", "empty list."
+End Function
+
+Function LastItem(list)
+  Dim found, i
+  found = False
+  For Each i In list
+    Bind LastItem, i
+    found = True
+  Next
+  If Not found Then
+    Err.Raise 9, "stdlib.vbs:LastItem", "empty list."
+  End If
+End Function
+
 Function Find(list, cond)
   Dim i
   For Each i In list
