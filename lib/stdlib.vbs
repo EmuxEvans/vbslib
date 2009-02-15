@@ -654,12 +654,12 @@ Function Max(list, compare)
   For Each x In list
     If first Then
       Bind maxValue, x
+      first = False
     Else
       If compare(x, maxValue) > 0 Then
         Bind maxValue, x
       End If
     End If
-    first = False
   Next
 
   Bind Max, maxValue
@@ -673,12 +673,12 @@ Function Min(list, compare)
   For Each x In list
     If first Then
       Bind minValue, x
+      first = False
     Else
       If compare(x, minValue) < 0 Then
         Bind minValue, x
       End If
     End If
-    first = False
   Next
 
   Bind Min, minValue
