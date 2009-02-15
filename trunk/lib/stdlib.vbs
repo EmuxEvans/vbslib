@@ -110,7 +110,7 @@ Class ListBuffer
   Public Sub Add(value)
     Dim nextIndex
     nextIndex = ivar_dict.Count
-    BindAt ivar_dict, nextIndex, value
+    ivar_dict.Add nextIndex, value
   End Sub
 
   Public Sub Append(list)
@@ -257,7 +257,7 @@ End Function
 Function ObjectProperty_GetAccessor(name)
   Dim key: key = UCase(name)
   If Not ObjectProperty_AccessorPool.Exists(key) Then
-    Set ObjectProperty_AccessorPool(key) = ObjectProperty_CreateAccessor(name)
+    ObjectProperty_AccessorPool.Add key, ObjectProperty_CreateAccessor(name)
   End If
   Set ObjectProperty_GetAccessor = ObjectProperty_AccessorPool(key)
 End Function
@@ -328,7 +328,7 @@ End Function
 Function ObjectMethod_GetHandler(name, argCount)
   Dim key: key = UCase(name) & "_" & argCount
   If Not ObjectMethod_HandlerPool.Exists(key) Then
-    Set ObjectMethod_HandlerPool(key) = ObjectMethod_CreateHandler(name, argCount)
+    ObjectMethod_HandlerPool.Add key, ObjectMethod_CreateHandler(name, argCount)
   End If
   Set ObjectMethod_GetHandler = ObjectMethod_HandlerPool(key)
 End Function
@@ -421,7 +421,7 @@ End Function
 Function ObjectMethod_GetProcBuilder(name, argCount)
   Dim key: key = UCase(name) & "_" & argCount
   If Not ObjectMethod_ProcBuilderPool.Exists(key) Then
-    Set ObjectMethod_ProcBuilderPool(key) = ObjectMethod_CreateProcBuilder(name, argCount)
+    ObjectMethod_ProcBuilderPool.Add key, ObjectMethod_CreateProcBuilder(name, argCount)
   End If
   Set ObjectMethod_GetProcBuilder = ObjectMethod_ProcBuilderPool(key)
 End Function
@@ -546,7 +546,7 @@ Function ProcSubset_GetProcBuilder(argCount, paramIndexList)
   Dim key
   key = "arg" & argCount & "_" & Join(paramIndexList, "_")
   If Not ProcSubset_ProcBuilderPool.Exists(key) Then
-    Set ProcSubset_ProcBuilderPool(key) = ProcSubset_CreateProcBuilder(argCount, paramIndexList)
+    ProcSubset_ProcBuilderPool.Add key, ProcSubset_CreateProcBuilder(argCount, paramIndexList)
   End If
   Set ProcSubset_GetProcBuilder = ProcSubset_ProcBuilderPool(key)
 End Function
