@@ -124,7 +124,7 @@ For Each testProc In testProcList
   testProc.SetUp
   If Err.Number <> 0 Then
     testStat = "E"
-    errorList.Add Array(testProc, "SetUp Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+    errorList.Add Array(testProc, "SetUp Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
   End If
 
   If Err.Number = 0 Then
@@ -135,7 +135,7 @@ For Each testProc In testProcList
         errorList.Add Array(testProc, "Assertion Failed: " & Err.Description)
       Else
         testStat = "E"
-        errorList.Add Array(testProc, "Test Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+        errorList.Add Array(testProc, "Test Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
       End If
     End If
   End If
@@ -144,7 +144,7 @@ For Each testProc In testProcList
   testProc.TearDown
   If Err.Number <> 0 Then
     testStat = "E"
-    errorList.Add Array(testProc, "TearDown Error: " & Err.Number & " " & Err.Description & " (" & Err.Source & ")")
+    errorList.Add Array(testProc, "TearDown Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
   End If
 
   On Error GoTo 0
