@@ -9,6 +9,7 @@ These jobs are defined.
 
     ListJob
     ListWmiObject
+    WatchEventLog
 </description>
 <example>
 EXAMPLE: cscript tool.wsf
@@ -95,6 +96,47 @@ For Each obj In klass.Instances_
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
+
+]]></script>
+</job>
+
+<job id="WatchEventLog">
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+WScript.StdOut.WriteLine now
+
+Dim computerName
+computerName = "."
+
+Dim services
+Set services = GetObject("winmgmts:{(Security)}//" & computerName & "/root/cimv2")
+
+Dim GetWbemOptPropInfo
+Set GetWbemOptPropInfo = New WbemOptionalPropertyInformationGetter
+Set GetWbemOptPropInfo.Class = services.Get("Win32_NTLogEvent")
+
+Dim wql
+wql = "SELECT * FROM __InstanceCreationEvent WITHIN 10 WHERE TargetInstance ISA 'Win32_NTLogEvent'"
+
+WScript.StdOut.WriteLine "WQL: " & wql
+
+Dim events, count, ev, prop
+Set events = services.ExecNotificationQuery(wql)
+count = 0
+
+WScript.StdOut.WriteLine "start watching event Log..."
+Do
+  Set ev = events.NextEvent
+  count = count + 1
+  WScript.StdOut.WriteLine "---------------- " & Now & ": log " & count & " ----------------"
+  For Each prop In ev.TargetInstance.Properties_
+    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value) & GetWbemOptPropInfo(prop.Name)
+  Next
+  WScript.StdOut.WriteBlankLines 1
+Loop
 
 ]]></script>
 </job>
