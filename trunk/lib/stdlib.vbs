@@ -839,7 +839,7 @@ Sub UtilityFunction_DefineVBScriptFunctionAliases
   aliases.Add Array(Array("MonthName", "MonthName1"), 1)
   aliases.Add Array(Array("MonthName", "MonthName2"), 2)
   aliases.Add Array(Array("Weekday", "Weekday"), 1)
-  aliases.Add Array(Array("Weekday", "Weekday2"), 1)
+  aliases.Add Array(Array("Weekday", "Weekday1"), 1)
   aliases.Add Array(Array("Weekday", "Weekday2"), 2)
 
   ' Eval
