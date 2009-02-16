@@ -1203,6 +1203,57 @@ Function GetNamedArgumentSimple(name, namedArgs)
 End Function
 
 
+'==========================================
+'################ WMI tool ################
+'------------------------------------------
+
+Class WbemOptionalPropertyInformationGetter
+  Private ivar_class
+  Private ivar_cache
+
+  Private Sub Class_Initialize
+    Set ivar_cache = CreateObject("Scripting.Dictionary")
+  End Sub
+
+  Public Property Set [Class](value)
+    Set ivar_class = value
+  End Property
+
+  Private Function GetQualifier(prop, name)
+    On Error Resume Next
+    Set GetQualifier = prop.Qualifiers_(name)
+    If Err.Number <> 0 Then
+      Set GetQualifier = Nothing
+    End If
+  End Function
+
+  Public Default Function Execute(propName)
+    If Not ivar_cache.Exists(propName) Then
+      Dim prop
+      Set prop = ivar_Class.Properties_(propName)
+
+      Dim units
+      Set units = GetQualifier(prop, "Units")
+
+      Dim valueMap
+      Set valueMap = GetQualifier(prop, "ValueMap")
+
+      Dim info: info = ""
+      If Not units Is Nothing Then
+        info = info & " (" & units.Value & ")"
+      End If
+      If Not valueMap Is Nothing Then
+        info = info & " [" & Join(valueMap.Value, "|") & "]"
+      End If
+
+      ivar_cache.Add propName, info
+    End If
+
+    Execute = ivar_cache(propName)
+  End Function
+End Class
+
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil
