@@ -706,12 +706,12 @@ Function Min(list, compare)
 End Function
 
 Function Map(list, func)
-  Dim newList, i
-  Set newList = New ListBuffer
+  Dim resultList, i
+  Set resultList = New ListBuffer
   For Each i In list
-    newList.Add func(i)
+    resultList.Add func(i)
   Next
-  Map = newList.Items
+  Map = resultList.Items
 End Function
 
 
