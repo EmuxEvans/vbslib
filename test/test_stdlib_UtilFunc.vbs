@@ -180,7 +180,7 @@ Sub TestValueCompare_GreaterThan
   Assert comp("Orange")
 End Sub
 
-Sub TestValueCompare_GreaterThanEqual
+Sub TestValueCompare_GreaterEqual
   Dim comp
   Set comp = ValueCompare(">=", "Banana", GetRef("StrComp_"))
 
@@ -198,7 +198,7 @@ Sub TestValueCompare_LessThan
   Assert Not comp("Orange")
 End Sub
 
-Sub TestValueCompare_LessThanEqual
+Sub TestValueCompare_LessEqual
   Dim comp
   Set comp = ValueCompare("<=", "Banana", GetRef("StrComp_"))
 
