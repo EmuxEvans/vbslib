@@ -146,25 +146,21 @@ Function ShowString(value)
 End Function
 
 Function ShowArray(value)
-  Dim r, i, sep: sep = ""
-  r = "["
+  Dim showList, i
+  Set showList = New ListBuffer
   For Each i In value
-    r = r & sep & ShowValue(i)
-    sep = ","
+    showList.Add ShowValue(i)
   Next
-  r = r & "]"
-  ShowArray = r
+  ShowArray = "[" & Join(showList.Items, ",") & "]"
 End Function
 
 Function ShowDictionary(value)
-  Dim r, k, sep: sep = ""
-  r = "{"
+  Dim showList, k
+  Set showList = New ListBuffer
   For Each k In value.Keys
-    r = r & sep & ShowValue(k) & "=>" & ShowValue(value(k))
-    sep = ","
+    showList.Add ShowValue(k) & "=>" & ShowValue(value(k))
   Next
-  r = r & "}"
-  ShowDictionary = r
+  ShowDictionary = "{" & Join(showList.Items, ",") & "}"
 End Function
 
 Function ShowObject(value)
