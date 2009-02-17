@@ -898,36 +898,36 @@ Function GreaterThan(lowerBound, value)
   GreaterThan = value > lowerBound
 End Function
 
-Function GreaterThanEqual(lowerBound, value)
-  GreaterThanEqual = value >= lowerBound
+Function ValueGreaterThan(lowerBound)
+  Set ValueGreaterThan = _
+      GetFuncProcSubset(GetRef("GreaterThan"), 2, Array(lowerBound))
 End Function
 
-Function ValueGreaterThan(lowerBound, exclude)
-  If exclude Then
-    Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThan"), 2, Array(lowerBound))
-  Else
-    Set ValueGreaterThan = _
-        GetFuncProcSubset(GetRef("GreaterThanEqual"), 2, Array(lowerBound))
-  End If
+Function GreaterEqual(lowerBound, value)
+  GreaterEqual = value >= lowerBound
+End Function
+
+Function ValueGreaterEqual(lowerBound)
+  Set ValueGreaterEqual = _
+      GetFuncProcSubset(GetRef("GreaterEqual"), 2, Array(lowerBound))
 End Function
 
 Function LessThan(upperBound, value)
   LessThan = value < upperBound
 End Function
 
-Function LessThanEqual(upperBound, value)
-  LessThanEqual = value <= upperBound
+Function ValueLessThan(upperBound)
+  Set ValueLessThan = _
+      GetFuncProcSubset(GetRef("LessThan"), 2, Array(upperBound))
 End Function
 
-Function ValueLessThan(upperBound, exclude)
-  If exclude Then
-    Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThan"), 2, Array(upperBound))
-  Else
-    Set ValueLessThan = _
-        GetFuncProcSubset(GetRef("LessThanEqual"), 2, Array(upperBound))
-  End If
+Function LessEqual(upperBound, value)
+  LessEqual = value <= upperBound
+End Function
+
+Function ValueLessEqual(upperBound)
+  Set ValueLessEqual = _
+      GetFuncProcSubset(GetRef("LessEqual"), 2, Array(upperBound))
 End Function
 
 Function Between(lowerBound, upperBound, value)
