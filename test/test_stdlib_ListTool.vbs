@@ -122,6 +122,78 @@ Sub TestMap_VBScriptFunctionAlias
   AssertEqual "baz", a(2)
 End Sub
 
+Sub TestRange
+  Dim a
+  a = Range(0, ValueLessThan(10), GetFuncProcSubset(GetRef("Add"), 2, Array(1)))
+
+  AssertEqual 9, UBound(a)
+  AssertEqual 0, a(0)
+  AssertEqual 1, a(1)
+  AssertEqual 2, a(2)
+  AssertEqual 3, a(3)
+  AssertEqual 4, a(4)
+  AssertEqual 5, a(5)
+  AssertEqual 6, a(6)
+  AssertEqual 7, a(7)
+  AssertEqual 8, a(8)
+  AssertEqual 9, a(9)
+End Sub
+
+Sub TestRange_Empty
+  Dim a
+  a = Range(0, ValueLessThan(0), GetFuncProcSubset(GetRef("Add"), 2, Array(1)))
+  AssertEqual -1, UBound(a)
+End Sub
+
+Sub TestNumericRange
+  Dim a
+  a = NumericRange(0, 10, 2, False)
+
+  AssertEqual 5, UBound(a)
+  AssertEqual 0, a(0)
+  AssertEqual 2, a(1)
+  AssertEqual 4, a(2)
+  AssertEqual 6, a(3)
+  AssertEqual 8, a(4)
+  AssertEqual 10, a(5)
+End Sub
+
+Sub TestNumericRange_Exclude
+  Dim a
+  a = NumericRange(0, 10, 2, True)
+
+  AssertEqual 4, UBound(a)
+  AssertEqual 0, a(0)
+  AssertEqual 2, a(1)
+  AssertEqual 4, a(2)
+  AssertEqual 6, a(3)
+  AssertEqual 8, a(4)
+End Sub
+
+Sub TestNumericRange_Empty
+  Dim a
+  a = NumericRange(0, 0, 2, True)
+  AssertEqual -1, UBound(a)
+End Sub
+
+Sub TestNumbering
+  Dim a
+  a = Numbering(1, 5)
+
+  AssertEqual 4, UBound(a)
+  AssertEqual 1, a(0)
+  AssertEqual 2, a(1)
+  AssertEqual 3, a(2)
+  AssertEqual 4, a(3)
+  AssertEqual 5, a(4)
+End Sub
+
+Sub TestNumbering_Empty
+  Dim a
+  a = Numbering(1, 0)
+  AssertEqual -1, UBound(a)
+End Sub
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil

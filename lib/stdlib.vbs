@@ -714,6 +714,38 @@ Function Map(list, func)
   Map = resultList.Items
 End Function
 
+Function Range(first, cond, increment)
+  Dim resultList
+  Set resultList = New ListBuffer
+
+  Dim i
+  Bind i, first
+
+  Do While cond(i)
+    resultList.Add i
+    Bind i, increment(i)
+  Loop
+
+  Range = resultList.Items
+End Function
+
+Function NumericRange(first, last, incrementStep, exclude)
+  Dim cond
+  If exclude Then
+    Set cond = ValueLessThan(last)
+  Else
+    Set cond = ValueLessEqual(last)
+  End If
+
+  NumericRange = Range(first, cond, _
+                       GetFuncProcSubset(GetRef("Add"), 2, _
+                                         Array(incrementStep)))
+End Function
+
+Function Numbering(first, last)
+  Numbering = NumericRange(first, last, 1, False)
+End Function
+
 
 '==================================================
 '################ utility function ################
