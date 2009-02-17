@@ -94,15 +94,15 @@ End Sub
 
 Sub TestValueGreaterThan
   Dim gt
-  Set gt = ValueGreaterThan(0, True)
+  Set gt = ValueGreaterThan(0)
   Assert gt(1)
   Assert Not gt(0)
   Assert Not gt(-1)
 End Sub
 
-Sub TestValueGreaterThanEqual
+Sub TestValueGreaterEqual
   Dim ge
-  Set ge = ValueGreaterThan(0, False)
+  Set ge = ValueGreaterEqual(0)
   Assert ge(1)
   Assert ge(0)
   Assert Not ge(-1)
@@ -110,15 +110,15 @@ End Sub
 
 Sub TestValueLessThan
   Dim lt
-  Set lt = ValueLessThan(0, True)
+  Set lt = ValueLessThan(0)
   Assert lt(-1)
   Assert Not lt(0)
   Assert Not lt(1)
 End Sub
 
-Sub TestValueLessThanEqual
+Sub TestValueLessEqual
   Dim le
-  Set le = ValueLessThan(0, False)
+  Set le = ValueLessEqual(0)
   Assert le(-1)
   Assert le(0)
   Assert Not le(1)
