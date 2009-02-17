@@ -668,14 +668,14 @@ Function FindAll(list, cond)
 End Function
 
 Function Max(list, compare)
-  Dim first
-  first = True
+  Dim isFirst
+  isFirst = True
 
   Dim x, maxValue
   For Each x In list
-    If first Then
+    If isFirst Then
       Bind maxValue, x
-      first = False
+      isFirst = False
     Else
       If compare(x, maxValue) > 0 Then
         Bind maxValue, x
@@ -687,14 +687,14 @@ Function Max(list, compare)
 End Function
 
 Function Min(list, compare)
-  Dim first
-  first = True
+  Dim isFirst
+  isFirst = True
 
   Dim x, minValue
   For Each x In list
-    If first Then
+    If isFirst Then
       Bind minValue, x
-      first = False
+      isFirst = False
     Else
       If compare(x, minValue) < 0 Then
         Bind minValue, x
