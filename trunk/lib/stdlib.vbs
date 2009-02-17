@@ -998,43 +998,43 @@ Function ObjectPropertyCompare(propertyName, propertyCompare)
       GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
 End Function
 
-Function ValueCompareEqual(compare, expected, value)
-  ValueCompareEqual = (compare(value, expected) = 0)
+Function CompareEqual(compare, expected, value)
+  CompareEqual = (compare(value, expected) = 0)
 End Function
 
-Function ValueCompareGreaterThan(compare, lowerBound, value)
-  ValueCompareGreaterThan = (compare(value, lowerBound) > 0)
+Function CompareGreaterThan(compare, lowerBound, value)
+  CompareGreaterThan = (compare(value, lowerBound) > 0)
 End Function
 
-Function ValueCompareGreaterThanEqual(compare, lowerBound, value)
-  ValueCompareGreaterThanEqual = (compare(value, lowerBound) >= 0)
+Function CompareGreaterEqual(compare, lowerBound, value)
+  CompareGreaterEqual = (compare(value, lowerBound) >= 0)
 End Function
 
-Function ValueCompareLessThan(compare, upperBound, value)
-  ValueCompareLessThan = (compare(value, upperBound) < 0)
+Function CompareLessThan(compare, upperBound, value)
+  CompareLessThan = (compare(value, upperBound) < 0)
 End Function
 
-Function ValueCompareLessThanEqual(compare, upperBound, value)
-  ValueCompareLessThanEqual = (compare(value, upperBound) <= 0)
+Function CompareLessEqual(compare, upperBound, value)
+  CompareLessEqual = (compare(value, upperBound) <= 0)
 End Function
 
 Function ValueCompare(operatorType, bound, compare)
   Select Case operatorType
     Case "eq":
       Set ValueCompare = _
-          GetFuncProcSubset(GetRef("ValueCompareEqual"), 3, Array(compare, bound))
+          GetFuncProcSubset(GetRef("CompareEqual"), 3, Array(compare, bound))
     Case "gt":
       Set ValueCompare = _
-          GetFuncProcSubset(GetRef("ValueCompareGreaterThan"), 3, Array(compare, bound))
+          GetFuncProcSubset(GetRef("CompareGreaterThan"), 3, Array(compare, bound))
     Case "ge":
       Set ValueCompare = _
-          GetFuncProcSubset(GetRef("ValueCompareGreaterThanEqual"), 3, Array(compare, bound))
+          GetFuncProcSubset(GetRef("CompareGreaterEqual"), 3, Array(compare, bound))
     Case "lt":
       Set ValueCompare = _
-          GetFuncProcSubset(GetRef("ValueCompareLessThan"), 3, Array(compare, bound))
+          GetFuncProcSubset(GetRef("CompareLessThan"), 3, Array(compare, bound))
     Case "le":
       Set ValueCompare = _
-          GetFuncProcSubset(GetRef("ValueCompareLessThanEqual"), 3, Array(compare, bound))
+          GetFuncProcSubset(GetRef("CompareLessEqual"), 3, Array(compare, bound))
     Case Else:
       Err.Raise 5, "stdlib.vbs:ValueCompare", "unknown operatorType: " & operatorType
   End Select
