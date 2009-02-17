@@ -1020,19 +1020,19 @@ End Function
 
 Function ValueCompare(operatorType, bound, compare)
   Select Case operatorType
-    Case "eq":
+    Case "=":
       Set ValueCompare = _
           GetFuncProcSubset(GetRef("CompareEqual"), 3, Array(compare, bound))
-    Case "gt":
+    Case ">":
       Set ValueCompare = _
           GetFuncProcSubset(GetRef("CompareGreaterThan"), 3, Array(compare, bound))
-    Case "ge":
+    Case ">=":
       Set ValueCompare = _
           GetFuncProcSubset(GetRef("CompareGreaterEqual"), 3, Array(compare, bound))
-    Case "lt":
+    Case "<":
       Set ValueCompare = _
           GetFuncProcSubset(GetRef("CompareLessThan"), 3, Array(compare, bound))
-    Case "le":
+    Case "<=":
       Set ValueCompare = _
           GetFuncProcSubset(GetRef("CompareLessEqual"), 3, Array(compare, bound))
     Case Else:

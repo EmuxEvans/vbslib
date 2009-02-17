@@ -164,7 +164,7 @@ End Sub
 
 Sub TestValueCompare_Equal
   Dim comp
-  Set comp = ValueCompare("eq", "Banana", GetRef("StrComp_"))
+  Set comp = ValueCompare("=", "Banana", GetRef("StrComp_"))
 
   Assert Not comp("Apple")
   Assert comp("Banana")
@@ -173,7 +173,7 @@ End Sub
 
 Sub TestValueCompare_GreaterThan
   Dim comp
-  Set comp = ValueCompare("gt", "Banana", GetRef("StrComp_"))
+  Set comp = ValueCompare(">", "Banana", GetRef("StrComp_"))
 
   Assert Not comp("Apple")
   Assert Not comp("Banana")
@@ -182,7 +182,7 @@ End Sub
 
 Sub TestValueCompare_GreaterThanEqual
   Dim comp
-  Set comp = ValueCompare("ge", "Banana", GetRef("StrComp_"))
+  Set comp = ValueCompare(">=", "Banana", GetRef("StrComp_"))
 
   Assert Not comp("Apple")
   Assert comp("Banana")
@@ -191,7 +191,7 @@ End Sub
 
 Sub TestValueCompare_LessThan
   Dim comp
-  Set comp = ValueCompare("lt", "Banana", GetRef("StrComp_"))
+  Set comp = ValueCompare("<", "Banana", GetRef("StrComp_"))
 
   Assert comp("Apple")
   Assert Not comp("Banana")
@@ -200,7 +200,7 @@ End Sub
 
 Sub TestValueCompare_LessThanEqual
   Dim comp
-  Set comp = ValueCompare("le", "Banana", GetRef("StrComp_"))
+  Set comp = ValueCompare("<=", "Banana", GetRef("StrComp_"))
 
   Assert comp("Apple")
   Assert comp("Banana")
