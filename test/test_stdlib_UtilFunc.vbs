@@ -43,6 +43,18 @@ Sub TestValueDictionaryItem
   AssertEqual "Banana", func(d)
 End Sub
 
+Sub TestValueDictionaryItem_NotExists
+  Dim func
+  Set func = ValueDictionaryItem("bar")
+
+  Dim d
+  Set d = CreateObject("Scripting.Dictionary")
+  d("foo") = "Apple"
+  d("baz") = "Orange"
+
+  Assert IsEmpty(func(d))
+End Sub
+
 Sub TestNumericCompare_LessThan
   Assert NumericCompare(1, 2) < 0
 End Sub

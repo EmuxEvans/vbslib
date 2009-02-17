@@ -1,11 +1,11 @@
 ' stdlib.vbs: List tool test.
 ' @import ../lib/stdlib.vbs
 
-Sub TestFirstItem_Found
+Sub TestFirstItem
   AssertEqual "foo", FirstItem(Array("foo", "bar", "baz"))
 End Sub
 
-Sub TestFirstItem_NotFound
+Sub TestFirstItem_EmptyList
   Dim errNum, errSrc
   On Error Resume Next
   FirstItem(Array())
@@ -18,11 +18,11 @@ Sub TestFirstItem_NotFound
   AssertEqual "stdlib.vbs:FirstItem", errSrc
 End Sub
 
-Sub TestLastItem_Found
+Sub TestLastItem
   AssertEqual "baz", LastItem(Array("foo", "bar", "baz"))
 End Sub
 
-Sub TestLastItem_NotFound
+Sub TestLastItem_EmptyList
   Dim errNum, errSrc
   On Error Resume Next
   LastItem(Array())
