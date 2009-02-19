@@ -1,5 +1,8 @@
 2009-02-19  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* bin/TestRunner.wsf, lib/unittest.vbs: count tests and
+	assertions.
+
 	* lib/stdlib.vbs: CountItem function of list tool.
 
 2009-02-18  TOKI Yoshinori  <toki@freedom.ne.jp>
