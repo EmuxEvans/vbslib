@@ -1,6 +1,8 @@
 ' stdlib.vbs: Utility Function test.
 ' @import ../lib/stdlib.vbs
 
+Option Explicit
+
 Class Foo
   Private ivar_name
 
@@ -67,40 +69,46 @@ Sub TestNumericCompare_GreaterThan
   Assert NumericCompare(2, 1) > 0
 End Sub
 
-Sub TestReverseCompare
-  Assert StrComp("Apple", "Banana") < 0
-  Assert StrComp("Apple", "Apple") = 0
-  Assert StrComp("Banana", "Apple") > 0
-
+Sub TestReverseCompare_GreaterThan
   Dim comp
   Set comp = ReverseCompare(GetRef("StrComp_"))
-
+  Assert StrComp("Apple", "Banana") < 0
   Assert comp("Apple", "Banana") > 0
+End Sub
+
+Sub TestReverseCompare_Equal
+  Dim comp
+  Set comp = ReverseCompare(GetRef("StrComp_"))
+  Assert StrComp("Apple", "Apple") = 0
   Assert comp("Apple", "Apple") = 0
+End Sub
+
+Sub TestReverseCompare_LessThan
+  Dim comp
+  Set comp = ReverseCompare(GetRef("StrComp_"))
+  Assert StrComp("Banana", "Apple") > 0
   Assert comp("Banana", "Apple") < 0
 End sub
 
-Sub TestCompareFilter
-  Assert "010" <> "10"
-  Assert "010" < "1"
-  Assert "1" > "010"
-
+Sub TestCompareFilter_Equal
   Dim comp
   Set comp = CompareFilter(GetRef("CInt_"), GetRef("NumericCompare"))
-
+  Assert "010" <> "10"
   Assert comp("010", "10") = 0
-  Assert comp("010", "1") > 0
-  Assert comp("1", "010") < 0
-End sub
+End Sub
 
-Sub TestObjectPropertyCompare_LessThan
-  Dim a: Set a = New Foo: a.Name = "Apple"
-  Dim b: Set b = New Foo: b.Name = "Banana"
-
+Sub TestCompareFilter_GreaterThan
   Dim comp
-  Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
+  Set comp = CompareFilter(GetRef("CInt_"), GetRef("NumericCompare"))
+  Assert "010" < "1"
+  Assert comp("010", "1") > 0
+End Sub
 
-  Assert comp(a, b) < 0
+Sub TestCompareFilter_LessThan
+  Dim comp
+  Set comp = CompareFilter(GetRef("CInt_"), GetRef("NumericCompare"))
+  Assert "1" > "010"
+  Assert comp("1", "010") < 0
 End Sub
 
 Sub TestObjectPropertyCompare_Equal
@@ -111,6 +119,16 @@ Sub TestObjectPropertyCompare_Equal
   Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
 
   Assert comp(a, b) = 0
+End Sub
+
+Sub TestObjectPropertyCompare_LessThan
+  Dim a: Set a = New Foo: a.Name = "Apple"
+  Dim b: Set b = New Foo: b.Name = "Banana"
+
+  Dim comp
+  Set comp = ObjectPropertyCompare("Name", GetRef("StrComp_"))
+
+  Assert comp(a, b) < 0
 End Sub
 
 Sub TestObjectPropertyCompare_GreaterThan
