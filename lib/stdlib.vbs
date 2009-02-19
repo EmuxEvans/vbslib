@@ -1023,14 +1023,20 @@ Function NumericCompare(a, b)
   NumericCompare = a - b
 End Function
 
-Function ObjectPropertyCompareFunc(propName, propComp, a, b)
-  ObjectPropertyCompareFunc = propComp(GetObjectProperty(a, propName), _
-                                       GetObjectProperty(b, propName))
+Function CompareFilterFunc(filter, compare, a, b)
+  CompareFilterFunc = compare(filter(a), filter(b))
+End Function
+
+Function CompareFilter(filter, compare)
+  Set CompareFilter = _
+      GetFuncProcSubset(GetRef("CompareFilterFunc"), 4, Array(filter, compare))
 End Function
 
 Function ObjectPropertyCompare(propertyName, propertyCompare)
   Set ObjectPropertyCompare = _
-      GetFuncProcSubset(GetRef("ObjectPropertyCompareFunc"), 4, Array(propertyName, propertyCompare))
+      CompareFilter(GetFuncProcSubset(GetRef("GetObjectProperty"), 2, _
+                                      D(Array(1, propertyName))), _
+                    propertyCompare)
 End Function
 
 Function CompareEqual(compare, expected, value)

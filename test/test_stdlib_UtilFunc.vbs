@@ -67,6 +67,19 @@ Sub TestNumericCompare_GreaterThan
   Assert NumericCompare(2, 1) > 0
 End Sub
 
+Sub TestCompareFilter
+  Assert "010" <> "10"
+  Assert "010" < "1"
+  Assert "1" > "010"
+
+  Dim comp
+  Set comp = CompareFilter(GetRef("CInt_"), GetRef("NumericCompare"))
+
+  Assert comp("010", "10") = 0
+  Assert comp("010", "1") > 0
+  Assert comp("1", "010") < 0
+End sub
+
 Sub TestObjectPropertyCompare_LessThan
   Dim a: Set a = New Foo: a.Name = "Apple"
   Dim b: Set b = New Foo: b.Name = "Banana"
