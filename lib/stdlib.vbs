@@ -1095,20 +1095,41 @@ Function ValueReplace(regex, replace)
       GetFuncProcSubset(GetObjectMethodFuncProc(regex, "Replace", 2), 2, D(Array(1, replace)))
 End Function
 
+Function GetItemAt(keyValueStore, key)
+  Bind GetItemAt, keyValueStore(key)
+End Function
+
+Function CollectItems(keyValueStore, keyValueGet, keyList)
+  Dim dict
+  Set dict = CreateObject("Scripting.Dictionary")
+
+  Dim key
+  For Each key In keyList
+    BindAt dict, key, keyValueGet(keyValueStore, key)
+  Next
+
+  Set CollectItems = dict
+End Function
+
+Function ValueItemAt(key)
+  Set ValueItemAt = GetFuncProcSubset(GetRef("GetItemAt"), 2, D(Array(1, key)))
+End Function
+
+Function ValueItemsAt(keyList)
+  Set ValueItemsAt = _
+      GetFuncProcSubset(GetRef("CollectItems"), 3, _
+                        D(Array(1, GetRef("GetItemAt"), 2, keyList)))
+End Function
+
 Function ValueObjectProperty(propertyName)
   Set ValueObjectProperty = _
       GetFuncProcSubset(GetRef("GetObjectProperty"), 2, D(Array(1, propertyName)))
 End Function
 
-Function GetDictionaryItem(key, dictionary)
-  If dictionary.Exists(key) Then
-    Bind GetDictionaryItem, dictionary(key)
-  End If
-End Function
-
-Function ValueDictionaryItem(key)
-  Set ValueDictionaryItem = _
-      GetFuncProcSubset(GetRef("GetDictionaryItem"), 2, Array(key))
+Function ValueObjectProperties(propertyNameList)
+  Set ValueObjectProperties = _
+      GetFuncProcSubset(GetRef("CollectItems"), 3, _
+                        D(Array(1, GetRef("GetObjectProperty"), 2, propertyNameList)))
 End Function
 
 Function Add(number1, number2)

@@ -15,10 +15,53 @@ Class Foo
   End Property
 End Class
 
+Class Bar
+  Private ivar_foo
+  Private ivar_bar
+  Private ivar_baz
+
+  Public Property Get Foo
+    Foo = ivar_foo
+  End Property
+
+  Public Property Let Foo(value)
+    ivar_foo = value
+  End Property
+
+  Public Property Get Bar
+    Bar = ivar_bar
+  End Property
+
+  Public Property Let Bar(value)
+    ivar_bar = value
+  End Property
+
+  Public Property Get Baz
+    Baz = ivar_baz
+  End Property
+
+  Public Property Let Baz(value)
+    ivar_baz = value
+  End Property
+End Class
+
 Sub TestValueReplace
   Dim func
   Set func = ValueReplace(re("xyz", ""), "XYZ")
   AssertEqual "abcXYZdef", func("abcxyzdef")
+End Sub
+
+Sub TestValueItemAt
+  Dim func
+  Set func = ValueItemAt("bar")
+  AssertEqual "Banana", func(D(Array("foo", "Apple", "bar", "Banana", "baz", "Orange")))
+End Sub
+
+Sub TestValueItemsAt
+  Dim func
+  Set func = ValueItemsAt(Array("foo", "baz"))
+  AssertEqual ShowValue(D(Array("foo", "Apple", "baz", "Orange"))), _
+              ShowValue(func(D(Array("foo", "Apple", "bar", "Banana", "baz", "Orange"))))
 End Sub
 
 Sub TestValueObjectProperty
@@ -32,29 +75,17 @@ Sub TestValueObjectProperty
   AssertEqual "bar", func(foo)
 End Sub
 
-Sub TestValueDictionaryItem
+Sub TestValueObjectProperties
   Dim func
-  Set func = ValueDictionaryItem("bar")
+  Set func = ValueObjectProperties(Array("Foo", "Baz"))
 
-  Dim d
-  Set d = CreateObject("Scripting.Dictionary")
-  d("foo") = "Apple"
-  d("bar") = "Banana"
-  d("baz") = "Orange"
+  Dim o
+  Set o = New Bar
+  o.Foo = "Apple"
+  o.Bar = "Banana"
+  o.Baz = "Orange"
 
-  AssertEqual "Banana", func(d)
-End Sub
-
-Sub TestValueDictionaryItem_NotExists
-  Dim func
-  Set func = ValueDictionaryItem("bar")
-
-  Dim d
-  Set d = CreateObject("Scripting.Dictionary")
-  d("foo") = "Apple"
-  d("baz") = "Orange"
-
-  Assert IsEmpty(func(d))
+  AssertEqual ShowValue(D(Array("Foo", "Apple", "Baz", "Orange"))), ShowValue(func(o))
 End Sub
 
 Sub TestNumericCompare_LessThan

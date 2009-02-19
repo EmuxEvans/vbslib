@@ -2,6 +2,8 @@
 
 	* lib/stdlib.vbs: CompareFilter utility function.
 	ReverseCompare utility function.
+	utility functions of ValueItemAt, ValueItemsAt,
+	ValueObjectProperties.  obsolete ValueDictionaryItem function.
 
 2009-02-19  TOKI Yoshinori  <toki@freedom.ne.jp>
 
