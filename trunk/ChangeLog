@@ -1,3 +1,7 @@
+2009-02-20  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: CompareFilter utility function.
+
 2009-02-19  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/TestRunner.wsf, lib/unittest.vbs: count tests and
