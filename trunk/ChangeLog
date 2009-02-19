@@ -1,3 +1,7 @@
+2009-02-19  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: CountItem function of list tool.
+
 2009-02-18  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: range function of list tool.
