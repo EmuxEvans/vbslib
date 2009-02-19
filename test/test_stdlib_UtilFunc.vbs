@@ -88,6 +88,18 @@ Sub TestValueObjectProperties
   AssertEqual ShowValue(D(Array("Foo", "Apple", "Baz", "Orange"))), ShowValue(func(o))
 End Sub
 
+Sub TestPriorMax
+  AssertEqual "Apple", PriorMax(GetRef("StrComp_"), "Apple", "Apple")
+  AssertEqual "Banana", PriorMax(GetRef("StrComp_"), "Apple", "Banana")
+  AssertEqual "Banana", PriorMax(GetRef("StrComp_"), "Banana", "Apple")
+End Sub
+
+Sub TestPriorMin
+  AssertEqual "Apple", PriorMin(GetRef("StrComp_"), "Apple", "Apple")
+  AssertEqual "Apple", PriorMin(GetRef("StrComp_"), "Apple", "Banana")
+  AssertEqual "Apple", PriorMin(GetRef("StrComp_"), "Banana", "Apple")
+End Sub
+
 Sub TestNumericCompare_LessThan
   Assert NumericCompare(1, 2) < 0
 End Sub
