@@ -670,44 +670,6 @@ Function FindAll(list, cond)
   FindAll = findList.Items
 End Function
 
-Function Max(list, compare)
-  Dim isFirst
-  isFirst = True
-
-  Dim x, maxValue
-  For Each x In list
-    If isFirst Then
-      Bind maxValue, x
-      isFirst = False
-    Else
-      If compare(x, maxValue) > 0 Then
-        Bind maxValue, x
-      End If
-    End If
-  Next
-
-  Bind Max, maxValue
-End Function
-
-Function Min(list, compare)
-  Dim isFirst
-  isFirst = True
-
-  Dim x, minValue
-  For Each x In list
-    If isFirst Then
-      Bind minValue, x
-      isFirst = False
-    Else
-      If compare(x, minValue) < 0 Then
-        Bind minValue, x
-      End If
-    End If
-  Next
-
-  Bind Min, minValue
-End Function
-
 Function Map(list, func)
   Dim resultList, i
   Set resultList = New ListBuffer
@@ -715,6 +677,36 @@ Function Map(list, func)
     resultList.Add func(i)
   Next
   Map = resultList.Items
+End Function
+
+Function Inject(list, initialValue, func)
+  Dim isFirst, result
+  If IsEmpty(initialValue) Then
+    isFirst = True
+  Else
+    isFirst = False
+    Bind result, initialValue
+  End If
+
+  Dim i
+  For Each i In list
+    If isFirst Then
+      Bind result, i
+      isFirst = False
+    Else
+      Bind result, func(result, i)
+    End If
+  Next
+
+  Bind Inject, result
+End Function
+
+Function Max(list, compare)
+  Bind Max, Inject(list, Empty, GetFuncProcSubset(GetRef("PriorMax"), 3, Array(compare)))
+End Function
+
+Function Min(list, compare)
+  Bind Min, Inject(list, Empty, GetFuncProcSubset(GetRef("PriorMin"), 3, Array(compare)))
 End Function
 
 Function Range(first, cond, increment)
@@ -1046,6 +1038,22 @@ Function ObjectPropertyCompare(propertyName, propertyCompare)
       CompareFilter(GetFuncProcSubset(GetRef("GetObjectProperty"), 2, _
                                       D(Array(1, propertyName))), _
                     propertyCompare)
+End Function
+
+Function PriorMax(compare, a, b)
+  If compare(a, b) > 0 Then
+    Bind PriorMax, a
+  Else
+    Bind PriorMax, b
+  End If
+End Function
+
+Function PriorMin(compare, a, b)
+  If compare(a, b) < 0 Then
+    Bind PriorMin, a
+  Else
+    Bind PriorMin, b
+  End If
 End Function
 
 Function CompareEqual(compare, expected, value)

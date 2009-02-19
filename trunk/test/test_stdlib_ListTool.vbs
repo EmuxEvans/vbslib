@@ -138,6 +138,22 @@ Sub TestMap_VBScriptFunctionAlias
   AssertEqual "baz", a(2)
 End Sub
 
+Sub TestInject
+  AssertEqual 15, Inject(Array(1, 2, 3, 4, 5), Empty, GetRef("Add"))
+End Sub
+
+Sub TestInject_SingleValue
+  AssertEqual 1, Inject(Array(1), Empty, GetRef("Add"))
+End Sub
+
+Sub TestInject_InitialValue
+  AssertEqual 18, Inject(Array(1, 2, 3, 4, 5), 3, GetRef("Add"))
+End Sub
+
+Sub TestInject_InitialValueEmptyList
+  AssertEqual 3, Inject(Array(), 3, GetRef("Add"))
+End Sub
+
 Sub TestRange
   Dim a
   a = Range(0, ValueLessThan(10), GetFuncProcSubset(GetRef("Add"), 2, Array(1)))
