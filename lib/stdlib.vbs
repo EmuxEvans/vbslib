@@ -331,26 +331,14 @@ End Function
 
 Sub ExecObjectMethodSubProc(obj, name, args)
   Dim argCount, method
-  If IsArray(args) Then
-    argCount = UBound(args) + 1
-  ElseIf IsObject(args) Then
-    argCount = args.Count
-  Else
-    Err.Raise 13, "stdlib.vbs:ExecObjectMethodSubProc", "args is not Array."
-  End If
+  argCount = CountItem(args)
   Set method = ObjectMethod_GetHandler(name, argCount)
   method.ExecSubProc obj, args
 End Sub
 
 Function ExecObjectMethodFuncProc(obj, name, args)
   Dim argCount, method
-  If IsArray(args) Then
-    argCount = UBound(args) + 1
-  ElseIf IsObject(args) Then
-    argCount = args.Count
-  Else
-    Err.Raise 13, "stdlib.vbs:ExecObjectMethodFuncProc", "args is not Array."
-  End If
+  argCount = CountItem(args)
   Set method = ObjectMethod_GetHandler(name, argCount)
   Bind ExecObjectMethodFuncProc, method.ExecFuncProc(obj, args)
 End Function
@@ -630,6 +618,25 @@ Function LastItem(list)
   End If
 End Function
 
+Function CountItem(list)
+  If IsArray(list) Then
+    CountItem = UBound(list) + 1
+  ElseIf IsObject(list) Then
+    If ObjectPropertyExists(list, "Count") Then
+      CountItem = list.Count
+    Else
+      Dim count, i
+      count = 0
+      For Each i In list
+        count = count + 1
+      Next
+      CountItem = count
+    End If
+  Else
+    Err.Raise 13, "stderr.vbs:CountItem", "no array or collection."
+  End If
+End Function
+
 Function Find(list, cond)
   Dim i
   For Each i In list
@@ -881,7 +888,7 @@ Sub UtilityFunction_DefineVBScriptFunctionAliases
 
   Dim aliasDef, aliasExpr, name, alias, argCount, argList, sep, i
   For Each aliasDef In aliases.Items
-    Select Case UBound(aliasDef) + 1
+    Select Case CountItem(aliasDef)
       Case 2:
         name = aliasDef(0)
         alias = aliasDef(0)

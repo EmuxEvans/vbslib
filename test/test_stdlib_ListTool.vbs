@@ -35,6 +35,20 @@ Sub TestLastItem_EmptyList
   AssertEqual "stdlib.vbs:LastItem", errSrc
 End Sub
 
+Sub TestCountItem_Array
+  AssertEqual 3, CountItem(Array("foo", "bar", "baz"))
+End Sub
+
+Sub TestCountItem_Object
+  Dim d
+  Set d = CreateObject("Scripting.Dictionary")
+  d("foo") = "Apple"
+  d("bar") = "Banana"
+  d("baz") = "Orange"
+
+  AssertEqual 3, CountItem(d)
+End Sub
+
 Sub TestFind_Found
   AssertEqual "bar", Find(Array("foo", "bar", "baz"), ValueEqual("bar"))
 End Sub
