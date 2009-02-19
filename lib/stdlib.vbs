@@ -1023,6 +1023,15 @@ Function NumericCompare(a, b)
   NumericCompare = a - b
 End Function
 
+Function ReverseCompareFunc(compare, a, b)
+  ReverseCompareFunc = compare(b, a)
+End Function
+
+Function ReverseCompare(compare)
+  Set ReverseCompare = _
+      GetFuncProcSubset(GetRef("ReverseCompareFunc"), 3, Array(compare))
+End Function
+
 Function CompareFilterFunc(filter, compare, a, b)
   CompareFilterFunc = compare(filter(a), filter(b))
 End Function
