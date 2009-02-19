@@ -159,6 +159,9 @@ Else
   WScript.StdOut.WriteLine "NG"
 End If
 
+WScript.StdOut.WriteLine CountItem(testProcList) & " tests, " & _
+                         loader.AssertionCount & "assertions."
+
 Dim endTime, elapsed
 endTime = Timer
 elapsed = endTime - startTime

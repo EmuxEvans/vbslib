@@ -14,11 +14,22 @@ Function UnitTest_IsAssertFail(error)
 End Function
 
 Class UnitTest_Assertion
+  Private ivar_assertionCount
+
+  Private Sub Class_Initialize
+    ivar_assertionCount = 0
+  End Sub
+
+  Public Property Get AssertionCount
+    AssertionCount = ivar_assertionCount
+  End Property
+
   Public Sub Assert(result)
     AssertWithMessage result, Empty
   End Sub
 
   Public Sub AssertWithMessage(result, message)
+    ivar_assertionCount = ivar_assertionCount + 1
     If Not result Then
       Dim errMsg
       errMsg = "Assert NG."
@@ -34,6 +45,7 @@ Class UnitTest_Assertion
   End Sub
 
   Public Sub AssertEqualWithMessage(expected, actual, message)
+    ivar_assertionCount = ivar_assertionCount + 1
     If expected <> actual Then
       Dim errMsg
       errMsg = "AssertEqual NG: expected <" & ShowValue(expected) & "> but was <" & ShowValue(actual) & ">."
@@ -49,6 +61,7 @@ Class UnitTest_Assertion
   End Sub
 
   Public Sub AssertSameWithMessage(expected, actual, message)
+    ivar_assertionCount = ivar_assertionCount + 1
     If Not actual Is expected Then
       Dim errMsg
       errMsg = "AssertSame NG: expected <" & TypeName(expected) & "> but was <" & TypeName(actual) & ">."
@@ -64,6 +77,8 @@ Class UnitTest_Assertion
   End Sub
 
   Public Sub AssertMatchWithMessage(pattern, text, message)
+    ivar_assertionCount = ivar_assertionCount + 1
+
     Dim regex
     If IsObject(pattern) Then
       Set regex = pattern
@@ -86,6 +101,7 @@ Class UnitTest_Assertion
   End Sub
 
   Public Sub AssertFailWithMessage(message)
+    ivar_assertionCount = ivar_assertionCount + 1
     Dim errMsg
     errMsg = "AssertFail NG."
     If Not IsEmpty(message) Then
@@ -189,13 +205,19 @@ End Class
 Class UnitTest_TestCaseLoader
   Private ivar_fso
   Private ivar_scriptControl
+  Private ivar_assertion
 
   Private Sub Class_Initialize
     Set ivar_fso = CreateObject("Scripting.FileSystemObject")
     Set ivar_scriptControl = CreateObject("ScriptControl")
+    Set ivar_assertion = New UnitTest_Assertion
     ivar_scriptControl.Language = "VBScript"
-    ivar_scriptControl.AddObject "__UnitTest_Assertion__", New UnitTest_Assertion, True
+    ivar_scriptControl.AddObject "__UnitTest_Assertion__", ivar_assertion, True
   End Sub
+
+  Public Property Get AssertionCount
+    AssertionCount = ivar_assertion.AssertionCount
+  End Property
 
   Public Sub AddObject(name, object)
     ivar_scriptControl.AddObject name, object
