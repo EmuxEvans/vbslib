@@ -1,6 +1,8 @@
 ' stdlib.vbs: List tool test.
 ' @import ../lib/stdlib.vbs
 
+Option Explicit
+
 Sub TestFirstItem
   AssertEqual "foo", FirstItem(Array("foo", "bar", "baz"))
 End Sub
