@@ -67,6 +67,19 @@ Sub TestNumericCompare_GreaterThan
   Assert NumericCompare(2, 1) > 0
 End Sub
 
+Sub TestReverseCompare
+  Assert StrComp("Apple", "Banana") < 0
+  Assert StrComp("Apple", "Apple") = 0
+  Assert StrComp("Banana", "Apple") > 0
+
+  Dim comp
+  Set comp = ReverseCompare(GetRef("StrComp_"))
+
+  Assert comp("Apple", "Banana") > 0
+  Assert comp("Apple", "Apple") = 0
+  Assert comp("Banana", "Apple") < 0
+End sub
+
 Sub TestCompareFilter
   Assert "010" <> "10"
   Assert "010" < "1"
