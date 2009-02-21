@@ -223,6 +223,18 @@ Function PopupInputBox(prompt, title, default)
   PopupInputBox = s
 End Function
 
+Function PopupFileOpenDialog
+  Dim path
+  path = InputFileOpenDialog
+
+  logStream.WriteLine Now
+  logStream.WriteLine "[ FileOpenDialog ]"
+  logStream.WriteLine "GetFilePath: " & ShowValue(path)
+  logStream.WriteBlankLines 1
+
+  PopupFileOpenDialog = path
+End Function
+
 Sub PopupError(title)
   PopupMessage Err.Number & ": " & Err.Description & " (" & Err.Source & ")", _
                vbOKOnly + vbCritical, POPUP_TITLE + ": " & title
@@ -281,7 +293,7 @@ End Sub
 
 Sub ImportFile(path)
   If IsEmpty(path) Then
-    path = InputFileOpenDialog
+    path = PopupFileOpenDialog
   End If
   If Not IsEmpty(path) Then
     On Error Resume Next
