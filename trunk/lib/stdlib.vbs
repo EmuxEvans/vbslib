@@ -16,11 +16,11 @@ Sub Bind(toStore, value)
   End If
 End Sub
 
-Sub BindAt(keyValueStore, index, value)
+Sub BindAt(keyValueStore, key, value)
   If IsObject(value) Then
-    Set keyValueStore(index) = value
+    Set keyValueStore(key) = value
   Else
-    keyValueStore(index) = value
+    keyValueStore(key) = value
   End If
 End Sub
 
