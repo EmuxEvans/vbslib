@@ -1040,22 +1040,6 @@ Function ObjectPropertyCompare(propertyName, propertyCompare)
                     propertyCompare)
 End Function
 
-Function PriorMax(compare, a, b)
-  If compare(a, b) > 0 Then
-    Bind PriorMax, a
-  Else
-    Bind PriorMax, b
-  End If
-End Function
-
-Function PriorMin(compare, a, b)
-  If compare(a, b) < 0 Then
-    Bind PriorMin, a
-  Else
-    Bind PriorMin, b
-  End If
-End Function
-
 Function CompareEqual(compare, expected, value)
   CompareEqual = (compare(value, expected) = 0)
 End Function
@@ -1138,6 +1122,22 @@ Function ValueObjectProperties(propertyNameList)
   Set ValueObjectProperties = _
       GetFuncProcSubset(GetRef("CollectItems"), 3, _
                         D(Array(1, GetRef("GetObjectProperty"), 2, propertyNameList)))
+End Function
+
+Function PriorMax(compare, a, b)
+  If compare(a, b) > 0 Then
+    Bind PriorMax, a
+  Else
+    Bind PriorMax, b
+  End If
+End Function
+
+Function PriorMin(compare, a, b)
+  If compare(a, b) < 0 Then
+    Bind PriorMin, a
+  Else
+    Bind PriorMin, b
+  End If
 End Function
 
 Function Add(number1, number2)
