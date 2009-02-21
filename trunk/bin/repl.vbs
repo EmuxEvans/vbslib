@@ -140,6 +140,48 @@ Class History
   End Function
 End Class
 
+Class FileOpenDialog
+  Private ivar_ie
+
+  Private Sub Class_Initialize
+    Set ivar_ie = CreateObject("InternetExplorer.Application")
+    ivar_ie.MenuBar = False
+    ivar_ie.AddressBar = False
+    ivar_ie.ToolBar = False
+    ivar_ie.StatusBar = False
+    ivar_ie.Navigate "abount:blank"
+    'ivar_ie.Visible = True              ' why once on invisible?
+    WaitReadyStateComplete
+    ivar_ie.document.Write "<html><body></body></html>"
+  End Sub
+
+  Private Sub Class_Terminate
+    ivar_ie.Quit
+    Set ivar_ie = Nothing
+  End Sub
+
+  Private Sub WaitReadyStateComplete
+    Do While ivar_ie.Busy And ivar_ie.ReadyState <> 4
+      WScript.Sleep 10
+    Loop
+  End Sub
+
+  Public Function GetFilePath
+    ivar_ie.document.body.innerHTML = "<input type='file' id='FileOpenDialog' />"
+    ivar_ie.document.getElementById("FileOpenDialog").Click
+    Dim path: path = ivar_ie.Document.getElementById("FileOpenDialog").Value
+    If Len(path) > 0 Then
+      GetFilePath = path
+    End If
+  End Function
+End Class
+
+Function InputFileOpenDialog
+  Dim dialog
+  Set dialog = New FileOpenDialog
+  InputFileOpenDialog = dialog.GetFilePath
+End Function
+
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
 
@@ -238,10 +280,15 @@ Sub REPL_Evaluate(expr)
 End Sub
 
 Sub ImportFile(path)
-  On Error Resume Next
-  REPL_ScriptControl.AddCode FileReadAll(path)
-  If Err.Number <> 0 Then
-    PopupError("Import Error")
+  If IsEmpty(path) Then
+    path = InputFileOpenDialog
+  End If
+  If Not IsEmpty(path) Then
+    On Error Resume Next
+    REPL_ScriptControl.AddCode FileReadAll(path)
+    If Err.Number <> 0 Then
+      PopupError("Import Error")
+    End If
   End If
 End Sub
 
@@ -262,7 +309,7 @@ histCommand.IgnoreCase = True
 
 Dim importCommand
 Set importCommand = New RegExp
-importCommand.Pattern = "^@import\s+"
+importCommand.Pattern = "^@import$|^@import\s+"
 importCommand.IgnoreCase = True
 
 Dim hist
@@ -300,8 +347,13 @@ Do
         defaultExpr = GetHistory(hist, histCommand.Replace(expr, ""))
     End Select
   ElseIf importCommand.Test(expr) Then
-    expr = importCommand.Replace(expr, "")
-    ImportFile expr
+    Select Case LCase(expr)
+      Case "@import":
+        ImportFile Empty
+      Case Else:
+        expr = importCommand.Replace(expr, "")
+        ImportFile expr
+    End Select
   Else
     REPL_Execute expr
   End If
