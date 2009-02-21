@@ -140,16 +140,55 @@ Class History
   End Function
 End Class
 
+Dim fso
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+Const ForReading = 1, ForWriting = 2, ForAppending = 8
+
+Function FileReadAll(path)
+  Dim stream
+  Set stream = fso.OpenTextFile(path)
+  FileReadAll = stream.ReadAll
+  stream.Close
+End Function
+
+Dim logFilename, logStream
+logFilename = fso.BuildPath(fso.GetParentFolderName(WScript.ScriptFullName), _
+                            fso.GetBaseName(WScript.ScriptFullName) & ".Log")
+Set logStream = fso.OpenTextFile(logFilename, ForAppending, True)
+
 Const POPUP_TITLE = "Read Eval Print Loop"
 
+Sub PopupMessage(prompt, buttons, title)
+  logStream.WriteLine Now
+  logStream.WriteLine "[ " & title & " ]"
+  logStream.WriteLine prompt
+  logStream.WriteBlankLines 1
+
+  MsgBox prompt, buttons, title
+End Sub
+
+Function PopupInputBox(prompt, title, default)
+  Dim s
+  s = InputBox(prompt, title, default)
+
+  logStream.WriteLine Now
+  logStream.WriteLine "[ " & title & " ]"
+  logStream.WriteLine prompt
+  logStream.WriteLine "input: " & ShowValue(s)
+  logStream.WriteBlankLines 1
+
+  PopupInputBox = s
+End Function
+
 Sub PopupError
-  MsgBox Err.Number & ": " & Err.Description & " (" & Err.Source & ")", _
-         vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
+  PopupMessage Err.Number & ": " & Err.Description & " (" & Err.Source & ")", _
+               vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
 End Sub
 
 Sub PopupResult(expr, result)
-  MsgBox expr & vbNewLine & "=> " & result, _
-         vbOKOnly, POPUP_TITLE & ": Result"
+  PopupMessage expr & vbNewLine & "=> " & result, _
+               vbOKOnly, POPUP_TITLE & ": Result"
 End Sub
 
 Sub PopupHistory(hist)
@@ -158,7 +197,7 @@ Sub PopupHistory(hist)
     text = text & sep & i & ": " & hist(i)
     sep = vbNewLine
   Next
-  MsgBox text, vbOKOnly + vbInformation, POPUP_TITLE & ": History"
+  PopupMessage text, vbOKOnly + vbInformation, POPUP_TITLE & ": History"
 End Sub
 
 Function GetHistory(hist, indexExpr)
@@ -198,16 +237,6 @@ Sub REPL_Evaluate(expr)
   End If
 End Sub
 
-Dim fso
-Set fso = CreateObject("Scripting.FileSystemObject")
-
-Function FileReadAll(path)
-  Dim stream
-  Set stream = fso.OpenTextFile(path)
-  FileReadAll = stream.ReadAll
-  stream.Close
-End Function
-
 Dim binDir: binDir = fso.GetParentFolderName(WScript.ScriptFullName)
 Dim baseDir: baseDir = fso.GetParentFolderName(binDir)
 Dim libDir: libDir = fso.BuildPath(baseDir, "lib")
@@ -217,8 +246,8 @@ Sub ImportFile(path)
     Dim libPath
     libPath = fso.BuildPath(libDir, path)
     If Not fso.FileExists(libPath) Then
-      MsgBox "not found a file to import: " & path, _
-             vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
+      PopupMessage "not found a file to import: " & path, _
+                   vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
       Exit Sub
     End If
     path = libPath
@@ -259,9 +288,9 @@ Dim defaultExpr
 defaultExpr = Empty
 
 Do
-  expr = InputBox("Input `statement' or `e statement' or `p expression'. `h' for history.", _
-                  POPUP_TITLE & " [" & hist.NextIndex & "]", _
-                  defaultExpr)
+  expr = PopupInputBox("Input `statement' or `e statement' or `p expression'. `h' for history.", _
+                       POPUP_TITLE & " [" & hist.NextIndex & "]", _
+                       defaultExpr)
 
   If IsEmpty(expr) Then
     Exit Do
