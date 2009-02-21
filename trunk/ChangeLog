@@ -1,5 +1,7 @@
 2009-02-20  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* lib/stdlib.vbs: AryReverse list tool.
+
 	* lib/stdlib.vbs: CompareFilter utility function. ReverseCompare
 	utility function. utility functions of ValueItemAt, ValueItemsAt,
 	ValueObjectProperties. obsolete ValueDictionaryItem function.

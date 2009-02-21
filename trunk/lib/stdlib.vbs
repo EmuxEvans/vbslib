@@ -743,6 +743,22 @@ Function Numbering(first, last)
   Numbering = NumericRange(first, last, 1, False)
 End Function
 
+Function AryReverse(ByVal list)
+  Dim l, r, t
+  l = 0
+  r = UBound(list)
+
+  Do While l < r
+    Bind t, list(l)
+    BindAt list, l, list(r)
+    BindAt list, r, t
+    l = l + 1
+    r = r - 1
+  Loop
+
+  AryReverse = list
+End Function
+
 
 '==================================================
 '################ utility function ################

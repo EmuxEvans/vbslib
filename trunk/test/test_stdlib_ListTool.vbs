@@ -226,6 +226,24 @@ Sub TestNumbering_Empty
   AssertEqual -1, UBound(a)
 End Sub
 
+Sub TestAryReverse_Odd
+  Dim a
+  a = Array("foo", "bar", "baz")
+  AssertEqual ShowValue(Array("baz", "bar", "foo")), ShowValue(AryReverse(a))
+  AssertEqual ShowValue(Array("foo", "bar", "baz")), ShowValue(a)
+End Sub
+
+Sub TestAryReverse_Even
+  Dim a
+  a = Array("foo", "bar", "baz", "quux")
+  AssertEqual ShowValue(Array("quux", "baz", "bar", "foo")), ShowValue(AryReverse(a))
+  AssertEqual ShowValue(Array("foo", "bar", "baz", "quux")), ShowValue(a)
+End Sub
+
+Sub TestAryReverse_EmptyList
+  AssertEqual ShowValue(Array()), ShowValue(AryReverse(Array()))
+End Sub
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil
