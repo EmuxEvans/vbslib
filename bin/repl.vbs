@@ -168,10 +168,11 @@ Class FileOpenDialog
 
   Public Function GetFilePath
     ivar_ie.document.body.innerHTML = "<input type='file' id='FileOpenDialog' />"
-    ivar_ie.document.getElementById("FileOpenDialog").Click
-    Dim path: path = ivar_ie.Document.getElementById("FileOpenDialog").Value
-    If Len(path) > 0 Then
-      GetFilePath = path
+    Dim file
+    Set file = ivar_ie.document.getElementById("FileOpenDialog")
+    file.Click
+    If Len(file.Value) > 0 Then
+      GetFilePath = file.Value
     End If
   End Function
 End Class
