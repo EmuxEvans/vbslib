@@ -621,20 +621,22 @@ End Function
 Function CountItem(list)
   If IsArray(list) Then
     CountItem = UBound(list) + 1
-  ElseIf IsObject(list) Then
+    Exit Function
+  End If
+  
+  If IsObject(list) Then
     If ObjectPropertyExists(list, "Count") Then
       CountItem = list.Count
-    Else
-      Dim count, i
-      count = 0
-      For Each i In list
-        count = count + 1
-      Next
-      CountItem = count
+      Exit Function
     End If
-  Else
-    Err.Raise 13, "stderr.vbs:CountItem", "no array or collection."
   End If
+
+  Dim count, i
+  count = 0
+  For Each i In list
+    count = count + 1
+  Next
+  CountItem = count
 End Function
 
 Function Find(list, cond)
