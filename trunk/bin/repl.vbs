@@ -237,22 +237,7 @@ Sub REPL_Evaluate(expr)
   End If
 End Sub
 
-Dim binDir: binDir = fso.GetParentFolderName(WScript.ScriptFullName)
-Dim baseDir: baseDir = fso.GetParentFolderName(binDir)
-Dim libDir: libDir = fso.BuildPath(baseDir, "lib")
-
 Sub ImportFile(path)
-  If Not fso.FileExists(path) Then
-    Dim libPath
-    libPath = fso.BuildPath(libDir, path)
-    If Not fso.FileExists(libPath) Then
-      PopupMessage "not found a file to import: " & path, _
-                   vbOKOnly + vbCritical, POPUP_TITLE + ": Import Error"
-      Exit Sub
-    End If
-    path = libPath
-  End If
-
   On Error Resume Next
   REPL_ScriptControl.AddCode FileReadAll(path)
   If Err.Number <> 0 Then
