@@ -154,7 +154,7 @@ End Function
 
 Dim logFilename, logStream
 logFilename = fso.BuildPath(fso.GetParentFolderName(WScript.ScriptFullName), _
-                            fso.GetBaseName(WScript.ScriptFullName) & ".Log")
+                            fso.GetBaseName(WScript.ScriptFullName) & ".log")
 Set logStream = fso.OpenTextFile(logFilename, ForAppending, True)
 
 Const POPUP_TITLE = "Read Eval Print Loop"
@@ -181,9 +181,9 @@ Function PopupInputBox(prompt, title, default)
   PopupInputBox = s
 End Function
 
-Sub PopupError
+Sub PopupError(title)
   PopupMessage Err.Number & ": " & Err.Description & " (" & Err.Source & ")", _
-               vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
+               vbOKOnly + vbCritical, POPUP_TITLE + ": " & title
 End Sub
 
 Sub PopupResult(expr, result)
@@ -222,7 +222,7 @@ Sub REPL_Execute(expr)
   On Error Resume Next
   REPL_ScriptControl.ExecuteStatement expr
   If Err.Number <> 0 Then
-    PopupError
+    PopupError("Statement Error")
   End If
 End Sub
 
@@ -233,7 +233,7 @@ Sub REPL_Evaluate(expr)
   If Err.Number = 0 Then
     PopupResult expr, result
   Else
-    PopupError
+    PopupError("Expression Error")
   End If
 End Sub
 
@@ -247,7 +247,7 @@ Sub ImportFile(path)
     libPath = fso.BuildPath(libDir, path)
     If Not fso.FileExists(libPath) Then
       PopupMessage "not found a file to import: " & path, _
-                   vbOKOnly + vbCritical, POPUP_TITLE + ": Error"
+                   vbOKOnly + vbCritical, POPUP_TITLE + ": Import Error"
       Exit Sub
     End If
     path = libPath
@@ -256,7 +256,7 @@ Sub ImportFile(path)
   On Error Resume Next
   REPL_ScriptControl.AddCode FileReadAll(path)
   If Err.Number <> 0 Then
-    PopupError
+    PopupError("Import Error")
   End If
 End Sub
 
