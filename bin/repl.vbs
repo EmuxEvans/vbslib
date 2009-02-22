@@ -2,6 +2,8 @@
 
 Option Explicit
 
+Const MAX_HISTORY = 30
+
 Dim ShowString_Quote
 Set ShowString_Quote = New RegExp
 ShowString_Quote.Pattern = """"
@@ -89,7 +91,48 @@ Function ShowValue(value)
   ShowValue = r
 End Function
 
-Const MAX_HISTORY = 30
+Class FileOpenDialog
+  Private ivar_ie
+
+  Private Sub Class_Initialize
+    Set ivar_ie = CreateObject("InternetExplorer.Application")
+    ivar_ie.MenuBar = False
+    ivar_ie.AddressBar = False
+    ivar_ie.ToolBar = False
+    ivar_ie.StatusBar = False
+    ivar_ie.Navigate "abount:blank"
+    'ivar_ie.Visible = True              ' why once on invisible?
+    WaitReadyStateComplete
+    ivar_ie.document.Write "<html><body></body></html>"
+  End Sub
+
+  Private Sub Class_Terminate
+    ivar_ie.Quit
+    Set ivar_ie = Nothing
+  End Sub
+
+  Private Sub WaitReadyStateComplete
+    Do While ivar_ie.Busy And ivar_ie.ReadyState <> 4
+      WScript.Sleep 10
+    Loop
+  End Sub
+
+  Public Function GetFilePath
+    ivar_ie.document.body.innerHTML = "<input type='file' id='FileOpenDialog' />"
+    Dim file
+    Set file = ivar_ie.document.getElementById("FileOpenDialog")
+    file.Click
+    If Len(file.Value) > 0 Then
+      GetFilePath = file.Value
+    End If
+  End Function
+End Class
+
+Function InputFileOpenDialog
+  Dim dialog
+  Set dialog = New FileOpenDialog
+  InputFileOpenDialog = dialog.GetFilePath
+End Function
 
 Class History
   Private dict
@@ -139,49 +182,6 @@ Class History
     Keys = KeyList
   End Function
 End Class
-
-Class FileOpenDialog
-  Private ivar_ie
-
-  Private Sub Class_Initialize
-    Set ivar_ie = CreateObject("InternetExplorer.Application")
-    ivar_ie.MenuBar = False
-    ivar_ie.AddressBar = False
-    ivar_ie.ToolBar = False
-    ivar_ie.StatusBar = False
-    ivar_ie.Navigate "abount:blank"
-    'ivar_ie.Visible = True              ' why once on invisible?
-    WaitReadyStateComplete
-    ivar_ie.document.Write "<html><body></body></html>"
-  End Sub
-
-  Private Sub Class_Terminate
-    ivar_ie.Quit
-    Set ivar_ie = Nothing
-  End Sub
-
-  Private Sub WaitReadyStateComplete
-    Do While ivar_ie.Busy And ivar_ie.ReadyState <> 4
-      WScript.Sleep 10
-    Loop
-  End Sub
-
-  Public Function GetFilePath
-    ivar_ie.document.body.innerHTML = "<input type='file' id='FileOpenDialog' />"
-    Dim file
-    Set file = ivar_ie.document.getElementById("FileOpenDialog")
-    file.Click
-    If Len(file.Value) > 0 Then
-      GetFilePath = file.Value
-    End If
-  End Function
-End Class
-
-Function InputFileOpenDialog
-  Dim dialog
-  Set dialog = New FileOpenDialog
-  InputFileOpenDialog = dialog.GetFilePath
-End Function
 
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
