@@ -3,6 +3,7 @@
 Option Explicit
 
 Const MAX_HISTORY = 30
+Const DEFAULT_TIMEOUT_MILLISEC = 4000
 
 Dim ShowString_Quote
 Set ShowString_Quote = New RegExp
@@ -272,6 +273,7 @@ Dim REPL_ScriptControl
 Set REPL_ScriptControl = CreateObject("ScriptControl")
 REPL_ScriptControl.Language = "VBScript"
 REPL_ScriptControl.AddObject "WScript", WScript
+REPL_ScriptControl.Timeout = DEFAULT_TIMEOUT_MILLISEC
 
 Sub REPL_Execute(expr)
   On Error Resume Next
@@ -289,6 +291,23 @@ Sub REPL_Evaluate(expr)
     PopupResult expr, result
   Else
     PopupError("Expression Error")
+  End If
+End Sub
+
+Sub PopupCurrentTimeout
+  PopupMessage REPL_ScriptControl.Timeout & " milliseconds", _
+               vbOKOnly + vbInformation, POPUP_TITLE & ": Current Timeout"
+End Sub
+
+Sub SetTimeout(millisec)
+  Dim ms
+  On Error Resume Next
+  ms = CLng(millisec)
+  If Err.Number = 0 Then
+    REPL_ScriptControl.Timeout = ms
+  End If
+  If Err.Number <> 0 Then
+    PopupError("Timeout Error")
   End If
 End Sub
 
@@ -319,6 +338,11 @@ Dim histCommand
 Set histCommand = New RegExp
 histCommand.Pattern = "^h$|^hh$|^h\s+"
 histCommand.IgnoreCase = True
+
+Dim timeoutCommand
+Set timeoutCommand = New RegExp
+timeoutCommand.Pattern = "^@timeout$|^@timeout\s+"
+timeoutCommand.IgnoreCase = True
 
 Dim importCommand
 Set importCommand = New RegExp
@@ -358,6 +382,13 @@ Do
         defaultExpr = hist(hist.NextIndex - 2)
       Case Else:
         defaultExpr = GetHistory(hist, histCommand.Replace(expr, ""))
+    End Select
+  ElseIf timeoutCommand.Test(expr) Then
+    Select Case LCase(expr)
+      Case "@timeout":
+        PopupCurrentTimeout
+      Case Else:
+        SetTimeout timeoutCommand.Replace(expr, "")
     End Select
   ElseIf importCommand.Test(expr) Then
     Select Case LCase(expr)

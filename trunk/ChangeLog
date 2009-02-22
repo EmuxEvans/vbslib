@@ -1,5 +1,7 @@
 2009-02-22  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* bin/repl.vbs: script timeout command.
+
 	* bin/repl.vbs: file open dialog for import.
 
 2009-02-20  TOKI Yoshinori  <toki@freedom.ne.jp>
