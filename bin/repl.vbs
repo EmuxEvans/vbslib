@@ -248,12 +248,17 @@ Sub PopupResult(expr, result)
 End Sub
 
 Sub PopupHistory(hist)
-  Dim i, text, sep
-  For Each i In hist.Keys
-    text = text & sep & i & ": " & hist(i)
-    sep = vbNewLine
+  Dim keys
+  keys = hist.Keys
+
+  ReDim histItemList(UBound(keys))
+  Dim i
+  For i = 0 To UBound(keys)
+    histItemList(i) = keys(i) & ": " & hist(keys(i))
   Next
-  PopupMessage text, vbOKOnly + vbInformation, POPUP_TITLE & ": History"
+
+  PopupMessage Join(histItemList, vbNewLine), _
+               vbOKOnly + vbInformation, POPUP_TITLE & ": History"
 End Sub
 
 Function GetHistory(hist, indexExpr)
