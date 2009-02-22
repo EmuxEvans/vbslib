@@ -324,6 +324,10 @@ Sub ImportFile(path)
   End If
 End Sub
 
+Sub ScriptEngineReset
+  REPL_ScriptControl.Reset
+End Sub
+
 Dim execCommand
 Set execCommand = New RegExp
 execCommand.Pattern = "^e\s+"
@@ -348,6 +352,11 @@ Dim importCommand
 Set importCommand = New RegExp
 importCommand.Pattern = "^@import$|^@import\s+"
 importCommand.IgnoreCase = True
+
+Dim resetCommand
+Set resetCommand = New RegExp
+resetCommand.Pattern = "^@reset$"
+resetCommand.IgnoreCase = True
 
 Dim hist
 Set hist = New History
@@ -398,6 +407,8 @@ Do
         expr = importCommand.Replace(expr, "")
         ImportFile expr
     End Select
+  ElseIf resetCommand.Test(expr) Then
+    ScriptEngineReset
   Else
     REPL_Execute expr
   End If
