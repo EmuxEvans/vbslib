@@ -1,5 +1,7 @@
 2009-02-24  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* lib/stdlib.vbs: GUI dialog.
+
 	* bin/repl.vbs: procedure list command.
 	help command.
 

@@ -1309,6 +1309,63 @@ End Function
 
 
 '==========================================
+'################ GUI tool ################
+'------------------------------------------
+
+Class FileOpenDialog
+  Private ivar_ie
+
+  Private Sub Class_Initialize
+    Set ivar_ie = CreateObject("InternetExplorer.Application")
+    ivar_ie.MenuBar = False
+    ivar_ie.AddressBar = False
+    ivar_ie.ToolBar = False
+    ivar_ie.StatusBar = False
+    ivar_ie.Navigate "abount:blank"
+    'ivar_ie.Visible = True              ' why once on invisible?
+    WaitReadyStateComplete
+    ivar_ie.document.Write "<html><body></body></html>"
+  End Sub
+
+  Private Sub Class_Terminate
+    ivar_ie.Quit
+    Set ivar_ie = Nothing
+  End Sub
+
+  Private Sub WaitReadyStateComplete
+    Do While ivar_ie.Busy And ivar_ie.ReadyState <> 4
+      WScript.Sleep 10
+    Loop
+  End Sub
+
+  Public Function GetFilePath
+    ivar_ie.document.body.innerHTML = "<input type='file' id='FileOpenDialog' />"
+    Dim file
+    Set file = ivar_ie.document.getElementById("FileOpenDialog")
+    file.Click
+    If Len(file.Value) > 0 Then
+      GetFilePath = file.Value
+    End If
+  End Function
+End Class
+
+Function InputFileOpenDialog
+  Dim dialog
+  Set dialog = New FileOpenDialog
+  InputFileOpenDialog = dialog.GetFilePath
+End Function
+
+Function InputBrowsingFolderDialog(title)
+  Dim s, folder
+  Set s = CreateObject("Shell.Application")
+  Set folder = s.BrowseForFolder(0, title, 64)
+  If Not folder Is Nothing Then
+    InputBrowsingFolderDialog = folder.Self.Path
+  End If
+End Function
+
+
+'==========================================
 '################ WMI tool ################
 '------------------------------------------
 
