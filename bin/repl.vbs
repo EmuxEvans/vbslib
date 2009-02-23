@@ -389,6 +389,26 @@ Sub ScriptEngineReset
   REPL_ScriptControl.Reset
 End Sub
 
+Sub PopupHelp
+  Dim helpItemList
+  helpItemList = Array("Statement", _
+                       "e Statement", _
+                       "p Expression", _
+                       "h", _
+                       "h Index", _
+                       "hh", _
+                       "@timeout", _
+                       "@timeout MilliSeconds", _
+                       "@import", _
+                       "@import VBScriptFile", _
+                       "@proc", _
+                       "@proc NamePattern", _
+                       "@reset", _
+                       "?")
+  PopupMessage Join(helpItemList, vbNewLine), _
+               vbOKOnly + vbInformation, POPUP_TITLE & ": Help"
+End Sub
+
 Dim execCommand
 Set execCommand = New RegExp
 execCommand.Pattern = "^e\s+"
@@ -424,6 +444,11 @@ Set resetCommand = New RegExp
 resetCommand.Pattern = "^@reset$"
 resetCommand.IgnoreCase = True
 
+Dim helpCommand
+Set helpCommand = New RegExp
+helpCommand.Pattern = "^\?$"
+helpCommand.IgnoreCase = True
+
 Dim hist
 Set hist = New History
 
@@ -432,7 +457,7 @@ Dim defaultExpr
 defaultExpr = Empty
 
 Do
-  expr = PopupInputBox("Input `statement' or `e statement' or `p expression'. `h' for history.", _
+  expr = PopupInputBox("Input `statement' or `e statement' or `p expression'. `h' for history. `?' for help.", _
                        POPUP_TITLE & " [" & hist.NextIndex & "]", _
                        defaultExpr)
 
@@ -444,11 +469,9 @@ Do
   defaultExpr = Empty
 
   If execCommand.Test(expr) Then
-    expr = execCommand.Replace(expr, "")
-    REPL_Execute expr
+    REPL_Execute execCommand.Replace(expr, "")
   ElseIf evalCommand.Test(expr) Then
-    expr = evalCommand.Replace(expr, "")
-    REPL_Evaluate expr
+    REPL_Evaluate evalCommand.Replace(expr, "")
   ElseIf histCommand.Test(expr) Then
     Select Case LCase(expr)
       Case "h":
@@ -482,6 +505,8 @@ Do
     End Select
   ElseIf resetCommand.Test(expr) Then
     ScriptEngineReset
+  ElseIf helpCommand.Test(expr) Then
+    PopupHelp
   Else
     REPL_Execute expr
   End If
