@@ -403,8 +403,9 @@ Sub PopupHelp
                        "@import VBScriptFile", _
                        "@proc", _
                        "@proc NamePattern", _
-                       "@reset", _
+                       "@Reset", _
                        "?")
+
   PopupMessage Join(helpItemList, vbNewLine), _
                vbOKOnly + vbInformation, POPUP_TITLE & ": Help"
 End Sub
