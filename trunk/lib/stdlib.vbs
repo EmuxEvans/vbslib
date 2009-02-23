@@ -164,8 +164,9 @@ Function ShowDictionary(value)
 End Function
 
 Function ShowObject(value)
-  On Error Resume Next
   Dim r
+  Err.Clear
+  On Error Resume Next
   r = ShowDictionary(value)
   If Err.Number <> 0 Then
     Err.Clear
@@ -183,8 +184,9 @@ Function ShowObject(value)
 End Function
 
 Function ShowOther(value)
-  On Error Resume Next
   Dim r
+  Err.Clear
+  On Error Resume Next
   r = CStr(value)
   If Err.Number <> 0 Then
     Err.Clear
@@ -266,7 +268,8 @@ Sub SetObjectProperty(obj, name, value)
   BindAt ObjectProperty_GetAccessor(name), obj, value
 End Sub
 
-Function ObjectPropertyExists(obj, name)
+Function ObjectPropertyExists(obj, Name)
+  Err.Clear
   On Error Resume Next
   ObjectProperty_GetAccessor(name)(obj)
   Select Case Err.Number
@@ -1321,11 +1324,13 @@ Class WbemOptionalPropertyInformationGetter
     Set ivar_class = value
   End Property
 
-  Private Function GetQualifier(prop, name)
+  Private Function GetQualifier(prop, Name)
+    Err.Clear
     On Error Resume Next
     Set GetQualifier = prop.Qualifiers_(name)
     If Err.Number <> 0 Then
       Set GetQualifier = Nothing
+      Err.Clear
     End If
   End Function
 
