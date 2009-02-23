@@ -1,6 +1,7 @@
 2009-02-24  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/repl.vbs: procedure list command.
+	help command.
 
 2009-02-22  TOKI Yoshinori  <toki@freedom.ne.jp>
 
