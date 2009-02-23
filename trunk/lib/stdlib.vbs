@@ -49,6 +49,26 @@ Function D(keyValueList)
   Set D = Dictionary(keyValueList)
 End Function
 
+Function DictionaryMerge(dictionary1, dictionary2)
+  Dim dict, key
+  Set dict = CreateObject("Scripting.Dictionary")
+
+  For Each key In dictionary1
+    BindAt dict, key, dictionary1(key)
+  Next
+
+  For Each key In dictionary2
+    BindAt dict, key, dictionary2(key)
+  Next
+
+  Set DictionaryMerge = dict
+End Function
+
+' shortcut
+Function DMerge(dictionary1, dictionary2)
+  Set DMerge = DictionaryMerge(dictionary1, dictionary2)
+End Function
+
 Function re(regexpPattern, regexpOptions)
   Dim regex
   Set regex = New RegExp
