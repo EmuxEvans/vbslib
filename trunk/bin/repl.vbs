@@ -337,6 +337,54 @@ Sub ImportFile(path)
   End If
 End Sub
 
+Class PseudoRegexpFilter
+  Public Function Test(text)
+    Test = True
+  End Function
+End Class
+
+Sub PopupProcedureList(regexpFilter)
+  Dim filter
+  If IsEmpty(regexpFilter) Then
+    Set filter = New PseudoRegexpFilter
+  Else
+    Set filter = New RegExp
+    filter.Pattern = regexpFilter
+    filter.IgnoreCase = True
+  End If
+
+  REPL_ScriptControl.AddCode "Now"      ' dummy AddCode to update ScriptControl.Procedures
+  Dim procSet
+  Set procSet = REPL_ScriptControl.Procedures
+
+  ReDim procItemList(procSet.Count - 1)
+  Dim count, proc, i, s, sep
+  count = 0
+  For Each proc In procSet
+    If filter.Test(proc.Name) Then
+      s = (count + 1) & ". "
+      If proc.HasReturnValue Then
+        s = s & "Function "
+      Else
+        s = s & "Sub "
+      End If
+      s = s & proc.Name & "("
+      sep = ""
+      For i = 1 To proc.NumArgs
+        s = s & sep & "a" & i
+        sep = ","
+      Next
+      s = s & ")"
+      procItemList(count) = s
+      count = count + 1
+    End If
+  Next
+  ReDim Preserve procItemList(count - 1)
+
+  PopupMessage Join(procItemList, vbNewLine), _
+               vbOKOnly + vbInformation, POPUP_TITLE & ": Defined Procedures"
+End Sub
+
 Sub ScriptEngineReset
   REPL_ScriptControl.Reset
 End Sub
@@ -365,6 +413,11 @@ Dim importCommand
 Set importCommand = New RegExp
 importCommand.Pattern = "^@import$|^@import\s+"
 importCommand.IgnoreCase = True
+
+Dim procCommand
+Set procCommand = New RegExp
+procCommand.Pattern = "^@proc$|^@proc\s+"
+procCommand.IgnoreCase = True
 
 Dim resetCommand
 Set resetCommand = New RegExp
@@ -419,6 +472,13 @@ Do
       Case Else:
         expr = importCommand.Replace(expr, "")
         ImportFile expr
+    End Select
+  ElseIf procCommand.Test(expr) Then
+    Select Case LCase(expr)
+      Case "@proc":
+        PopupProcedureList Empty
+      Case Else:
+        PopupProcedureList procCommand.Replace(expr, "")
     End Select
   ElseIf resetCommand.Test(expr) Then
     ScriptEngineReset
