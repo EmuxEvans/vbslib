@@ -390,23 +390,21 @@ Sub ScriptEngineReset
 End Sub
 
 Sub PopupHelp
-  Dim helpItemList
-  helpItemList = Array("Statement", _
-                       "e Statement", _
-                       "p Expression", _
-                       "h", _
-                       "h Index", _
-                       "hh", _
-                       "@timeout", _
-                       "@timeout MilliSeconds", _
-                       "@import", _
-                       "@import VBScriptFile", _
-                       "@proc", _
-                       "@proc NamePattern", _
-                       "@Reset", _
-                       "?")
-
-  PopupMessage Join(helpItemList, vbNewLine), _
+  PopupMessage Join(Array("Statement", _
+                          "e Statement", _
+                          "p Expression", _
+                          "h", _
+                          "h Index", _
+                          "hh", _
+                          "@timeout", _
+                          "@timeout MilliSeconds", _
+                          "@import", _
+                          "@import VBScriptFile", _
+                          "@proc", _
+                          "@proc NamePattern", _
+                          "@Reset", _
+                          "?"), _
+                    vbNewLine), _
                vbOKOnly + vbInformation, POPUP_TITLE & ": Help"
 End Sub
 
