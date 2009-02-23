@@ -37,8 +37,9 @@ Function ShowDictionary(value)
 End Function
 
 Function ShowObject(value)
-  On Error Resume Next
   Dim r
+  Err.Clear
+  On Error Resume Next
   r = ShowDictionary(value)
   If Err.Number <> 0 Then
     Err.Clear
@@ -56,8 +57,9 @@ Function ShowObject(value)
 End Function
 
 Function ShowOther(value)
-  On Error Resume Next
   Dim r
+  Err.Clear
+  On Error Resume Next
   r = CStr(value)
   If Err.Number <> 0 Then
     Err.Clear
@@ -263,6 +265,7 @@ End Sub
 
 Function GetHistory(hist, indexExpr)
   Dim index
+  Err.Clear
   On Error Resume Next
   index = CInt(indexExpr)
   If Err.Number = 0 Then
@@ -281,21 +284,25 @@ REPL_ScriptControl.AddObject "WScript", WScript
 REPL_ScriptControl.Timeout = DEFAULT_TIMEOUT_MILLISEC
 
 Sub REPL_Execute(expr)
+  Err.Clear
   On Error Resume Next
   REPL_ScriptControl.ExecuteStatement expr
   If Err.Number <> 0 Then
     PopupError("Statement Error")
+    Err.Clear
   End If
 End Sub
 
 Sub REPL_Evaluate(expr)
   Dim result
+  Err.Clear
   On Error Resume Next
   result = ShowValue(REPL_ScriptControl.Eval(expr))
   If Err.Number = 0 Then
     PopupResult expr, result
   Else
     PopupError("Expression Error")
+    Err.Clear
   End If
 End Sub
 
@@ -306,13 +313,12 @@ End Sub
 
 Sub SetTimeout(millisec)
   Dim ms
+  Err.Clear
   On Error Resume Next
-  ms = CLng(millisec)
-  If Err.Number = 0 Then
-    REPL_ScriptControl.Timeout = ms
-  End If
+  REPL_ScriptControl.Timeout = CLng(millisec)
   If Err.Number <> 0 Then
     PopupError("Timeout Error")
+    Err.Clear
   End If
 End Sub
 
@@ -321,10 +327,12 @@ Sub ImportFile(path)
     path = PopupFileOpenDialog
   End If
   If Not IsEmpty(path) Then
+    Err.Clear
     On Error Resume Next
     REPL_ScriptControl.AddCode FileReadAll(path)
     If Err.Number <> 0 Then
       PopupError("Import Error")
+      Err.Clear
     End If
   End If
 End Sub

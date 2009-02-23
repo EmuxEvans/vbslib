@@ -119,15 +119,15 @@ startTime = Timer
 Dim testProc, testStat
 For Each testProc In testProcList
   testStat = "."
+  Err.Clear
   On Error Resume Next
 
   testProc.SetUp
   If Err.Number <> 0 Then
     testStat = "E"
     errorList.Add Array(testProc, "SetUp Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
-  End If
-
-  If Err.Number = 0 Then
+    Err.Clear
+  Else
     testProc.Execute
     If Err.Number <> 0 Then
       If UnitTest_IsAssertFail(Err) Then
@@ -137,14 +137,15 @@ For Each testProc In testProcList
         testStat = "E"
         errorList.Add Array(testProc, "Test Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
       End If
+      Err.Clear
     End If
   End If
-  Err.Clear
 
   testProc.TearDown
   If Err.Number <> 0 Then
     testStat = "E"
     errorList.Add Array(testProc, "TearDown Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
+    Err.Clear
   End If
 
   On Error GoTo 0
