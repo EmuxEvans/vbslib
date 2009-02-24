@@ -79,9 +79,9 @@ Sub PrintSeparator(message)
   WScript.StdOut.WriteLine "---------------- " & message & " ----------------"
 End Sub
 
-Dim GetWbemOptPropInfo
-Set GetWbemOptPropInfo = New WbemOptionalPropertyInformationGetter
-Set GetWbemOptPropInfo.Class = klass
+Dim GetWbemPropOptInfo
+Set GetWbemPropOptInfo = New WbemPropertyOptionalInformationGetter
+Set GetWbemPropOptInfo.Class = klass
 
 Dim count, obj, prop
 count = 0
@@ -92,7 +92,7 @@ For Each obj In klass.Instances_
   For Each prop In obj.Properties_
     WScript.StdOut.WriteLine prop.Name & ": " & _
       ShowValue(prop.Value) & _
-      GetWbemOptPropInfo(prop.Name)
+      GetWbemPropOptInfo(prop.Name)
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
@@ -114,9 +114,9 @@ computerName = "."
 Dim services
 Set services = GetObject("winmgmts:{(Security)}//" & computerName & "/root/cimv2")
 
-Dim GetWbemOptPropInfo
-Set GetWbemOptPropInfo = New WbemOptionalPropertyInformationGetter
-Set GetWbemOptPropInfo.Class = services.Get("Win32_NTLogEvent")
+Dim GetWbemPropOptInfo
+Set GetWbemPropOptInfo = New WbemPropertyOptionalInformationGetter
+Set GetWbemPropOptInfo.Class = services.Get("Win32_NTLogEvent")
 
 Dim wql
 wql = "SELECT * FROM __InstanceCreationEvent WITHIN 10 WHERE TargetInstance ISA 'Win32_NTLogEvent'"
@@ -133,7 +133,7 @@ Do
   count = count + 1
   WScript.StdOut.WriteLine "---------------- " & Now & ": log " & count & " ----------------"
   For Each prop In ev.TargetInstance.Properties_
-    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value) & GetWbemOptPropInfo(prop.Name)
+    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value) & GetWbemPropOptInfo(prop.Name)
   Next
   WScript.StdOut.WriteBlankLines 1
 Loop

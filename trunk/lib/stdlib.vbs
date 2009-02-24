@@ -1389,7 +1389,7 @@ End Function
 '################ WMI tool ################
 '------------------------------------------
 
-Class WbemOptionalPropertyInformationGetter
+Class WbemPropertyOptionalInformationGetter
   Private ivar_class
   Private ivar_cache
 
