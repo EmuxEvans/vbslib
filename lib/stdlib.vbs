@@ -1385,6 +1385,86 @@ Function InputBrowsingFolderDialog(title)
 End Function
 
 
+'===========================================
+'################ ADSI tool ################
+'-------------------------------------------
+
+Sub ADSI_AttachVisitorSubProc(visitor, key, proc, argCount)
+  Set visitor(key) = GetSubProcSubset(proc, argCount, Array(visitor))
+End Sub
+
+Sub ADSI_AttachVisitorFuncProc(visitor, key, proc, argCount)
+  Set visitor(key) = GetFuncProcSubset(proc, argCount, Array(visitor))
+End Sub
+
+Function ADSI_CreateVisitor
+  Dim visitor
+  Set visitor = D(Array("__SchemaCache__", CreateObject("Scripting.Dictionary"), _
+                        "ADSI_VisitDepth", 0))
+  ADSI_AttachVisitorFuncProc visitor, "GetSchema", GetRef("ADSI_GetSchema"), 2
+  ADSI_AttachVisitorFuncProc visitor, "IsContainer", GetRef("ADSI_IsContainer"), 2
+  ADSI_AttachVisitorSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObjectDefault"), 2
+  ADSI_AttachVisitorSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainerDefault"), 2
+  Set ADSI_CreateVisitor = visitor
+End Function
+
+Sub ADSI_Visit(visitor, adsObject)
+  Dim key
+  key = "ADSI_Visit_" & adsObject.Class
+  If visitor.Exists(key) Then
+    visitor(key)(adsObject)
+  Else
+    If visitor("IsContainer")(adsObject) Then
+      visitor("ADSI_VisitContainer")(adsObject)
+    Else
+      visitor("ADSI_VisitObject")(adsObject)
+    End If
+  End If
+End Sub
+
+Function ADSI_GetSchema(visitor, adsObject)
+  Dim schemaCache
+  Set schemaCache = visitor("__SchemaCache__")
+
+  If Not schemaCache.Exists(adsObject.Schema) Then
+    schemaCache.Add adsObject.Schema, GetObject(adsObject.Schema)
+  End If
+
+  Set ADSI_GetSchema = schemaCache(adsObject.Schema)
+End Function
+
+Function ADSI_IsContainer(visitor, adsObject)
+  Err.Clear
+  On Error Resume Next
+
+  Dim schema
+  Set schema = visitor("GetSchema")(adsObject)
+
+  If Err.Number <> 0 Then
+    Err.Clear
+    ADSI_IsContainer = False
+    Exit Function
+  End If
+
+  On Error GoTo 0
+
+  ADSI_IsContainer = schema.Container
+End Function
+
+Sub ADSI_VisitObjectDefault(visitor, adsObject)
+  ' Nothing to do.
+End Sub
+
+Sub ADSI_VisitContainerDefault(visitor, adsContainer)
+  Dim adsObject
+  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") + 1
+  For Each adsObject In adsContainer
+    ADSI_Visit visitor, adsObject
+  Next
+  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") - 1
+End Sub
+
+
 '==========================================
 '################ WMI tool ################
 '------------------------------------------
