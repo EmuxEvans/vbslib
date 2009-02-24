@@ -103,8 +103,8 @@ Class FileOpenDialog
     ivar_ie.AddressBar = False
     ivar_ie.ToolBar = False
     ivar_ie.StatusBar = False
-    ivar_ie.Navigate "abount:blank"
-    'ivar_ie.Visible = True              ' why once on invisible?
+    ivar_ie.Navigate "about:blank"
+    'ivar_ie.Visible = True
     WaitReadyStateComplete
     ivar_ie.document.Write "<html><body></body></html>"
   End Sub
