@@ -71,13 +71,20 @@ Function ShowOther(value)
   End If
   If Err.Number <> 0 Then
     Err.Clear
-    r = "<unknown:" & VarType(value) & ">"
+    r = ShowUnknown(value)
   End If
   ShowOther = r
 End Function
 
+Function ShowUnknown(value)
+  ShowUnknown = "<unknown:" & VarType(value) & " " & TypeName(value) & ">"
+End Function
+
 Function ShowValue(value)
   Dim r
+  Err.Clear
+  On Error Resume Next
+
   If VarType(value) = vbString Then
     r = ShowString(value)
   ElseIf IsArray(value) Then
@@ -91,6 +98,12 @@ Function ShowValue(value)
   Else
     r = ShowOther(value)
   End If
+
+  If Err.Number <> 0 Then
+    Err.Clear
+    r = ShowUnknown(value)
+  End If
+
   ShowValue = r
 End Function
 
