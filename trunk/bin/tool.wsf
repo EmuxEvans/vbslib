@@ -26,6 +26,15 @@ WScript.Arguments.ShowUsage
 </job>
 
 <job id="ADSIObjectDump">
+<runtime>
+<description>Dump ADSI Objects</description>
+<named name="showProperties" type="boolean" required="false"
+       helpstring="show properties." />
+<named name="skipUndefinedProperties" type="boolean" required="false"
+       helpstring="skip undefined properties." />
+<unnamed name="ADsPath" many="false" required="true"
+	 helpstring="path of object to dump."/>
+</runtime>
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
 
