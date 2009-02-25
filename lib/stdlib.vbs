@@ -1438,43 +1438,50 @@ End Sub
 Function ADSI_GetSchema(visitor, adsObject)
   Dim schemaCache
   Set schemaCache = visitor("__SchemaCache__")
-
   If Not schemaCache.Exists(adsObject.Schema) Then
     schemaCache.Add adsObject.Schema, GetObject(adsObject.Schema)
   End If
-
   Set ADSI_GetSchema = schemaCache(adsObject.Schema)
 End Function
 
-Function ADSI_IsContainer(visitor, adsObject)
-  Err.Clear
-  On Error Resume Next
-
-  Dim schema
-  Set schema = visitor("GetSchema")(adsObject)
-
-  If Err.Number <> 0 Then
-    Err.Clear
-    ADSI_IsContainer = False
-    Exit Function
-  End If
-
-  On Error GoTo 0
-
-  ADSI_IsContainer = schema.Container
+Function ADSI_IsSchema(adsObject)
+  Select Case adsObject.Class
+    Case "Schema":
+      ADSI_IsSchema = True
+    Case "Class":
+      ADSI_IsSchema = True
+    Case "Syntax":
+      ADSI_IsSchema = True
+    Case "Property":
+      ADSI_IsSchema = True
+    Case Else:
+      ADSI_IsSchema = False
+  End Select
 End Function
+
+Function ADSI_IsContainer(visitor, adsObject)
+  If ADSI_IsSchema(adsObject) Then
+    ADSI_IsContainer = False
+  Else
+    ADSI_IsContainer = visitor("GetSchema")(adsObject).Container
+  End If
+End Function
+
+Sub ADSI_VisitCollection(visitor, adsCollection)
+  Dim adsObject
+  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") + 1
+  For Each adsObject In adsCollection
+    ADSI_Visit visitor, adsObject
+  Next
+  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") - 1
+End Sub
 
 Sub ADSI_VisitObjectDefault(visitor, adsObject)
   ' Nothing to do.
 End Sub
 
 Sub ADSI_VisitContainerDefault(visitor, adsContainer)
-  Dim adsObject
-  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") + 1
-  For Each adsObject In adsContainer
-    ADSI_Visit visitor, adsObject
-  Next
-  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") - 1
+  ADSI_VisitCollection visitor, adsContainer
 End Sub
 
 
