@@ -33,7 +33,7 @@ WScript.Arguments.ShowUsage
 <named name="skipUndefinedProperties" type="boolean" required="false"
        helpstring="skip undefined properties." />
 <unnamed name="ADsPath" many="false" required="true"
-	 helpstring="path of object to dump."/>
+         helpstring="path of object to dump."/>
 </runtime>
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
@@ -103,9 +103,11 @@ End Sub
 
 Sub ADSI_VisitGroup(visitor, adsObject)
   ADSI_VisitObject visitor, adsObject
-  WScript.StdOut.WriteLine _
-    visitor("GetIndent")() & "  Members: " & _
-    ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
+  If showProperties Then
+    WScript.StdOut.WriteLine _
+      visitor("GetIndent")() & "  Members: " & _
+      ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
+  End If
 End Sub
 
 Sub ADSI_VisitSchema(visitor, adsObject)
