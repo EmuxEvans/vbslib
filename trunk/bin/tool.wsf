@@ -110,8 +110,10 @@ End Sub
 Sub ADSI_VisitGroup(visitor, adsObject)
   ADSI_VisitObject visitor, adsObject
   If showProperties Then
+    Dim indent
+    indent = visitor("GetIndent")()
     WScript.StdOut.WriteLine _
-      visitor("GetIndent")() & "  Members: " & _
+       indent & "  (GroupProperty) Members: " & _
       ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
   End If
 End Sub
