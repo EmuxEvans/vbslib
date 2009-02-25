@@ -89,16 +89,22 @@ Sub ADSI_VisitObject(visitor, adsObject)
   If showProperties Then
     Dim schema
     Set schema = visitor("GetSchema")(adsObject)
-    PrintObjectProperties Array("ADsPath", "GUID", "Parent", "Schema"), adsObject, indent & "  ", "(ObjectProperty) "
-    PrintObjectProperties Array("Container", "Containment"), schema, indent & "  ", "(SchemaProperty) "
-    PrintDirectoryProperties schema.MandatoryProperties, adsObject, indent & "  ", "(MandatoryProperty) "
-    PrintDirectoryProperties schema.OptionalProperties, adsObject, indent & "  ", "(OptionalProperty) "
+    PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
+                          Array("AdsPath", "Class", "GUID", "Name", "Parent", "Schema")
+    PrintObjectProperties schema, indent & "  ", "(SchemaProperty) ", Array("Container", "Containment")
+    PrintDirectoryProperties adsObject, indent & "  ", "(MandatoryProperty) ", schema.MandatoryProperties
+    PrintDirectoryProperties adsObject, indent & "  ", "(OptionalProperty) ", schema.OptionalProperties
   End If
 End Sub
 
-Sub ADSI_VisitContainer(visitor, adsContainer)
-  ADSI_VisitObject visitor, adsContainer
-  ADSI_VisitCollection visitor, adsContainer
+Sub ADSI_VisitContainer(visitor, adsObject)
+  ADSI_VisitObject visitor, adsObject
+  If showProperties Then
+    Dim indent
+    indent = visitor("GetIndent")()
+    PrintObjectProperties adsObject, indent & "  ", "(ContainerProperty) ", Array("Count", "Filter", "Hints")
+  End If
+  ADSI_VisitCollection visitor, adsObject
 End Sub
 
 Sub ADSI_VisitGroup(visitor, adsObject)
@@ -115,7 +121,8 @@ Sub ADSI_VisitSchema(visitor, adsObject)
   indent = visitor("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
-    PrintObjectProperties Array("ADsPath", "GUID", "Parent"), adsObject, indent & "  ", "(ObjectProperty) "
+    PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
+                          Array("AdsPath", "Class", "GUID", "Name", "Parent")
   End If
   ADSI_VisitCollection visitor, adsObject
 End Sub
@@ -125,9 +132,28 @@ Sub ADSI_VisitClass(visitor, adsObject)
   indent = visitor("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
-    PrintObjectProperties Array("ADsPath", "GUID", "Parent"), adsObject, indent & "  ", "(ObjectProperty) "
-    PrintObjectProperties Array("Abstract", "MandatoryProperties", "OptionalProperties", _
-                                "Container", "Containment"), adsObject, indent & "  ", "(ClassProperty) "
+    PrintObjectProperties adsObject, indent & "  ", "(ClassProperty) ", _
+                          Array("Abstract", _
+                                "AdsPath", _
+                                "AuxDerivedFrom", _
+                                "Auxiliary", _
+                                "Class", _
+                                "CLSID", _
+                                "Container", _
+                                "Containment", _
+                                "DerivedFrom", _
+                                "GUID", _
+                                "HelpFileContext", _
+                                "HelpFileName", _
+                                "MandatoryProperties", _
+                                "Name", _
+                                "NamingProperties", _
+                                "OID", _
+                                "OptionalProperties", _
+                                "Parent", _
+                                "PossibleSuperiors", _
+                                "PrimaryInterface", _
+                                "Schema")
   End If
 End Sub
 
@@ -136,7 +162,14 @@ Sub ADSI_VisitSyntax(visitor, adsObject)
   indent = visitor("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
-    PrintObjectProperties Array("ADsPath", "GUID", "Parent"), adsObject, indent & "  ", "(ObjectProperty) "
+    PrintObjectProperties adsObject, indent & "  ", "(SyntaxProperty) ", _
+                          Array("AdsPath", _
+                                "Class", _
+                                "GUID", _
+                                "Name", _
+                                "OleAutoDataType", _
+                                "Parent", _
+                                "Schema")
   End If
 End Sub
 
@@ -145,19 +178,44 @@ Sub ADSI_VisitProperty(visitor, adsObject)
   indent = visitor("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
-    PrintObjectProperties Array("ADsPath", "GUID", "Parent"), adsObject, indent & "  ", "(ObjectProperty) "
-    PrintObjectProperties Array("Syntax", "MaxRange", "MinRange"), adsObject, indent & "  ", "(PropertyProperty) "
+    PrintObjectProperties adsObject, indent & "  ", "(PropertyProperty) ", _
+                          Array("AdsPath", _
+                                "Class", _
+                                "GUID", _
+                                "MaxRange", _
+                                "MinRange", _
+                                "MultiValued", _
+                                "Name", _
+                                "OID", _
+                                "Parent", _
+                                "Schema", _
+                                "Syntax")
   End If
 End Sub
 
-Sub PrintObjectProperties(propNameList, adsObject, indent, prefix)
-  Dim propName
+Sub PrintObjectProperties(adsObject, indent, prefix, propNameList)
+  Dim propName, propValue
   For Each propName In propNameList
-    WScript.StdOut.WriteLine indent & prefix & propName & ": " & ShowValue(GetObjectProperty(adsObject, propName))
+    Err.Clear
+    On Error Resume Next
+
+    propValue = ShowValue(GetObjectProperty(adsObject, propName))
+    If Err.Number <> 0 Then
+      Err.Clear
+      propValue = Empty
+    End If
+
+    If IsEmpty(propValue) Then
+      If Not skipUndefinedProperties Then
+        WScript.StdOut.WriteLine indent & prefix & propName & ": -"
+      End If
+    Else
+      WScript.StdOut.WriteLine indent & prefix & propName & ": " & propValue
+    End If
   Next
 End Sub
 
-Sub PrintDirectoryProperties(propNameList, adsObject, indent, prefix)
+Sub PrintDirectoryProperties(adsObject, indent, prefix, propNameList)
   Dim propName, propValue
   For Each propName In propNameList
     Err.Clear
