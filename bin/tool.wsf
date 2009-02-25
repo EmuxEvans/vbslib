@@ -89,7 +89,7 @@ End Sub
 
 Sub ADSI_VisitContainer(visitor, adsContainer)
   ADSI_VisitObject visitor, adsContainer
-  ADSI_VisitContainerDefault visitor, adsContainer
+  ADSI_VisitCollection visitor, adsContainer
 End Sub
 
 Sub ADSI_VisitGroup(visitor, adsObject)
@@ -106,7 +106,7 @@ Sub ADSI_VisitSchema(visitor, adsObject)
   If showProperties Then
     PrintObjectProperties Array("ADsPath", "GUID", "Parent"), adsObject, indent & "  ", "(ObjectProperty) "
   End If
-  ADSI_VisitContainerDefault visitor, adsObject
+  ADSI_VisitCollection visitor, adsObject
 End Sub
 
 Sub ADSI_VisitClass(visitor, adsObject)
