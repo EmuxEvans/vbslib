@@ -1362,7 +1362,7 @@ Function FindFile_CreateVisitor
   Set FindFile_CreateVisitor = visitor
 End Function
 
-Sub FindFile_VisitPath(visitor, path)
+Sub FindFile_PathAccept(path, visitor)
   Dim fso
   Set fso = visitor("fso")
   If fso.DriveExists(path) Then
@@ -1376,7 +1376,7 @@ Sub FindFile_VisitPath(visitor, path)
   End If
 End Sub
 
-Sub FindFile_VisitAllDrive(visitor)
+Sub FindFile_AllDriveAccept(visitor)
   Dim fso, drive
   Set fso = visitor("fso")
   For Each drive In fso.Drives
@@ -1484,7 +1484,7 @@ Function ADSI_CreateVisitor
   Set ADSI_CreateVisitor = visitor
 End Function
 
-Sub ADSI_Visit(visitor, adsObject)
+Sub ADSI_Accept(adsObject, visitor)
   Dim key
   key = "ADSI_Visit_" & adsObject.Class
   If visitor.Exists(key) Then
@@ -1534,7 +1534,7 @@ Sub ADSI_VisitCollection(visitor, adsCollection)
   Dim adsObject
   visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") + 1
   For Each adsObject In adsCollection
-    ADSI_Visit visitor, adsObject
+    ADSI_Accept adsObject, visitor
   Next
   visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") - 1
 End Sub
