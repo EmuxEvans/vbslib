@@ -1033,12 +1033,12 @@ Function ValueMatch(regex)
   Set ValueMatch = GetObjectMethodFuncProc(regex, "Test", 1)
 End Function
 
-Function ValueFilterFunc(filter, cond, value)
-  ValueFilterFunc = cond(filter(value))
+Function ValueFilterFunc(filter, func, value)
+  Bind ValueFilterFunc, func(filter(value))
 End Function
 
-Function ValueFilter(filter, cond)
-  Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, cond))
+Function ValueFilter(filter, func)
+  Set ValueFilter = GetFuncProcSubset(GetRef("ValueFilterFunc"), 3, Array(filter, func))
 End Function
 
 Function NotCondFunc(cond, value)
