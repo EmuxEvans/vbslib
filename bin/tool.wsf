@@ -10,6 +10,7 @@ These jobs are defined.
     ListJob
     ADSIObjectDump
     ListWmiObject
+    MaxSizeFile
     WatchEventLog
 </description>
 <example>
@@ -322,6 +323,39 @@ For Each obj In klass.Instances_
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
+
+]]></script>
+</job>
+
+<job id="MaxSizeFile">
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim visitor
+Set visitor = FindFile_CreateVisitor
+visitor("maxSizeFile") = Empty
+FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("VisitFile"), 2
+
+Sub VisitFile(visitor, file)
+  If IsEmpty(visitor("maxSizeFile")) Then
+    MaxSizeFileSubmit visitor, file
+  ElseIf file.Size > visitor("maxSizeFile").Size Then
+    MaxSizeFileSubmit visitor, file
+  End If
+End Sub
+
+Sub MaxSizeFileSubmit(visitor, file)
+  Set visitor("maxSizeFile") = file
+  WScript.StdOut.WriteLine _
+    FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
+End Sub
+
+Dim path
+For Each path In WScript.Arguments.Unnamed
+  FindFile_PathAccept path, visitor
+Next
 
 ]]></script>
 </job>
