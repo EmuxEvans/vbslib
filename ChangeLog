@@ -1,3 +1,7 @@
+2009-02-26  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: find file.
+
 2009-02-25  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/tool.wsf: ADSIObjectDump tool.
