@@ -239,7 +239,7 @@ Sub PrintDirectoryProperties(adsObject, indent, prefix, propNameList)
   Next
 End Sub
 
-ADSI_Visit visitor, root
+ADSI_Accept root, visitor
 
 ]]></script>
 </job>
