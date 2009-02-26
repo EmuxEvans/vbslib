@@ -1341,6 +1341,69 @@ Function GetNamedArgumentSimple(name, namedArgs)
 End Function
 
 
+'===========================================
+'################ File tool ################
+'-------------------------------------------
+
+Sub FindFile_AttachVisitorSubProc(visitor, key, proc, argCount)
+  Set visitor(key) = GetSubProcSubset(proc, argCount, Array(visitor))
+End Sub
+
+Sub FindFile_AttachVisitorFuncProc(visitor, key, proc, argCount)
+  Set visitor(key) = GetFuncProcSubset(proc, argCount, Array(visitor))
+End Sub
+
+Function FindFile_CreateVisitor
+  Dim visitor
+  Set visitor = D(Array("fso", CreateObject("Scripting.FileSystemObject")))
+  FindFile_AttachVisitorSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
+  FindFile_AttachVisitorSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
+  FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("FineFile_VisitFileDefault"), 2
+  Set FindFile_CreateVisitor = visitor
+End Function
+
+Sub FindFile_VisitPath(visitor, path)
+  Dim fso
+  Set fso = visitor("fso")
+  If fso.DriveExists(path) Then
+    visitor("VisitDrive")(fso.GetDrive(path))
+  ElseIf fso.FolderExists(path) Then
+    visitor("VisitFolder")(fso.GetFolder(path))
+  ElseIf fso.FileExists(path) Then
+    visitor("VisitFile")(fso.GetFile(path))
+  Else
+    Err.Raise RuntimeError, "not exists: " & ShowValue(path)
+  End If
+End Sub
+
+Sub FindFile_VisitAllDrive(visitor)
+  Dim fso, drive
+  Set fso = visitor("fso")
+  For Each drive In fso.Drives
+    visitor("VisitDrive")(drive)
+  Next
+End Sub
+
+Sub FindFile_VisitDriveDefault(visitor, drive)
+  If drive.IsReady Then
+    visitor("VisitFolder")(drive.RootFolder)
+  End If
+End Sub
+
+Sub FindFile_VisitFolderDefault(visitor, folder)
+  Dim f
+  For Each f In folder.Files
+    visitor("VisitFile")(f)
+  Next
+  For Each f In folder.SubFolders
+    visitor("VisitFolder")(f)
+  Next
+End Sub
+
+Sub FindFile_VisitFileDefault(visitor, file)
+End Sub
+
+
 '==========================================
 '################ GUI tool ################
 '------------------------------------------
@@ -1412,7 +1475,7 @@ End Sub
 
 Function ADSI_CreateVisitor
   Dim visitor
-  Set visitor = D(Array("__SchemaCache__", CreateObject("Scripting.Dictionary"), _
+  Set visitor = D(Array("__schemaCache__", CreateObject("Scripting.Dictionary"), _
                         "ADSI_VisitDepth", 0))
   ADSI_AttachVisitorFuncProc visitor, "GetSchema", GetRef("ADSI_GetSchema"), 2
   ADSI_AttachVisitorFuncProc visitor, "IsContainer", GetRef("ADSI_IsContainer"), 2
@@ -1437,7 +1500,7 @@ End Sub
 
 Function ADSI_GetSchema(visitor, adsObject)
   Dim schemaCache
-  Set schemaCache = visitor("__SchemaCache__")
+  Set schemaCache = visitor("__schemaCache__")
   If Not schemaCache.Exists(adsObject.Schema) Then
     schemaCache.Add adsObject.Schema, GetObject(adsObject.Schema)
   End If
@@ -1477,7 +1540,6 @@ Sub ADSI_VisitCollection(visitor, adsCollection)
 End Sub
 
 Sub ADSI_VisitObjectDefault(visitor, adsObject)
-  ' Nothing to do.
 End Sub
 
 Sub ADSI_VisitContainerDefault(visitor, adsContainer)
