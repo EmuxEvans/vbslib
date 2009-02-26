@@ -68,6 +68,7 @@ Set root = GetObject(adsPath)
 
 Dim visitor
 Set visitor = ADSI_CreateVisitor
+visitor("depth") = 0
 ADSI_AttachVisitorFuncProc visitor, "GetIndent", GetRef("ADSI_GetIndent"), 1
 ADSI_AttachVisitorSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObject"), 2
 ADSI_AttachVisitorSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainer"), 2
@@ -79,7 +80,7 @@ ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Syntax", GetRef("ADSI_VisitSyntax
 ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Property", GetRef("ADSI_VisitProperty"), 2
 
 Function ADSI_GetIndent(visitor)
-  ADSI_GetIndent = String(visitor("ADSI_VisitDepth") * 2, " ")
+  ADSI_GetIndent = String(visitor("depth") * 2, " ")
 End Function
 
 Sub ADSI_VisitObject(visitor, adsObject)
@@ -104,7 +105,9 @@ Sub ADSI_VisitContainer(visitor, adsObject)
     indent = visitor("GetIndent")()
     PrintObjectProperties adsObject, indent & "  ", "(ContainerProperty) ", Array("Count", "Filter", "Hints")
   End If
+  visitor("depth") = visitor("depth") + 1
   ADSI_VisitCollection visitor, adsObject
+  visitor("depth") = visitor("depth") - 1
 End Sub
 
 Sub ADSI_VisitGroup(visitor, adsObject)
@@ -126,7 +129,9 @@ Sub ADSI_VisitSchema(visitor, adsObject)
     PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
                           Array("AdsPath", "Class", "GUID", "Name", "Parent")
   End If
+  visitor("depth") = visitor("depth") + 1
   ADSI_VisitCollection visitor, adsObject
+  visitor("depth") = visitor("depth") - 1
 End Sub
 
 Sub ADSI_VisitClass(visitor, adsObject)
