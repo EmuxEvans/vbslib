@@ -1475,8 +1475,7 @@ End Sub
 
 Function ADSI_CreateVisitor
   Dim visitor
-  Set visitor = D(Array("__schemaCache__", CreateObject("Scripting.Dictionary"), _
-                        "ADSI_VisitDepth", 0))
+  Set visitor = D(Array("__schemaCache__", CreateObject("Scripting.Dictionary")))
   ADSI_AttachVisitorFuncProc visitor, "GetSchema", GetRef("ADSI_GetSchema"), 2
   ADSI_AttachVisitorFuncProc visitor, "IsContainer", GetRef("ADSI_IsContainer"), 2
   ADSI_AttachVisitorSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObjectDefault"), 2
@@ -1532,11 +1531,9 @@ End Function
 
 Sub ADSI_VisitCollection(visitor, adsCollection)
   Dim adsObject
-  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") + 1
   For Each adsObject In adsCollection
     ADSI_Accept adsObject, visitor
   Next
-  visitor("ADSI_VisitDepth") = visitor("ADSI_VisitDepth") - 1
 End Sub
 
 Sub ADSI_VisitObjectDefault(visitor, adsObject)
