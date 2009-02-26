@@ -1358,7 +1358,7 @@ Function FindFile_CreateVisitor
   Set visitor = D(Array("fso", CreateObject("Scripting.FileSystemObject")))
   FindFile_AttachVisitorSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
   FindFile_AttachVisitorSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
-  FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("FineFile_VisitFileDefault"), 2
+  FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("FindFile_VisitFileDefault"), 2
   Set FindFile_CreateVisitor = visitor
 End Function
 
