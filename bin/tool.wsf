@@ -335,8 +335,13 @@ Option Explicit
 
 Dim visitor
 Set visitor = FindFile_CreateVisitor
+
 visitor("maxSizeFile") = Empty
 FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("VisitFile"), 2
+
+Set visitor("lastErrorFolder") = Nothing
+Set visitor("lastErrorContext") = Nothing
+FindFile_AttachVisitorSubProc visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandler"), 3
 
 Sub VisitFile(visitor, file)
   If IsEmpty(visitor("maxSizeFile")) Then
@@ -350,6 +355,24 @@ Sub MaxSizeFileSubmit(visitor, file)
   Set visitor("maxSizeFile") = file
   WScript.StdOut.WriteLine _
     FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
+End Sub
+
+Sub TraverseFolder_ErrorHandler(visitor, folder, errorContext)
+  If folder Is visitor("lastErrorFolder") Then
+    If errorContext("Number") = visitor("lastErrorContext")("Number") And _
+       errorContext("Source") = visitor("lastErrorContext")("Source") And _
+       errorContext("Description") = visitor("lastErrorContext")("Description") _
+    Then
+      Exit Sub
+    End If
+  End If
+
+  Set visitor("lastErrorFolder") = folder
+  Set visitor("lastErrorContext") = errorContext
+
+  WScript.StdErr.WriteLine _
+         "warning: <" & errorContext("Number") & "> (" & errorContext("Source") & ") " & _
+         errorContext("Description") & ": " & folder.Path
 End Sub
 
 Dim path
