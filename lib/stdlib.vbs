@@ -629,6 +629,19 @@ Function GetFuncProcSubset(proc, argCount, params)
 End Function
 
 
+'===============================================
+'################ pseudo object ################
+'-----------------------------------------------
+
+Sub PseudoObject_AttachMethodSubProc(pseudoObject, key, proc, argCount)
+  Set pseudoObject(key) = GetSubProcSubset(proc, argCount, Array(pseudoObject))
+End Sub
+
+Sub PseudoObject_AttachMethodFuncProc(pseudoObject, key, proc, argCount)
+  Set pseudoObject(key) = GetFuncProcSubset(proc, argCount, Array(pseudoObject))
+End Sub
+
+
 '===========================================
 '################ list tool ################
 '-------------------------------------------
@@ -1345,29 +1358,22 @@ End Function
 '################ file tool ################
 '-------------------------------------------
 
-Sub FindFile_AttachVisitorSubProc(visitor, key, proc, argCount)
-  Set visitor(key) = GetSubProcSubset(proc, argCount, Array(visitor))
-End Sub
-
-Sub FindFile_AttachVisitorFuncProc(visitor, key, proc, argCount)
-  Set visitor(key) = GetFuncProcSubset(proc, argCount, Array(visitor))
-End Sub
-
 Function FindFile_CreateVisitor
   Dim visitor
   Set visitor = D(Array("fso", CreateObject("Scripting.FileSystemObject")))
 
-  FindFile_AttachVisitorSubProc visitor, "TraverseDrive", GetRef("FindFile_TraverseDrive"), 2
-  FindFile_AttachVisitorSubProc visitor, "TraverseFolder", GetRef("FindFile_TraverseFolder"), 2
+  PseudoObject_AttachMethodSubProc visitor, "TraverseDrive", GetRef("FindFile_TraverseDrive"), 2
+  PseudoObject_AttachMethodSubProc visitor, "TraverseFolder", GetRef("FindFile_TraverseFolder"), 2
 
-  FindFile_AttachVisitorSubProc _
-          visitor, "TraverseDrive_ErrorHandler", GetRef("TraverseDrive_ErrorHandlerDefault"), 3
-  FindFile_AttachVisitorSubProc _
-          visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandlerDefault"), 3
+  PseudoObject_AttachMethodSubProc _
+              visitor, "TraverseDrive_ErrorHandler", GetRef("TraverseDrive_ErrorHandlerDefault"), 3
+  PseudoObject_AttachMethodSubProc _
+              visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandlerDefault"), 3
 
-  FindFile_AttachVisitorSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
-  FindFile_AttachVisitorSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
-  FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("FindFile_VisitFileDefault"), 2
+  PseudoObject_AttachMethodSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
+  PseudoObject_AttachMethodSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
+  PseudoObject_AttachMethodSubProc visitor, "VisitFile", GetRef("FindFile_VisitFileDefault"), 2
+
   Set FindFile_CreateVisitor = visitor
 End Function
 
@@ -1393,7 +1399,7 @@ Sub FindFile_AllDriveAccept(visitor)
   Next
 End Sub
 
-Sub FindFile_TraverseDrive(visitor, drive)
+Sub FindFile_TraverseDrive(self, drive)
   Dim isReady, rootFolder, errorContext
   On Error Resume Next
 
@@ -1404,7 +1410,7 @@ Sub FindFile_TraverseDrive(visitor, drive)
                                "Description", Err.Description))
     Err.Clear
     On Error GoTo 0
-    Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
+    Call (self("TraverseDrive_ErrorHandler"))(drive, errorContext)
     On Error Resume Next
     Exit Sub
   End If
@@ -1416,7 +1422,7 @@ Sub FindFile_TraverseDrive(visitor, drive)
                                "Description", Err.Description))
     Err.Clear
     On Error GoTo 0
-    Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
+    Call (self("TraverseDrive_ErrorHandler"))(drive, errorContext)
     On Error Resume Next
     Exit Sub
   End If
@@ -1424,11 +1430,11 @@ Sub FindFile_TraverseDrive(visitor, drive)
   On Error GoTo 0
 
   If isReady Then
-    visitor("VisitFolder")(rootFolder)
+    self("VisitFolder")(rootFolder)
   End If
 End Sub
 
-Sub FindFile_TraverseFolder(visitor, folder)
+Sub FindFile_TraverseFolder(self, folder)
   Dim f
   Dim errorContext
   Set errorContext = Nothing
@@ -1443,13 +1449,13 @@ Sub FindFile_TraverseFolder(visitor, folder)
                                  "Description", Err.Description))
       Err.Clear
       On Error GoTo 0
-      Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
+      Call (self("TraverseFolder_ErrorHandler"))(folder, errorContext)
       On Error Resume Next
       Exit For
     End If
 
     On Error GoTo 0
-    visitor("VisitFile")(f)
+    self("VisitFile")(f)
     On Error Resume Next
   Next
 
@@ -1469,38 +1475,38 @@ Sub FindFile_TraverseFolder(visitor, folder)
                                  "Description", Err.Description))
       Err.Clear
       On Error GoTo 0
-      Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
+      Call (self("TraverseFolder_ErrorHandler"))(folder, errorContext)
       On Error Resume Next
       Exit For
     End If
 
     On Error GoTo 0
-    visitor("VisitFolder")(f)
+    self("VisitFolder")(f)
     On Error Resume Next
   Next
 End Sub
 
-Sub TraverseDrive_ErrorHandlerDefault(visitor, drive, errorContext)
+Sub TraverseDrive_ErrorHandlerDefault(self, drive, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseDrive_ErrorHandlerDefault", _
      "failed to access drive: " & drive.Path & vbNewLine & _
      "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
-Sub TraverseFolder_ErrorHandlerDefault(visitor, folder, errorContext)
+Sub TraverseFolder_ErrorHandlerDefault(self, folder, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseFolder_ErrorHandlerDefault", _
      "failed to access folder: " & folder.Path & vbNewLine & _
      "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
-Sub FindFile_VisitDriveDefault(visitor, drive)
-  visitor("TraverseDrive")(drive)
+Sub FindFile_VisitDriveDefault(self, drive)
+  self("TraverseDrive")(drive)
 End Sub
 
-Sub FindFile_VisitFolderDefault(visitor, folder)
-  visitor("TraverseFolder")(folder)
+Sub FindFile_VisitFolderDefault(self, folder)
+  self("TraverseFolder")(folder)
 End Sub
 
-Sub FindFile_VisitFileDefault(visitor, file)
+Sub FindFile_VisitFileDefault(self, file)
 End Sub
 
 
@@ -1565,21 +1571,13 @@ End Function
 '################ ADSI tool ################
 '-------------------------------------------
 
-Sub ADSI_AttachVisitorSubProc(visitor, key, proc, argCount)
-  Set visitor(key) = GetSubProcSubset(proc, argCount, Array(visitor))
-End Sub
-
-Sub ADSI_AttachVisitorFuncProc(visitor, key, proc, argCount)
-  Set visitor(key) = GetFuncProcSubset(proc, argCount, Array(visitor))
-End Sub
-
 Function ADSI_CreateVisitor
   Dim visitor
   Set visitor = D(Array("__schemaCache__", CreateObject("Scripting.Dictionary")))
-  ADSI_AttachVisitorFuncProc visitor, "GetSchema", GetRef("ADSI_GetSchema"), 2
-  ADSI_AttachVisitorFuncProc visitor, "IsContainer", GetRef("ADSI_IsContainer"), 2
-  ADSI_AttachVisitorSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObjectDefault"), 2
-  ADSI_AttachVisitorSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainerDefault"), 2
+  PseudoObject_AttachMethodFuncProc visitor, "GetSchema", GetRef("ADSI_GetSchema"), 2
+  PseudoObject_AttachMethodFuncProc visitor, "IsContainer", GetRef("ADSI_IsContainer"), 2
+  PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObjectDefault"), 2
+  PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainerDefault"), 2
   Set ADSI_CreateVisitor = visitor
 End Function
 
@@ -1597,9 +1595,9 @@ Sub ADSI_Accept(adsObject, visitor)
   End If
 End Sub
 
-Function ADSI_GetSchema(visitor, adsObject)
+Function ADSI_GetSchema(self, adsObject)
   Dim schemaCache
-  Set schemaCache = visitor("__schemaCache__")
+  Set schemaCache = self("__schemaCache__")
   If Not schemaCache.Exists(adsObject.Schema) Then
     schemaCache.Add adsObject.Schema, GetObject(adsObject.Schema)
   End If
@@ -1621,26 +1619,26 @@ Function ADSI_IsSchema(adsObject)
   End Select
 End Function
 
-Function ADSI_IsContainer(visitor, adsObject)
+Function ADSI_IsContainer(self, adsObject)
   If ADSI_IsSchema(adsObject) Then
     ADSI_IsContainer = False
   Else
-    ADSI_IsContainer = visitor("GetSchema")(adsObject).Container
+    ADSI_IsContainer = self("GetSchema")(adsObject).Container
   End If
 End Function
 
-Sub ADSI_VisitCollection(visitor, adsCollection)
+Sub ADSI_VisitCollection(self, adsCollection)
   Dim adsObject
   For Each adsObject In adsCollection
-    ADSI_Accept adsObject, visitor
+    ADSI_Accept adsObject, self
   Next
 End Sub
 
-Sub ADSI_VisitObjectDefault(visitor, adsObject)
+Sub ADSI_VisitObjectDefault(self, adsObject)
 End Sub
 
-Sub ADSI_VisitContainerDefault(visitor, adsContainer)
-  ADSI_VisitCollection visitor, adsContainer
+Sub ADSI_VisitContainerDefault(self, adsContainer)
+  ADSI_VisitCollection self, adsContainer
 End Sub
 
 

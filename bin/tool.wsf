@@ -70,27 +70,27 @@ Set root = GetObject(adsPath)
 Dim visitor
 Set visitor = ADSI_CreateVisitor
 visitor("depth") = 0
-ADSI_AttachVisitorFuncProc visitor, "GetIndent", GetRef("ADSI_GetIndent"), 1
-ADSI_AttachVisitorSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObject"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainer"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Group", GetRef("ADSI_VisitGroup"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_group", GetRef("ADSI_VisitGroup"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Schema", GetRef("ADSI_VisitSchema"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Class", GetRef("ADSI_VisitClass"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Syntax", GetRef("ADSI_VisitSyntax"), 2
-ADSI_AttachVisitorSubProc visitor, "ADSI_Visit_Property", GetRef("ADSI_VisitProperty"), 2
+PseudoObject_AttachMethodFuncProc visitor, "GetIndent", GetRef("ADSI_GetIndent"), 1
+PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObject"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainer"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Group", GetRef("ADSI_VisitGroup"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_group", GetRef("ADSI_VisitGroup"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Schema", GetRef("ADSI_VisitSchema"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Class", GetRef("ADSI_VisitClass"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Syntax", GetRef("ADSI_VisitSyntax"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Property", GetRef("ADSI_VisitProperty"), 2
 
-Function ADSI_GetIndent(visitor)
-  ADSI_GetIndent = String(visitor("depth") * 2, " ")
+Function ADSI_GetIndent(self)
+  ADSI_GetIndent = String(self("depth") * 2, " ")
 End Function
 
-Sub ADSI_VisitObject(visitor, adsObject)
+Sub ADSI_VisitObject(self, adsObject)
   Dim indent
-  indent = visitor("GetIndent")()
+  indent = self("GetIndent")()
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
     Dim schema
-    Set schema = visitor("GetSchema")(adsObject)
+    Set schema = self("GetSchema")(adsObject)
     PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
                           Array("AdsPath", "Class", "GUID", "Name", "Parent", "Schema")
     PrintObjectProperties schema, indent & "  ", "(SchemaProperty) ", Array("Container", "Containment")
@@ -99,45 +99,45 @@ Sub ADSI_VisitObject(visitor, adsObject)
   End If
 End Sub
 
-Sub ADSI_VisitContainer(visitor, adsObject)
-  ADSI_VisitObject visitor, adsObject
+Sub ADSI_VisitContainer(self, adsObject)
+  ADSI_VisitObject self, adsObject
   If showProperties Then
     Dim indent
-    indent = visitor("GetIndent")()
+    indent = self("GetIndent")()
     PrintObjectProperties adsObject, indent & "  ", "(ContainerProperty) ", Array("Count", "Filter", "Hints")
   End If
-  visitor("depth") = visitor("depth") + 1
-  ADSI_VisitCollection visitor, adsObject
-  visitor("depth") = visitor("depth") - 1
+  self("depth") = self("depth") + 1
+  ADSI_VisitCollection self, adsObject
+  self("depth") = self("depth") - 1
 End Sub
 
-Sub ADSI_VisitGroup(visitor, adsObject)
-  ADSI_VisitObject visitor, adsObject
+Sub ADSI_VisitGroup(self, adsObject)
+  ADSI_VisitObject self, adsObject
   If showProperties Then
     Dim indent
-    indent = visitor("GetIndent")()
+    indent = self("GetIndent")()
     WScript.StdOut.WriteLine _
            indent & "  (GroupProperty) Members: " & _
            ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
   End If
 End Sub
 
-Sub ADSI_VisitSchema(visitor, adsObject)
+Sub ADSI_VisitSchema(self, adsObject)
   Dim indent
-  indent = visitor("GetIndent")
+  indent = self("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
     PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
                           Array("AdsPath", "Class", "GUID", "Name", "Parent")
   End If
-  visitor("depth") = visitor("depth") + 1
-  ADSI_VisitCollection visitor, adsObject
-  visitor("depth") = visitor("depth") - 1
+  self("depth") = self("depth") + 1
+  ADSI_VisitCollection self, adsObject
+  self("depth") = self("depth") - 1
 End Sub
 
-Sub ADSI_VisitClass(visitor, adsObject)
+Sub ADSI_VisitClass(self, adsObject)
   Dim indent
-  indent = visitor("GetIndent")
+  indent = self("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
     PrintObjectProperties adsObject, indent & "  ", "(ClassProperty) ", _
@@ -165,9 +165,9 @@ Sub ADSI_VisitClass(visitor, adsObject)
   End If
 End Sub
 
-Sub ADSI_VisitSyntax(visitor, adsObject)
+Sub ADSI_VisitSyntax(self, adsObject)
   Dim indent
-  indent = visitor("GetIndent")
+  indent = self("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
     PrintObjectProperties adsObject, indent & "  ", "(SyntaxProperty) ", _
@@ -181,9 +181,9 @@ Sub ADSI_VisitSyntax(visitor, adsObject)
   End If
 End Sub
 
-Sub ADSI_VisitProperty(visitor, adsObject)
+Sub ADSI_VisitProperty(self, adsObject)
   Dim indent
-  indent = visitor("GetIndent")
+  indent = self("GetIndent")
   WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
   If showProperties Then
     PrintObjectProperties adsObject, indent & "  ", "(PropertyProperty) ", _
@@ -336,24 +336,25 @@ Option Explicit
 Dim visitor
 Set visitor = FindFile_CreateVisitor
 visitor("maxSizeFile") = Empty
-FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("VisitFile"), 2
-FindFile_AttachVisitorSubProc visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandler"), 3
+PseudoObject_AttachMethodSubProc visitor, "VisitFile", GetRef("VisitFile"), 2
+PseudoObject_AttachMethodSubProc _
+            visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandler"), 3
 
-Sub VisitFile(visitor, file)
-  If IsEmpty(visitor("maxSizeFile")) Then
-    MaxSizeFileSubmit visitor, file
-  ElseIf file.Size > visitor("maxSizeFile").Size Then
-    MaxSizeFileSubmit visitor, file
+Sub VisitFile(self, file)
+  If IsEmpty(self("maxSizeFile")) Then
+    MaxSizeFileSubmit self, file
+  ElseIf file.Size > self("maxSizeFile").Size Then
+    MaxSizeFileSubmit self, file
   End If
 End Sub
 
-Sub MaxSizeFileSubmit(visitor, file)
-  Set visitor("maxSizeFile") = file
+Sub MaxSizeFileSubmit(self, file)
+  Set self("maxSizeFile") = file
   WScript.StdOut.WriteLine _
          FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
 End Sub
 
-Sub TraverseFolder_ErrorHandler(visitor, folder, errorContext)
+Sub TraverseFolder_ErrorHandler(self, folder, errorContext)
   WScript.StdErr.WriteLine _
          "warning: <" & errorContext("Number") & "> (" & errorContext("Source") & ") " & _
          errorContext("Description") & ": " & folder.Path
