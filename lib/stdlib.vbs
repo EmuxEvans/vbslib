@@ -1342,7 +1342,7 @@ End Function
 
 
 '===========================================
-'################ File tool ################
+'################ file tool ################
 '-------------------------------------------
 
 Sub FindFile_AttachVisitorSubProc(visitor, key, proc, argCount)
