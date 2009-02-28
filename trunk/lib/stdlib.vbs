@@ -945,8 +945,8 @@ Sub UtilityFunction_DefineVBScriptFunctionAliases
         argCount = aliasDef(2)
       Case Else:
         Err.Raise RuntimeError, _
-                  "stdlib.vbs:UtilityFunction_DefineVBScriptFunctionAliases", _
-                  "Unknown aliasDef: " & ShowValue(aliasDef)
+           "stdlib.vbs:UtilityFunction_DefineVBScriptFunctionAliases", _
+           "Unknown aliasDef: " & ShowValue(aliasDef)
     End Select
 
     argList = ""
@@ -1299,7 +1299,7 @@ Function GetNamedArgumentString(name, namedArgs, default)
       GetNamedArgumentString = namedArgs(name)
     Else
       Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentString", _
-        "not a string type named argument: " & name & ":" & ShowValue(namedArgs(name))
+         "not a string type named argument: " & name & ":" & ShowValue(namedArgs(name))
     End If
   Else
     If IsEmpty(default) Then
@@ -1317,7 +1317,7 @@ Function GetNamedArgumentBool(name, namedArgs, default)
       GetNamedArgumentBool = namedArgs(name)
     Else
       Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentBool", _
-        "not a boolean type named argument: " & name & ":" & ShowValue(namedArgs(name))
+         "not a boolean type named argument: " & name & ":" & ShowValue(namedArgs(name))
     End If
   Else
     If IsEmpty(default) Then
@@ -1333,7 +1333,7 @@ Function GetNamedArgumentSimple(name, namedArgs)
       GetNamedArgumentSimple = True
     Else
       Err.Raise RuntimeError, "stdlib.vbs:GetNamedArgumentSimple", _
-        "no need for value of simple option: " & name & ":" & ShowValue(namedArgs(name))
+         "no need for value of simple option: " & name & ":" & ShowValue(namedArgs(name))
     End If
   Else
     GetNamedArgumentSimple = False
@@ -1361,9 +1361,9 @@ Function FindFile_CreateVisitor
   FindFile_AttachVisitorSubProc visitor, "TraverseFolder", GetRef("FindFile_TraverseFolder"), 2
 
   FindFile_AttachVisitorSubProc _
-    visitor, "TraverseDrive_ErrorHandler", GetRef("TraverseDrive_ErrorHandlerDefault"), 3
+          visitor, "TraverseDrive_ErrorHandler", GetRef("TraverseDrive_ErrorHandlerDefault"), 3
   FindFile_AttachVisitorSubProc _
-    visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandlerDefault"), 3
+          visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandlerDefault"), 3
 
   FindFile_AttachVisitorSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
   FindFile_AttachVisitorSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
@@ -1482,14 +1482,14 @@ End Sub
 
 Sub TraverseDrive_ErrorHandlerDefault(visitor, drive, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseDrive_ErrorHandlerDefault", _
-    "failed to access drive: " & drive.Path & vbNewLine & _
-    "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
+     "failed to access drive: " & drive.Path & vbNewLine & _
+     "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
 Sub TraverseFolder_ErrorHandlerDefault(visitor, folder, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseFolder_ErrorHandlerDefault", _
-    "failed to access folder: " & folder.Path & vbNewLine & _
-    "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
+     "failed to access folder: " & folder.Path & vbNewLine & _
+     "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
 Sub FindFile_VisitDriveDefault(visitor, drive)
