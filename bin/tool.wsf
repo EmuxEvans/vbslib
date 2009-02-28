@@ -117,8 +117,8 @@ Sub ADSI_VisitGroup(visitor, adsObject)
     Dim indent
     indent = visitor("GetIndent")()
     WScript.StdOut.WriteLine _
-       indent & "  (GroupProperty) Members: " & _
-      ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
+           indent & "  (GroupProperty) Members: " & _
+           ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
   End If
 End Sub
 
@@ -318,8 +318,8 @@ For Each obj In klass.Instances_
   PrintSeparator Now & ": " & klassName & ": " & count
   For Each prop In obj.Properties_
     WScript.StdOut.WriteLine prop.Name & ": " & _
-      ShowValue(prop.Value) & _
-      GetWbemPropOptInfo(prop.Name)
+           ShowValue(prop.Value) & _
+           GetWbemPropOptInfo(prop.Name)
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
@@ -350,7 +350,7 @@ End Sub
 Sub MaxSizeFileSubmit(visitor, file)
   Set visitor("maxSizeFile") = file
   WScript.StdOut.WriteLine _
-    FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
+         FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
 End Sub
 
 Sub TraverseFolder_ErrorHandler(visitor, folder, errorContext)
