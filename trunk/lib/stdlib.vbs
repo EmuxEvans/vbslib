@@ -1359,6 +1359,12 @@ Function FindFile_CreateVisitor
   FindFile_AttachVisitorSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
   FindFile_AttachVisitorSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
   FindFile_AttachVisitorSubProc visitor, "VisitFile", GetRef("FindFile_VisitFileDefault"), 2
+  FindFile_AttachVisitorSubProc visitor, "VisitDrive_ErrorHandler", _
+                                GetRef("VisitDrive_ErrorHandlerDefault"), 3
+  FindFile_AttachVisitorSubProc visitor, "VisitFolder_ErrorHandler", _
+                                GetRef("VisitFolder_ErrorHandlerDefault"), 3
+  FindFile_AttachVisitorSubProc visitor, "VisitFile_ErrorHandler", _
+                                GetRef("VisitFile_ErrorHandlerDefault"), 3
   Set FindFile_CreateVisitor = visitor
 End Function
 
@@ -1385,22 +1391,93 @@ Sub FindFile_AllDriveAccept(visitor)
 End Sub
 
 Sub FindFile_VisitDriveDefault(visitor, drive)
-  If drive.IsReady Then
-    visitor("VisitFolder")(drive.RootFolder)
+  Dim isReady, rootFolder, errorContext
+  On Error Resume Next
+
+  isReady = drive.IsReady
+  If Err.Number <> 0 Then
+    Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+    Err.Clear
+    On Error GoTo 0
+    Call (visitor("VisitDrive_ErrorHandler"))(drive, errorContext)
+    On Error Resume Next
+  End If
+
+  Set rootFolder = drive.RootFolder
+  If Err.Number <> 0 Then
+    Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+    Err.Clear
+    On Error GoTo 0
+    Call (visitor("VisitDrive_ErrorHandler"))(drive, errorContext)
+    On Error Resume Next
+  End If
+
+  On Error GoTo 0
+
+  If isReady Then
+    visitor("VisitFolder")(rootFolder)
   End If
 End Sub
 
 Sub FindFile_VisitFolderDefault(visitor, folder)
-  Dim f
+  Dim f, errorContext
+
+  Err.Clear
+  On Error Resume Next
+
   For Each f In folder.Files
+    If Err.Number <> 0 Then
+      Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+      Err.Clear
+      On Error GoTo 0
+      Call (visitor("VisitFolder_ErrorHandler"))(folder, errorContext)
+      On Error Resume Next
+    End If
+
     visitor("VisitFile")(f)
+    If Err.Number <> 0 Then
+      Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+      Err.Clear
+      On Error GoTo 0
+      Call (visitor("VisitFile_ErrorHandler"))(f, errorContext)
+      On Error Resume Next
+    End If
   Next
+
   For Each f In folder.SubFolders
+    If Err.Number <> 0 Then
+      Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+      Err.Clear
+      On Error GoTo 0
+      Call (visitor("VisitFolder_ErrorHandler"))(folder, errorContext)
+      On Error Resume Next
+    End If
+
+    On Error GoTo 0
     visitor("VisitFolder")(f)
+    On Error Resume Next
   Next
 End Sub
 
 Sub FindFile_VisitFileDefault(visitor, file)
+End Sub
+
+Sub VisitDrive_ErrorHandlerDefault(visitor, drive, errorContext)
+  Err.Raise RuntimeError, "stdlib.vbs:VisitDrive_ErrorHandlerDefault", _
+    "failed to visit drive: " & drive.Path & vbNewLine & _
+    "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
+End Sub
+
+Sub VisitFolder_ErrorHandlerDefault(visitor, folder, errorContext)
+  Err.Raise RuntimeError, "stdlib.vbs:VisitFolder_ErrorHandlerDefault", _
+    "failed to visit folder: " & folder.Path & vbNewLine & _
+    "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
+End Sub
+
+Sub VisitFile_ErrorHandlerDefault(visitor, file, errorContext)
+  Err.Raise RuntimeError, "stdlib.vbs:VisitFile_ErrorHandlerDefault", _
+    "failed to visit file: " & file.Path & vbNewLine & _
+    "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
 
