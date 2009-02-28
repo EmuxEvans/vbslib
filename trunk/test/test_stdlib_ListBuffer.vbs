@@ -225,6 +225,35 @@ Sub TestListBuffer_RemoveAllEmpty
   Assert Not listBuf.Exists(2)
 End Sub
 
+Sub TestListBuffer_RemoveLastItem
+  Dim obj: Set obj = CreateObject("Scripting.Dictionary")
+  listBuf.Add "foo"
+  listBuf.Add "bar"
+  listBuf.Add obj
+
+  listBuf.RemoveLastItem
+  AssertEqual 2, listBuf.Count
+  AssertEqual "foo", listBuf.Item(0)
+  AssertEqual "bar", listBuf.Item(1)
+
+  listBuf.RemoveLastItem
+  AssertEqual 1, listBuf.Count
+  AssertEqual "foo", listBuf.Item(0)
+End Sub
+
+Sub TestListBuffer_RemoveLastItemEmpty
+  Dim errNum, errSrc
+  On Error Resume Next
+  listBuf.RemoveLastItem
+  errNum = Err.Number
+  errSrc = Err.Source
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 9, errNum
+  AssertEqual "stdlib.vbs:ListBuffer.RemoveLastItem", errSrc
+End Sub
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil

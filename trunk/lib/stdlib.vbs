@@ -156,6 +156,14 @@ Class ListBuffer
   Public Sub RemoveAll
     ivar_dict.RemoveAll
   End Sub
+
+  Public Sub RemoveLastItem
+    If ivar_dict.Count > 0 Then
+      ivar_dict.Remove ivar_dict.Count - 1
+    Else
+      Err.Raise 9, "stdlib.vbs:ListBuffer.RemoveLastItem", "no item to remove."
+    End If
+  End Sub
 End Class
 
 Dim ShowString_Quote
