@@ -344,6 +344,65 @@ Sub TestOrCond
   Assert Not cond("baz")
 End Sub
 
+Sub TestAdd
+  AssertEqual 3, Add(1, 2)
+  AssertEqual -1, Add(1, -2)
+End Sub
+
+Sub TestSubtract
+  AssertEqual 1, Subtract(2, 1)
+  AssertEqual -1, Subtract(1, 2)
+End Sub
+
+Sub TestMultiply
+  AssertEqual 6, Multiply(2, 3)
+  AssertEqual -6, Multiply(2, -3)
+  AssertEqual 6, Multiply(-2, -3)
+End Sub
+
+Sub TestDivide
+  AssertEqual 3, Divide(6, 2)
+  AssertEqual 1.5, Divide(3, 2)
+End Sub
+
+Sub TestMod_
+  AssertEqual 2, Mod_(5, 3)
+End Sub
+
+Sub TestPower
+  AssertEqual 1, Power(2, 0)
+  AssertEqual 2, Power(2, 1)
+  AssertEqual 4, Power(2, 2)
+  AssertEqual 8, Power(2, 3)
+  AssertEqual 16, Power(2, 4)
+
+  AssertEqual 1, Power(-2, 0)
+  AssertEqual -2, Power(-2, 1)
+  AssertEqual 4, Power(-2, 2)
+  AssertEqual -8, Power(-2, 3)
+  AssertEqual 16, Power(-2, 4)
+End Sub
+
+Sub TestConcat
+  AssertEqual "foo,bar", Concat("foo", ",bar")
+End Sub
+
+Sub TestNot_
+  AssertEqual -1, Not_(0)
+End Sub
+
+Sub TestAnd_
+  AssertEqual 2, And_(1 + 2 + 4, 2)
+End Sub
+
+Sub TestOr_
+  AssertEqual 1 + 2 + 4, Or_(2, 1 + 4)
+End Sub
+
+Sub TestXor_
+  AssertEqual 2 + 4, Xor_(1 + 4, 1 + 2)
+End Sub
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil

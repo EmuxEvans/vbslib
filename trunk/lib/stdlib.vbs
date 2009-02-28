@@ -939,6 +939,8 @@ Sub UtilityFunction_DefineVBScriptFunctionAliases
   ' Eval
   aliases.Add Array("Eval", 1)
   aliases.Add Array("GetRef", 1)
+
+  ' Object
   aliases.Add Array("CreateObject", "CreateObject", 1)
   aliases.Add Array("CreateObject", "CreateObject1", 1)
   aliases.Add Array("CreateObject", "CreateObject2", 2)
@@ -1233,6 +1235,22 @@ End Function
 
 Function Concat(string1, string2)
   Concat = string1 & string2
+End Function
+
+Function Not_(expression)
+  Not_ = Not expression
+End Function
+
+Function And_(expression1, expression2)
+  And_ = expression1 And expression2
+End Function
+
+Function Or_(expression1, expression2)
+  Or_ = expression1 Or expression2
+End Function
+
+Function Xor_(expression1, expression2)
+  Xor_ = expression1 Xor expression2
 End Function
 
 
