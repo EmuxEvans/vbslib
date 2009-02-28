@@ -1404,6 +1404,7 @@ Sub FindFile_TraverseDrive(visitor, drive)
     On Error GoTo 0
     Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
     On Error Resume Next
+    Exit Sub
   End If
 
   Set rootFolder = drive.RootFolder
@@ -1413,6 +1414,7 @@ Sub FindFile_TraverseDrive(visitor, drive)
     On Error GoTo 0
     Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
     On Error Resume Next
+    Exit Sub
   End If
 
   On Error GoTo 0
@@ -1435,6 +1437,7 @@ Sub FindFile_TraverseFolder(visitor, folder)
       On Error GoTo 0
       Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
       On Error Resume Next
+      Exit For
     End If
 
     On Error GoTo 0
@@ -1449,6 +1452,7 @@ Sub FindFile_TraverseFolder(visitor, folder)
       On Error GoTo 0
       Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
       On Error Resume Next
+      Exit For
     End If
 
     On Error GoTo 0
