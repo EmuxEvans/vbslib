@@ -1399,7 +1399,9 @@ Sub FindFile_TraverseDrive(visitor, drive)
 
   isReady = drive.IsReady
   If Err.Number <> 0 Then
-    Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+    Set errorContext = D(Array("Number", Err.Number, _
+                               "Source", Err.Source, _
+                               "Description", Err.Description))
     Err.Clear
     On Error GoTo 0
     Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
@@ -1409,7 +1411,9 @@ Sub FindFile_TraverseDrive(visitor, drive)
 
   Set rootFolder = drive.RootFolder
   If Err.Number <> 0 Then
-    Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+    Set errorContext = D(Array("Number", Err.Number, _
+                               "Source", Err.Source, _
+                               "Description", Err.Description))
     Err.Clear
     On Error GoTo 0
     Call (visitor("TraverseDrive_ErrorHandler"))(drive, errorContext)
@@ -1425,14 +1429,18 @@ Sub FindFile_TraverseDrive(visitor, drive)
 End Sub
 
 Sub FindFile_TraverseFolder(visitor, folder)
-  Dim f, errorContext
+  Dim f
+  Dim errorContext
+  Set errorContext = Nothing
 
   Err.Clear
   On Error Resume Next
 
   For Each f In folder.Files
     If Err.Number <> 0 Then
-      Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+      Set errorContext = D(Array("Number", Err.Number, _
+                                 "Source", Err.Source, _
+                                 "Description", Err.Description))
       Err.Clear
       On Error GoTo 0
       Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
@@ -1447,7 +1455,18 @@ Sub FindFile_TraverseFolder(visitor, folder)
 
   For Each f In folder.SubFolders
     If Err.Number <> 0 Then
-      Set errorContext = D(Array("Number", Err.Number, "Source", Err.Source, "Description", Err.Description))
+      If Not errorContext Is Nothing Then
+        If Err.Number = errorContext("Number") And _
+           Err.Source = errorContext("Source") And _
+           Err.Description = errorContext("Description") _
+        Then
+          Exit For                      ' skip same error
+        End If
+      End If
+
+      Set errorContext = D(Array("Number", Err.Number, _
+                                 "Source", Err.Source, _
+                                 "Description", Err.Description))
       Err.Clear
       On Error GoTo 0
       Call (visitor("TraverseFolder_ErrorHandler"))(folder, errorContext)
