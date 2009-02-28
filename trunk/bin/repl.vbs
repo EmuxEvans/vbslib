@@ -199,6 +199,9 @@ Class History
   End Function
 End Class
 
+Dim shell
+Set shell = CreateObject("WScript.Shell")
+
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
 
@@ -340,6 +343,7 @@ Sub ImportFile(path)
     path = PopupFileOpenDialog
   End If
   If Not IsEmpty(path) Then
+    path = shell.ExpandEnvironmentStrings(path)
     Err.Clear
     On Error Resume Next
     REPL_ScriptControl.AddCode FileReadAll(path)
