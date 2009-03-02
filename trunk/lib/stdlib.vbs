@@ -1,4 +1,4 @@
-' VBScript Standard Library
+' VBScript Portable Library
 
 Option Explicit
 
