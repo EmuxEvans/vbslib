@@ -70,17 +70,17 @@ Function DMerge(dictionary1, dictionary2)
 End Function
 
 Function re(regexpPattern, regexpOptions)
-  Dim regex
+  Dim regex, reOpts
   Set regex = New RegExp
   regex.Pattern = regexpPattern
-  regexpOptions = LCase(regexpOptions)
-  If InStr(regexpOptions, "i") > 0 Then
+  reOpts = LCase(regexpOptions)
+  If InStr(reOpts, "i") > 0 Then
     regex.IgnoreCase = True
   End If
-  If InStr(regexpOptions, "g") > 0 Then
+  If InStr(reOpts, "g") > 0 Then
     regex.Global = True
   End If
-  If InStr(regexpOptions, "m") > 0 Then
+  If InStr(reOpts, "m") > 0 Then
     regex.Multiline = True
   End If
   Set re = regex
