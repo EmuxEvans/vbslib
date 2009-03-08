@@ -87,8 +87,21 @@ Class UnitTest_Assertion
     End If
 
     If Not regex.Test(text) Then
+      Dim reOpts
+      reOpts = ""
+      If regex.IgnoreCase Then
+        reOpts = reOpts & "i"
+      End If
+      If regex.Global Then
+        reOpts = reOpts & "g"
+      End If
+      If regex.Multiline Then
+        reOpts = reOpts & "m"
+      End If
+
       Dim errMsg
-      errMsg = "AssertMatch NG: <" & text & "> expected to be match <" & pattern & ">."
+      errMsg = "AssertMatch NG: <" & text & "> expected to be match " & _
+             "<re(" & ShowValue(regex.Pattern) & "," & ShowValue(reOpts) & ")>."
       If Not IsEmpty(message) Then
         errMsg = errMsg & " [" & message & "]"
       End If
