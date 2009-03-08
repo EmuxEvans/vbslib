@@ -42,6 +42,10 @@ Sub TestAssertMatch_NG
   AssertMatch re("foo", "i"), "bar"
 End Sub
 
+Sub TestAssertFail
+  AssertFail
+End Sub
+
 ' Local Variables:
 ' mode: Visual-Basic
 ' indent-tabs-mode: nil
