@@ -419,7 +419,7 @@ Sub PopupHelp
                           "@import VBScriptFile", _
                           "@proc", _
                           "@proc NamePattern", _
-                          "@Reset", _
+                          "@reset", _
                           "?"), _
                     vbNewLine), _
                vbOKOnly + vbInformation, POPUP_TITLE & ": Help"
