@@ -107,7 +107,7 @@ Sub ADSI_VisitContainer(self, adsObject)
     PrintObjectProperties adsObject, indent & "  ", "(ContainerProperty) ", Array("Count", "Filter", "Hints")
   End If
   self("depth") = self("depth") + 1
-  ADSI_VisitCollection self, adsObject
+  ADSI_TraverseCollection self, adsObject
   self("depth") = self("depth") - 1
 End Sub
 
@@ -131,7 +131,7 @@ Sub ADSI_VisitSchema(self, adsObject)
                           Array("AdsPath", "Class", "GUID", "Name", "Parent")
   End If
   self("depth") = self("depth") + 1
-  ADSI_VisitCollection self, adsObject
+  ADSI_TraverseCollection self, adsObject
   self("depth") = self("depth") - 1
 End Sub
 

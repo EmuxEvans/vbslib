@@ -1653,7 +1653,7 @@ Function ADSI_IsContainer(self, adsObject)
   End If
 End Function
 
-Sub ADSI_VisitCollection(self, adsCollection)
+Sub ADSI_TraverseCollection(self, adsCollection)
   Dim adsObject
   For Each adsObject In adsCollection
     ADSI_Accept adsObject, self
@@ -1664,7 +1664,7 @@ Sub ADSI_VisitObjectDefault(self, adsObject)
 End Sub
 
 Sub ADSI_VisitContainerDefault(self, adsContainer)
-  ADSI_VisitCollection self, adsContainer
+  ADSI_TraverseCollection self, adsContainer
 End Sub
 
 
