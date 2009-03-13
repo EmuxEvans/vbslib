@@ -1112,9 +1112,7 @@ End Function
 
 Function ObjectPropertyCompare(propertyName, propertyCompare)
   Set ObjectPropertyCompare = _
-      CompareFilter(GetFuncProcSubset(GetRef("GetObjectProperty"), 2, _
-                                      D(Array(1, propertyName))), _
-                    propertyCompare)
+      CompareFilter(ValueObjectProperty(propertyName), propertyCompare)
 End Function
 
 Function CompareEqual(compare, expected, value)
