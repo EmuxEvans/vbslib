@@ -1533,6 +1533,124 @@ End Sub
 Sub FindFile_VisitFileDefault(self, file)
 End Sub
 
+Dim ZipFile_Extension
+Set ZipFile_Extension = re("\.zip$", "i")
+
+Function BuildZipFile(folder)
+  Dim zip
+  Set zip = New ZipFile
+  zip.Build folder
+  Set BuildZipFile = zip
+End Function
+
+Function OpenZipFile(path)
+  Dim zip
+  Set zip = New ZipFile
+  zip.Open path
+  Set OpenZipFile = zip
+End Function
+
+Class ZipFile
+  Private ivar_fso
+  Private ivar_shellApp
+  Private ivar_zipFolder
+  Private ivar_timeoutSeconds
+
+  Private Sub Class_Initialize
+    Set ivar_fso = CreateObject("Scripting.FileSystemObject")
+    Set ivar_shellApp = CreateObject("Shell.Application")
+    ivar_timeoutSeconds = 60
+  End Sub
+
+  Public Sub Build(folder)
+    Set ivar_zipFolder = folder
+  End Sub
+
+  Public Sub Open(path)
+    Dim absZipPath
+    absZipPath = ivar_fso.GetAbsolutePathName(path)
+    If Not ZipFile_Extension.Test(path) Then
+      absZipPath = absZipPath & ".zip"
+    End If
+
+    If Not ivar_fso.FileExists(absZipPath) Then
+      ivar_fso.OpenTextFile(absZipPath, 1, True).Close
+    End If
+
+    Dim folder
+    Set folder = ivar_shellApp.NameSpace(absZipPath)
+    If folder Is Nothing Then
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFile.Open", _
+         "failed to create a new zip file: " & absZipPath
+    End If
+
+    Build folder
+  End Sub
+
+  Public Property Get Timeout
+    Timeout = ivar_timeoutSeconds
+  End Property
+
+  Public Property Let Timeout(seconds)
+    ivar_timeoutSeconds = seconds
+  End Property
+
+  Public Property Get Items
+    Set Items = ivar_zipFolder.Items
+  End Property
+
+  Public Property Get Item(name)
+    Dim f
+    Set f = ivar_zipFolder.ParseName(name)
+    If f Is Nothing Then
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFile.Item(Get)", _
+         "not found an Item: " & name & "@" & ivar_zipFolder
+    End If
+    Set Item = f
+  End Property
+
+  Public Property Get SubFolders
+    SubFolders = Map(FindAll(ivar_zipFolder.Items, ValueObjectProperty("IsFolder")), _
+                     ValueFilter(ValueObjectProperty("GetFolder"), GetRef("BuildZipFile")))
+  End Property
+
+  Public Property Get SubFolder(name)
+    Dim f
+    Set f = ivar_zipFolder.ParseName(name)
+    If f Is Nothing Then
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFile.SubFolder(Get)", _
+         "not found an Item: " & name & "@" & ivar_zipFolder
+    End If
+    If Not f.IsFolder Then
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFile.SubFolder(Get)", _
+         "not a folder: " & name & "@" & ivar_zipFolder
+    End If
+    Set SubFolder = BuildZipFile(f.GetFolder)
+  End Property
+
+  Public Sub CopyHere(srcPath)
+    Dim count, startTime
+    count = ivar_zipFolder.Items.Count
+    startTime = Now
+    ivar_zipFolder.CopyHere ivar_fso.GetAbsolutePathName(srcPath), &H0004 Or &H0010
+    Do While ivar_zipFolder.Items.Count = count
+      If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
+        Err.Raise RuntimeError, "stdlib.vbs:ZipFile.CopyHere", _
+           "timeout of copying: " & srcPath & " -> " & ivar_zipFolder
+      End If
+      WScript.Sleep 10
+    Loop
+  End Sub
+
+  Public Sub CopyTo(name, dstPath)
+    
+  End Sub
+
+  Public Sub CopyToAll(dstPath)
+    
+  End Sub
+End Class
+
 
 '==========================================
 '################ GUI tool ################
