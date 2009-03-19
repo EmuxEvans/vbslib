@@ -1536,6 +1536,9 @@ End Sub
 Dim ZipFile_Extension
 Set ZipFile_Extension = re("\.zip$", "i")
 
+Dim ZipFile_EmptyData
+ZipFile_EmptyData = "PK" & Chr(&H05) & Chr(&H06) & String(18, Chr(&H00))
+
 Function BuildZipFile(folder)
   Dim zip
   Set zip = New ZipFile
@@ -1574,7 +1577,10 @@ Class ZipFile
     End If
 
     If Not ivar_fso.FileExists(absZipPath) Then
-      ivar_fso.OpenTextFile(absZipPath, 1, True).Close
+      With ivar_fso.CreateTextFile(absZipPath)
+        .Write ZipFile_EmptyData
+        .Close
+      End With
     End If
 
     Dim folder
