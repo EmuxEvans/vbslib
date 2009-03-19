@@ -29,7 +29,7 @@ Sub TestZipFile_Empty
   Dim zipPath
   zipPath = fso.BuildPath(temporaryFolder, "foo.zip")
   Assert fso.FileExists(zipPath)
-  AssertEqual 0, fso.GetFile(zipPath).Size
+  AssertEqual Len(ZipFile_EmptyData), fso.GetFile(zipPath).Size
 End Sub
 
 Sub TestCopyHereAndItem_File
@@ -42,8 +42,9 @@ Sub TestCopyHereAndItem_File
   Dim item
   Set item = zip.Item("bar.txt")
   Assert Not item.IsFolder
-  AssertMatch "foo\.zip\\bar\.txt$", item.Path
+  AssertMatch "bar\.txt", item.Path
   AssertEqual Len("Hello world."), item.Size
+  AssertMatch "foo\.zip", item.Parent.Title
 End Sub
 
 Sub TestCopyHereAndItem_Folder
@@ -58,7 +59,8 @@ Sub TestCopyHereAndItem_Folder
   Dim item
   Set item = zip.Item("bar")
   Assert item.IsFolder
-  AssertMatch "foo\.zip\\bar", item.Path
+  AssertMatch "bar", item.Path
+  AssertMatch "foo\.zip", item.Parent.Title
 End Sub
 
 Sub TestItem_NotFound
@@ -86,8 +88,10 @@ Sub TestSubFolder
   Dim item
   Set item = zip.SubFolder("bar").Item("baz.txt")
   Assert Not item.IsFolder
-  AssertMatch "foo\.zip\\bar\\baz\.txt$", item.Path
+  AssertMatch "baz\.txt", item.Path
   AssertEqual Len("Hello world."), item.Size
+  AssertMatch "bar", item.Parent
+  AssertMatch "foo\.zip", item.Parent.ParentFolder.Title
 End Sub
 
 Sub TestSubFolder_NotFound
@@ -146,11 +150,13 @@ Sub TestItems
     Select Case Count
       Case 0:
         Assert item.IsFolder
-        AssertMatch "foo\.zip\\bar$", item.Path
+        AssertMatch "bar", item.Path
+        AssertMatch "foo\.zip", item.Parent.Title
       Case 1:
         Assert Not item.IsFolder
-        AssertMatch "foo\.zip\\quux\.txt$", item.Path
+        AssertMatch "quux\.txt", item.Path
         AssertEqual Len("Hello world."), item.Size
+        AssertMatch "foo\.zip", item.Parent.Title
       Case Else:
     End Select
     count = count + 1
