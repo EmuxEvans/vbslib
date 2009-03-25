@@ -406,6 +406,10 @@ Sub ScriptEngineReset
   REPL_ScriptControl.Reset
 End Sub
 
+Sub ShowLog
+  shell.Run "Notepad.exe """ & logFilename & """"
+End Sub
+
 Sub PopupHelp
   PopupMessage Join(Array("Statement", _
                           "e Statement", _
@@ -420,6 +424,7 @@ Sub PopupHelp
                           "@proc", _
                           "@proc NamePattern", _
                           "@reset", _
+                          "@showlog", _
                           "?"), _
                     vbNewLine), _
                vbOKOnly + vbInformation, POPUP_TITLE & ": Help"
@@ -459,6 +464,11 @@ Dim resetCommand
 Set resetCommand = New RegExp
 resetCommand.Pattern = "^@reset$"
 resetCommand.IgnoreCase = True
+
+Dim showlogCommand
+Set showlogCommand = New RegExp
+showlogCommand.Pattern = "^@showlog$"
+showlogCommand.IgnoreCase = True
 
 Dim helpCommand
 Set helpCommand = New RegExp
@@ -521,6 +531,8 @@ Do
     End Select
   ElseIf resetCommand.Test(expr) Then
     ScriptEngineReset
+  ElseIf showlogCommand.Test(expr) Then
+    ShowLog
   ElseIf helpCommand.Test(expr) Then
     PopupHelp
   Else
