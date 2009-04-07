@@ -1634,18 +1634,24 @@ Class ZipFile
     Set SubFolder = BuildZipFile(f.GetFolder)
   End Property
 
-  Public Sub CopyHere(srcPath)
-    Dim count, startTime
-    count = ivar_zipFolder.Items.Count
+  Private Sub WaitForItemsChanged(count, errSrc, errMsg)
+    Dim startTime
     startTime = Now
-    ivar_zipFolder.CopyHere ivar_fso.GetAbsolutePathName(srcPath), &H0004 Or &H0010
+
     Do While ivar_zipFolder.Items.Count = count
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
-        Err.Raise RuntimeError, "stdlib.vbs:ZipFile.CopyHere", _
-           "timeout of copying: " & srcPath & " -> " & ivar_zipFolder
+        Err.Raise RuntimeError, errSrc, errNum
       End If
       WScript.Sleep 10
     Loop
+  End Sub
+
+  Public Sub CopyHere(srcPath)
+    Dim count
+    count = ivar_zipFolder.Items.Count
+    ivar_zipFolder.CopyHere ivar_fso.GetAbsolutePathName(srcPath)
+    WaitForItemsChanged count, "stdlib.vbs:ZipFile.CopyHere", _
+                        "timeout of copy: " & srcPath & " -> " & ivar_zipFolder
   End Sub
 
   Public Sub CopyTo(name, dstPath)
