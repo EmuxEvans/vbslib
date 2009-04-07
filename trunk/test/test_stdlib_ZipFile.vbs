@@ -14,7 +14,7 @@ Sub SetUp
     fso.DeleteFolder(temporaryFolder)
   End If
   fso.CreateFolder(temporaryFolder)
-  Set zip = OpenZipFile(fso.BuildPath(temporaryFolder, "foo.zip"))
+  Set zip = ZipFile_Open(fso.BuildPath(temporaryFolder, "foo.zip"))
   zip.Timeout = 10
 End Sub
 
