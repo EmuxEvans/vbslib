@@ -4,172 +4,172 @@
 Option Explicit
 
 Dim fso
-Dim zip
+Dim zfo
 Dim tempFolder
+
+' for fso.OpenTextFile
+Const ForReading = 1, ForWriting = 2, ForAppending = 8
 
 Sub SetUp
   Set fso = CreateObject("Scripting.FileSystemObject")
-  tempFolder = fso.GetAbsolutePathName(".testZipFile")
-  If fso.FolderExists(tempFolder) Then ' for debug
-    fso.DeleteFolder(tempFolder)
-  End If
-  fso.CreateFolder(tempFolder)
-  Set zip = ZipFile_Open(fso.BuildPath(tempFolder, "foo.zip"))
-  zip.Timeout = 10
+  Set zfo = New ZipFileObject
+  zfo.TimeoutSeconds = 1
+  tempFolder = "temp_ZipFile"
+  fso.CreateFolder tempFolder
 End Sub
 
 Sub TearDown
-  Set zip = Nothing
-  fso.DeleteFolder(tempFolder)
-  tempFolder = Empty
+  fso.DeleteFolder tempFolder
   Set fso = Nothing
+  Set zfo = Nothing
 End Sub
 
-Sub TestZipFile_Empty
+Sub TestTimeoutSeconds_Default
+  Set zfo = New ZipFileObject
+  AssertEqual 60, zfo.TimeoutSeconds
+End Sub
+
+Sub TestTimeoutSeoncs_LetValue
+  zfo.TimeoutSeconds = 100
+  AssertEqual 100, zfo.TimeoutSeconds
+End Sub
+
+Sub TestPollingMillisecs_Default
+  Set zfo = New ZipFileObject
+  AssertEqual 100, zfo.PollingIntervalMillisecs
+End Sub
+
+Sub TestPollingMillisecs_LetValue
+  zfo.PollingIntervalMillisecs = 123
+  AssertEqual 123, zfo.PollingIntervalMillisecs
+End Sub
+
+Sub TestIsOpened_Opened
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
+    Assert zfo.IsOpened(fso.BuildPath(tempFolder, "foo.txt"))
+    .Close
+  End With
+End Sub
+
+Sub TestIsOpened_NotOpened
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
+    .Close
+  End With
+
+  Assert Not zfo.IsOpened(fso.BuildPath(tempFolder, "foo.txt"))
+End Sub
+
+Sub TestIsOpened_NotFileExists
+  Dim errNum
+
+  On Error Resume Next
+  zfo.IsOpened(fso.BuildPath(tempFolder, "foo.txt"))
+  errNum = Err.Number
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 53, errNum
+End Sub
+
+Sub TestCreateEmptyZipFile
+  zfo.CreateEmptyZipFile fso.BuildPath(tempFolder, "foo.zip"), False
+
+  Assert fso.FileExists(fso.BuildPath(tempFolder, "foo.zip"))
+  With fso.GetFile(fso.BuildPath(tempFolder, "foo.zip"))
+    AssertEqual Len(ZipFile_EmptyData), .Size
+    With .OpenAsTextStream(ForReading)
+      AssertEqual ZipFile_EmptyData, .ReadAll
+    End With
+  End With
+End Sub
+
+Sub TestCreateEmptyZipFile_Overwrite
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.zip"))
+    .Write "foo"
+    .Close
+  End With
+
+  zfo.CreateEmptyZipFile fso.BuildPath(tempFolder, "foo.zip"), True
+
+  Assert fso.FileExists(fso.BuildPath(tempFolder, "foo.zip"))
+  With fso.GetFile(fso.BuildPath(tempFolder, "foo.zip"))
+    AssertEqual Len(ZipFile_EmptyData), .Size
+    With .OpenAsTextStream(ForReading)
+      AssertEqual ZipFile_EmptyData, .ReadAll
+    End With
+  End With
+End Sub
+
+Sub TestCreateEmptyZipFile_NotOverwrite
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.zip"))
+    .Write "foo"
+    .Close
+  End With
+
+  Dim errNum
+
+  On Error Resume Next
+  zfo.CreateEmptyZipFile fso.BuildPath(tempFolder, "foo.zip"), False
+  errNum = Err.Number
+  Err.Clear
+  On Error GoTo 0
+
+  AssertEqual 58, errNum
+End Sub
+
+Sub TestCreateZipFile
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
+    .Write "Hello world."
+    .Close
+  End With
+
+  zfo.CreateZipFile fso.BuildPath(tempFolder, "foo.zip"), _
+     Array(fso.BuildPath(tempFolder, "foo.txt"))
+
+  Assert fso.FileExists(fso.BuildPath(tempFolder, "foo.zip"))
+  With fso.GetFile(fso.BuildPath(tempFolder, "foo.zip"))
+    Assert .Size > Len(ZipFile_EmptyData)
+  End With
+End Sub
+
+Sub TestCreateZipFileAndExtractZipFile
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
+    .Write "Hello world."
+    .Close
+  End With
+
   Dim zipPath
   zipPath = fso.BuildPath(tempFolder, "foo.zip")
-  Assert fso.FileExists(zipPath)
-  AssertEqual Len(ZipFile_EmptyData), fso.GetFile(zipPath).Size
+  zfo.CreateZipFile zipPath, _
+     Array(fso.BuildPath(tempFolder, "foo.txt"))
+
+  Dim extractPath
+  extractPath = fso.BuildPath(tempFolder, "extract")
+  fso.CreateFolder extractPath
+  zfo.ExtractZipFile zipPath, extractPath
+
+  Assert fso.FileExists(fso.BuildPath(extractPath, "foo.txt"))
+  With fso.GetFile(fso.BuildPath(extractPath, "foo.txt"))
+    AssertEqual Len("Hello world."), .Size
+    With .OpenAsTextStream(ForReading)
+      AssertEqual "Hello world.", .ReadAll
+    End With
+  End With
 End Sub
 
-Sub TestCopyHereAndItem_File
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar.txt"), 2, True)
+Sub TestCreateZipFileAndZipFileEntries
+  With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(tempFolder, "bar.txt")
 
-  Dim item
-  Set item = zip.Item("bar.txt")
-  Assert Not item.IsFolder
-  AssertMatch "bar\.txt", item.Path
-  AssertEqual Len("Hello world."), item.Size
-  AssertMatch "foo\.zip", item.Parent.Title
-End Sub
+  Dim zipPath
+  zipPath = fso.BuildPath(tempFolder, "foo.zip")
+  zfo.CreateZipFile zipPath, _
+     Array(fso.BuildPath(tempFolder, "foo.txt"))
 
-Sub TestCopyHereAndItem_Folder
-  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
-  ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
-    .Write "Hello world."
-    .Close
-  End With
-  zip.CopyHere fso.BuildPath(tempFolder, "bar")
-
-  Dim item
-  Set item = zip.Item("bar")
-  Assert item.IsFolder
-  AssertMatch "bar", item.Path
-  AssertMatch "foo\.zip", item.Parent.Title
-End Sub
-
-Sub TestItem_NotFound
-  Dim errNum, errSrc
-  On Error Resume Next
-  zip.Item("bar")
-  errNum = Err.Number
-  errSrc = Err.Source
-  Err.Clear
-  On Error GoTo 0
-
-  AssertEqual 51, errNum
-  AssertEqual "stdlib.vbs:ZipFile.Item(Get)", errSrc
-End Sub
-
-Sub TestSubFolder
-  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
-  ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
-    .Write "Hello world."
-    .Close
-  End With
-  zip.CopyHere fso.BuildPath(tempFolder, "bar")
-
-  Dim item
-  Set item = zip.SubFolder("bar").Item("baz.txt")
-  Assert Not item.IsFolder
-  AssertMatch "baz\.txt", item.Path
-  AssertEqual Len("Hello world."), item.Size
-  AssertMatch "bar", item.Parent
-  AssertMatch "foo\.zip", item.Parent.ParentFolder.Title
-End Sub
-
-Sub TestSubFolder_NotFound
-  Dim errNum, errSrc, errDsc
-  On Error Resume Next
-  zip.SubFolder("bar")
-  errNum = Err.Number
-  errSrc = Err.Source
-  errDsc = Err.Description
-  Err.Clear
-  On Error GoTo 0
-
-  AssertEqual 51, errNum
-  AssertEqual "stdlib.vbs:ZipFile.SubFolder(Get)", errSrc
-  AssertMatch re("not found", "i"), errDsc
-End Sub
-
-Sub TestSubFolder_NotFolder
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar.txt"), 2, True)
-    .Write "Hello world."
-    .Close
-  End With
-  zip.CopyHere fso.BuildPath(tempFolder, "bar.txt")
-
-  Dim errNum, errSrc, errDsc
-  On Error Resume Next
-  zip.SubFolder("bar.txt")
-  errNum = Err.Number
-  errSrc = Err.Source
-  errDsc = Err.Description
-  Err.Clear
-  On Error GoTo 0
-
-  AssertEqual 51, errNum
-  AssertEqual "stdlib.vbs:ZipFile.SubFolder(Get)", errSrc
-  AssertMatch re("not.*folder", "i"), errDsc
-End Sub
-
-Sub TestItems
-  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
-  ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
-    .Write "Hello world."
-    .Close
-  End With
-  With fso.OpenTextFile(fso.BuildPath(tempFolder, "quux.txt"), 2, True)
-    .Write "Hello world."
-    .Close
-  End With
-  zip.CopyHere fso.BuildPath(tempFolder, "bar")
-  zip.CopyHere fso.BuildPath(tempFolder, "quux.txt")
-
-  Dim count, item
-  count = 0
-  For Each item In zip.Items
-    Select Case Count
-      Case 0:
-        Assert item.IsFolder
-        AssertMatch "bar", item.Path
-        AssertMatch "foo\.zip", item.Parent.Title
-      Case 1:
-        Assert Not item.IsFolder
-        AssertMatch "quux\.txt", item.Path
-        AssertEqual Len("Hello world."), item.Size
-        AssertMatch "foo\.zip", item.Parent.Title
-      Case Else:
-    End Select
-    count = count + 1
-  Next
-  AssertEqual 2, count
-End Sub
-
-Sub TestItems_Emtpy
-  AssertEqual 0, CountItem(zip.Items)
-End Sub
-
-Sub TestSubFolders_Empty
-  AssertEqual 0, CountItem(zip.SubFolders)
+  AssertEqual ShowValue(Array(fso.BuildPath(zipPath, "foo.txt"))), _
+              ShowValue(zfo.ZipFileEntries(zipPath))
 End Sub
 
 ' Local Variables:
