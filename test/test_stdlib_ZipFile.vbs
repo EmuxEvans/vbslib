@@ -5,39 +5,39 @@ Option Explicit
 
 Dim fso
 Dim zip
-Dim temporaryFolder
+Dim tempFolder
 
 Sub SetUp
   Set fso = CreateObject("Scripting.FileSystemObject")
-  temporaryFolder = fso.GetAbsolutePathName(".testZipFile")
-  If fso.FolderExists(temporaryFolder) Then ' for debug
-    fso.DeleteFolder(temporaryFolder)
+  tempFolder = fso.GetAbsolutePathName(".testZipFile")
+  If fso.FolderExists(tempFolder) Then ' for debug
+    fso.DeleteFolder(tempFolder)
   End If
-  fso.CreateFolder(temporaryFolder)
-  Set zip = ZipFile_Open(fso.BuildPath(temporaryFolder, "foo.zip"))
+  fso.CreateFolder(tempFolder)
+  Set zip = ZipFile_Open(fso.BuildPath(tempFolder, "foo.zip"))
   zip.Timeout = 10
 End Sub
 
 Sub TearDown
   Set zip = Nothing
-  fso.DeleteFolder(temporaryFolder)
-  temporaryFolder = Empty
+  fso.DeleteFolder(tempFolder)
+  tempFolder = Empty
   Set fso = Nothing
 End Sub
 
 Sub TestZipFile_Empty
   Dim zipPath
-  zipPath = fso.BuildPath(temporaryFolder, "foo.zip")
+  zipPath = fso.BuildPath(tempFolder, "foo.zip")
   Assert fso.FileExists(zipPath)
   AssertEqual Len(ZipFile_EmptyData), fso.GetFile(zipPath).Size
 End Sub
 
 Sub TestCopyHereAndItem_File
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "bar.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(temporaryFolder, "bar.txt")
+  zip.CopyHere fso.BuildPath(tempFolder, "bar.txt")
 
   Dim item
   Set item = zip.Item("bar.txt")
@@ -48,13 +48,13 @@ Sub TestCopyHereAndItem_File
 End Sub
 
 Sub TestCopyHereAndItem_Folder
-  fso.CreateFolder(fso.BuildPath(temporaryFolder, "bar"))
+  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
   ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "bar\baz.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(temporaryFolder, "bar")
+  zip.CopyHere fso.BuildPath(tempFolder, "bar")
 
   Dim item
   Set item = zip.Item("bar")
@@ -77,13 +77,13 @@ Sub TestItem_NotFound
 End Sub
 
 Sub TestSubFolder
-  fso.CreateFolder(fso.BuildPath(temporaryFolder, "bar"))
+  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
   ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "bar\baz.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(temporaryFolder, "bar")
+  zip.CopyHere fso.BuildPath(tempFolder, "bar")
 
   Dim item
   Set item = zip.SubFolder("bar").Item("baz.txt")
@@ -110,11 +110,11 @@ Sub TestSubFolder_NotFound
 End Sub
 
 Sub TestSubFolder_NotFolder
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "bar.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(temporaryFolder, "bar.txt")
+  zip.CopyHere fso.BuildPath(tempFolder, "bar.txt")
 
   Dim errNum, errSrc, errDsc
   On Error Resume Next
@@ -131,18 +131,18 @@ Sub TestSubFolder_NotFolder
 End Sub
 
 Sub TestItems
-  fso.CreateFolder(fso.BuildPath(temporaryFolder, "bar"))
+  fso.CreateFolder(fso.BuildPath(tempFolder, "bar"))
   ' need for folder contents
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "bar\baz.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "bar\baz.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  With fso.OpenTextFile(fso.BuildPath(temporaryFolder, "quux.txt"), 2, True)
+  With fso.OpenTextFile(fso.BuildPath(tempFolder, "quux.txt"), 2, True)
     .Write "Hello world."
     .Close
   End With
-  zip.CopyHere fso.BuildPath(temporaryFolder, "bar")
-  zip.CopyHere fso.BuildPath(temporaryFolder, "quux.txt")
+  zip.CopyHere fso.BuildPath(tempFolder, "bar")
+  zip.CopyHere fso.BuildPath(tempFolder, "quux.txt")
 
   Dim count, item
   count = 0
