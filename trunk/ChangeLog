@@ -1,3 +1,7 @@
+2009-04-07  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* test/test_FileOpenError.vbs: file open error samples.
+
 2009-03-26  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/repl.vbs: showlog command.
