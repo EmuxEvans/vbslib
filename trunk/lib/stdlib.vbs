@@ -1558,11 +1558,13 @@ Class ZipFile
   Private ivar_shellApp
   Private ivar_zipFolder
   Private ivar_timeoutSeconds
+  Private ivar_spinIntervalMillisec
 
   Private Sub Class_Initialize
     Set ivar_fso = CreateObject("Scripting.FileSystemObject")
     Set ivar_shellApp = CreateObject("Shell.Application")
     ivar_timeoutSeconds = 60
+    ivar_spinIntervalMillisec = 10
   End Sub
 
   Public Sub Build(folder)
@@ -1599,6 +1601,14 @@ Class ZipFile
 
   Public Property Let Timeout(seconds)
     ivar_timeoutSeconds = seconds
+  End Property
+
+  Public Property Get SpinIntervalMillisec
+    SpinIntervalMillisec = ivar_spinIntervalMillisec
+  End Property
+
+  Public Property Let SpinIntervalMillisec(milliseconds)
+    ivar_spinIntervalMillisec = milliseconds
   End Property
 
   Public Property Get Items
@@ -1642,7 +1652,7 @@ Class ZipFile
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
         Err.Raise RuntimeError, errSrc, errNum
       End If
-      WScript.Sleep 10
+      WScript.Sleep ivar_spinIntervalMillisec
     Loop
   End Sub
 
