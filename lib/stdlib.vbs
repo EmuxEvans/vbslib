@@ -1546,16 +1546,17 @@ Function ZipFile_Open(path)
   Set ZipFile_Open = zip
 End Function
 
-Function ZipFile_Build(folder)
+Function ZipFile_Build(zipPath, folder)
   Dim zip
   Set zip = New ZipFile
-  zip.Build folder
+  zip.Build zipPath, folder
   Set ZipFile_Build = zip
 End Function
 
 Class ZipFile
   Private ivar_fso
   Private ivar_shellApp
+  Private ivar_zipPath
   Private ivar_zipFolder
   Private ivar_timeoutSeconds
   Private ivar_spinIntervalMillisec
@@ -1567,7 +1568,8 @@ Class ZipFile
     ivar_spinIntervalMillisec = 10
   End Sub
 
-  Public Sub Build(folder)
+  Public Sub Build(zipPath, folder)
+    ivar_zipFolder = zipPath
     Set ivar_zipFolder = folder
   End Sub
 
@@ -1592,8 +1594,12 @@ Class ZipFile
          "failed to create a new zip file: " & absZipPath
     End If
 
-    Build folder
+    Build absZipPath, folder
   End Sub
+
+  Public Property Get ZipPath
+    ZipPath = ivar_zipFolder
+  End Property
 
   Public Property Get Timeout
     Timeout = ivar_timeoutSeconds
@@ -1627,7 +1633,8 @@ Class ZipFile
 
   Public Property Get SubFolders
     SubFolders = Map(FindAll(ivar_zipFolder.Items, ValueObjectProperty("IsFolder")), _
-                     ValueFilter(ValueObjectProperty("GetFolder"), GetRef("ZipFile_Build")))
+                     ValueFilter(ValueObjectProperty("GetFolder"), _
+                                 GetFuncProcSubset(GetRef("ZipFile_Build"), 2, Array(ivar_zipPath))))
   End Property
 
   Public Property Get SubFolder(name)
