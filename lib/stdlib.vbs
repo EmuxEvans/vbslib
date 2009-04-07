@@ -1539,18 +1539,18 @@ Set ZipFile_Extension = re("\.zip$", "i")
 Dim ZipFile_EmptyData
 ZipFile_EmptyData = "PK" & Chr(&H05) & Chr(&H06) & String(18, Chr(&H00))
 
-Function BuildZipFile(folder)
-  Dim zip
-  Set zip = New ZipFile
-  zip.Build folder
-  Set BuildZipFile = zip
-End Function
-
-Function OpenZipFile(path)
+Function ZipFile_Open(path)
   Dim zip
   Set zip = New ZipFile
   zip.Open path
-  Set OpenZipFile = zip
+  Set ZipFile_Open = zip
+End Function
+
+Function ZipFile_Build(folder)
+  Dim zip
+  Set zip = New ZipFile
+  zip.Build folder
+  Set ZipFile_Build = zip
 End Function
 
 Class ZipFile
@@ -1627,7 +1627,7 @@ Class ZipFile
 
   Public Property Get SubFolders
     SubFolders = Map(FindAll(ivar_zipFolder.Items, ValueObjectProperty("IsFolder")), _
-                     ValueFilter(ValueObjectProperty("GetFolder"), GetRef("BuildZipFile")))
+                     ValueFilter(ValueObjectProperty("GetFolder"), GetRef("ZipFile_Build")))
   End Property
 
   Public Property Get SubFolder(name)
@@ -1641,7 +1641,7 @@ Class ZipFile
       Err.Raise RuntimeError, "stdlib.vbs:ZipFile.SubFolder(Get)", _
          "not a folder: " & name & "@" & ivar_zipFolder
     End If
-    Set SubFolder = BuildZipFile(f.GetFolder)
+    Set SubFolder = ZipFile_Build(f.GetFolder)
   End Property
 
   Private Sub WaitForItemsChanged(count, errSrc, errMsg)
@@ -1650,7 +1650,7 @@ Class ZipFile
 
     Do While ivar_zipFolder.Items.Count = count
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
-        Err.Raise RuntimeError, errSrc, errNum
+        Err.Raise RuntimeError, errSrc, errMsg
       End If
       WScript.Sleep ivar_spinIntervalMillisec
     Loop
