@@ -52,15 +52,19 @@ Sub TestCountItem_Object
 End Sub
 
 Sub TestFind_Found
-  AssertEqual "bar", Find(Array("foo", "bar", "baz"), ValueEqual("bar"))
+  AssertEqual "bar", Find(Array("foo", "bar", "baz"), Empty, ValueEqual("bar"))
 End Sub
 
 Sub TestFind_NotFound
-  Assert IsEmpty(Find(Array("foo", "bar"), ValueEqual("baz")))
+  Assert IsEmpty(Find(Array("foo", "bar"), Empty, ValueEqual("baz")))
 End Sub
 
 Sub TestFind_EmptyList
-  Assert IsEmpty(Find(Array(), ValueEqual("baz")))
+  Assert IsEmpty(Find(Array(), Empty, ValueEqual("baz")))
+End Sub
+
+Sub TestFind_DefaultValue
+  AssertEqual -1, Find(Array(1, 2, 3), -1, ValueEqual(7))
 End Sub
 
 Sub TestFindPos_Found
