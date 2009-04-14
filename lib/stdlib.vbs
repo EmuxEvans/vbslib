@@ -696,8 +696,9 @@ Function CountItem(list)
   CountItem = count
 End Function
 
-Function Find(list, cond)
+Function Find(list, defaultValue, cond)
   Dim i
+  Bind Find, defaultValue
   For Each i In list
     If cond(i) Then
       Bind Find, i

@@ -1,3 +1,7 @@
+2009-04-15  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: default value of find.
+
 2009-04-07  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: zip file object.
