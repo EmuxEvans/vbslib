@@ -1390,9 +1390,9 @@ Function FindFile_CreateVisitor
   PseudoObject_AttachMethodSubProc visitor, "TraverseFolder", GetRef("FindFile_TraverseFolder"), 2
 
   PseudoObject_AttachMethodSubProc _
-              visitor, "TraverseDrive_ErrorHandler", GetRef("TraverseDrive_ErrorHandlerDefault"), 3
+              visitor, "TraverseDrive_ErrorHandler", GetRef("FindFile_TraverseDrive_ErrorHandlerDefault"), 3
   PseudoObject_AttachMethodSubProc _
-              visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandlerDefault"), 3
+              visitor, "TraverseFolder_ErrorHandler", GetRef("FindFile_TraverseFolder_ErrorHandlerDefault"), 3
 
   PseudoObject_AttachMethodSubProc visitor, "VisitDrive", GetRef("FindFile_VisitDriveDefault"), 2
   PseudoObject_AttachMethodSubProc visitor, "VisitFolder", GetRef("FindFile_VisitFolderDefault"), 2
@@ -1510,13 +1510,13 @@ Sub FindFile_TraverseFolder(self, folder)
   Next
 End Sub
 
-Sub TraverseDrive_ErrorHandlerDefault(self, drive, errorContext)
+Sub FindFile_TraverseDrive_ErrorHandlerDefault(self, drive, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseDrive_ErrorHandlerDefault", _
      "failed to access drive: " & drive.Path & vbNewLine & _
      "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
 End Sub
 
-Sub TraverseFolder_ErrorHandlerDefault(self, folder, errorContext)
+Sub FindFile_TraverseFolder_ErrorHandlerDefault(self, folder, errorContext)
   Err.Raise RuntimeError, "stdlib.vbs:TraverseFolder_ErrorHandlerDefault", _
      "failed to access folder: " & folder.Path & vbNewLine & _
      "<" & errorContext("Number") & "> " & errorContext("Description") & " (" & errorContext("Source") & ")"
