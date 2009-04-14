@@ -784,9 +784,9 @@ Function Range(first, cond, increment)
   Range = resultList.Items
 End Function
 
-Function NumericRange(first, last, incrementStep, exclude)
+Function NumericRange(first, last, incrementStep, excludeLast)
   Dim cond
-  If exclude Then
+  If excludeLast Then
     Set cond = ValueLessThan(last)
   Else
     Set cond = ValueLessEqual(last)
