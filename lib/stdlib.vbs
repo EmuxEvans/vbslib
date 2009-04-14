@@ -1633,6 +1633,7 @@ Class ZipFileObject
     WaitForItemsChanged = True
   End Function
 
+  ' sometimes fails since the second times.
   Public Sub CreateZipFile(filename, entries)
     Dim z
     Set z = GetZipName(filename)
