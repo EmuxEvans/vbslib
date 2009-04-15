@@ -1767,12 +1767,12 @@ Function InputFileOpenDialog
   InputFileOpenDialog = dialog.GetFilePath
 End Function
 
-Function InputBrowsingFolderDialog(title)
+Function InputFolderDialog(title)
   Dim s, folder
   Set s = CreateObject("Shell.Application")
-  Set folder = s.BrowseForFolder(0, title, 64)
+  Set folder = s.BrowseForFolder(0, title, &H0040)
   If Not folder Is Nothing Then
-    InputBrowsingFolderDialog = folder.Self.Path
+    InputFolderDialog = folder.Self.Path
   End If
 End Function
 
