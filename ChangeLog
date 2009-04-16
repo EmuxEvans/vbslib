@@ -1,5 +1,7 @@
 2009-04-17  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* mkpkg.bat: package utility.
+
 	* bin/tool.wsf: make zip tool.
 
 2009-04-15  TOKI Yoshinori  <toki@freedom.ne.jp>
