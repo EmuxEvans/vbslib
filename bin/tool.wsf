@@ -10,6 +10,7 @@ These jobs are defined.
     ListJob
     ADSIObjectDump
     ListWmiObject
+    MakeZip
     MaxSizeFile
     WatchEventLog
 </description>
@@ -323,6 +324,43 @@ For Each obj In klass.Instances_
   Next
 Next
 PrintSeparator Now & ": End of" & klassName
+
+]]></script>
+</job>
+
+<job id="MakeZip">
+<runtime>
+<description>make zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="fileOrFolder" type="string" required="true" many="true"
+         helpstring="file or folder to add zip file." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count < 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zipEntries
+Set zipEntries = New ListBuffer
+
+Dim i
+For i = 1 To WScript.Arguments.Unnamed.Count - 1
+  zipEntries.Add WScript.Arguments.Unnamed(i)
+Next
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+zfo.CreateZipFile zipName, zipEntries.Items
 
 ]]></script>
 </job>

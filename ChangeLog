@@ -1,3 +1,7 @@
+2009-04-17  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/tool.wsf: make zip tool.
+
 2009-04-15  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: default value of find.
