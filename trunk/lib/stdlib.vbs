@@ -1261,6 +1261,73 @@ Function Xor_(expression1, expression2)
 End Function
 
 
+'===================================================
+'################ string formatting ################
+'---------------------------------------------------
+
+Function LPad(baseString, size, padding)
+  Dim result
+  result = baseString
+  Do While Len(result) < size
+    result = padding & result
+  Loop
+  LPad = result
+End Function
+
+Function RPad(baseString, size, padding)
+  Dim result
+  result = baseString
+  Do While Len(result) < size
+    result = result & padding
+  Loop
+  RPad = result
+End Function
+
+Dim strftime_TokenScan
+Set strftime_TokenScan = re("(.*?)(%.)", "g")
+
+Function strftime(formatExpression, datetime)
+  Dim result, lastPos
+  Set result = New ListBuffer
+  lastPos = 0
+
+  Dim tokenMatch, tokenPrefix, tokenWord
+  For Each tokenMatch In strftime_TokenScan.Execute(formatExpression)
+    tokenPrefix = tokenMatch.SubMatches(0)
+    tokenWord = tokenMatch.SubMatches(1)
+    lastPos = tokenMatch.FirstIndex + tokenMatch.Length
+
+    result.Add tokenPrefix
+    Select Case tokenWord
+      Case "%Y":
+        result.Add LPad(DatePart("yyyy", datetime), 4, "0")
+      Case "%y":
+        result.Add LPad(DatePart("yyyy", datetime) Mod 100, 2, "0")
+      Case "%m":
+        result.Add LPad(DatePart("m", datetime), 2, "0")
+      Case "%d":
+        result.Add LPad(DatePart("d", datetime), 2, "0")
+      Case "%H":
+        result.Add LPad(DatePart("h", datetime), 2, "0")
+      Case "%M":
+        result.Add LPad(DatePart("n", datetime), 2, "0")
+      Case "%S":
+        result.Add LPad(DatePart("s", datetime), 2, "0")
+      Case "%%":
+        result.Add "%"
+      Case Else:
+        result.Add tokenWord
+    End Select
+  Next
+
+  If lastPos < Len(formatExpression) Then
+    result.Add Mid(formatExpression, lastPos + 1)
+  End If
+
+  strftime = Join(result.Items, "")
+End Function
+
+
 '======================================
 '################ sort ################
 '--------------------------------------
