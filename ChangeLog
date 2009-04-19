@@ -1,5 +1,7 @@
 2009-04-20  TOKI Yoshinori  <toki@freedom.ne.jp>
 
+	* bin/tool.wsf: show date-time.
+
 	* lib/stdlib.vbs: strftime.
 
 2009-04-17  TOKI Yoshinori  <toki@freedom.ne.jp>
