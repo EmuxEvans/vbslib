@@ -1313,6 +1313,8 @@ Function strftime(formatExpression, datetime)
         result.Add LPad(DatePart("n", datetime), 2, "0")
       Case "%S":
         result.Add LPad(DatePart("s", datetime), 2, "0")
+      Case "%c":
+        result.Add FormatDateTime(datetime)
       Case "%%":
         result.Add "%"
       Case Else:

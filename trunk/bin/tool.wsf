@@ -406,6 +406,34 @@ Next
 ]]></script>
 </job>
 
+<job id="ShowDateTime">
+<runtime>
+<description>show formatted date-time.</description>
+<unnamed name="dateTimeFormat" type="string" required="false" many="false"
+         helpstring="date-time format of strftime." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count > 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim dateTimeFormat
+If WScript.Arguments.Unnamed.Count > 0 Then
+  dateTimeFormat = WScript.Arguments.Unnamed(0)
+Else
+  dateTimeFormat = "%c"
+End If
+
+WScript.Echo strftime(dateTimeFormat, Now)
+
+]]></script>
+</job>
+
 <job id="WatchEventLog">
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
