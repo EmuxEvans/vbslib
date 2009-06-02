@@ -1773,7 +1773,7 @@ Class ZipFileObject
 
     Dim item, itemPath
     For Each item In zipFolder.Items
-      itemPath = fso.BuildPath(parentPath, item.Name)
+      itemPath = ivar_fso.BuildPath(parentPath, item.Name)
       If item.IsFolder Then
         entryList.Append ZipFolderEntries(itemPath, item.GetFolder)
       Else
