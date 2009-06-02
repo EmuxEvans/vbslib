@@ -331,6 +331,8 @@ PrintSeparator Now & ": End of" & klassName
 <job id="MakeZip">
 <runtime>
 <description>make zip file.</description>
+<named name="timeout" type="string" required="false"
+       helpstring="timeout seconds. default is 60s." />
 <unnamed name="zipName" type="string" required="true" many="false"
          helpstring="name for zip file."/>
 <unnamed name="fileOrFolder" type="string" required="true" many="true"
@@ -359,6 +361,16 @@ Next
 
 Dim zfo
 Set zfo = New ZipFileObject
+
+Dim optName
+For Each optName In WScript.Arguments.Named
+  Select Case LCase(optName)
+    Case "timeout":
+      zfo.TimeoutSeconds = CLng(GetNamedArgumentString("timeout", WScript.Arguments.Named, Empty))
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
+  End Select
+Next
 
 zfo.CreateZipFile zipName, zipEntries.Items
 
