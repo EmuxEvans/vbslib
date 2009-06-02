@@ -1,3 +1,7 @@
+2009-06-02  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: creating zip file does not fail.
+
 2009-04-20  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* bin/tool.wsf: show date-time.
