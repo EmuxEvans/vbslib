@@ -9,6 +9,7 @@ These jobs are defined.
 
     ListJob
     ADSIObjectDump
+    ExtractZip
     ListWmiObject
     MakeZip
     MaxSizeFile
@@ -247,6 +248,35 @@ Sub PrintDirectoryProperties(adsObject, indent, prefix, propNameList)
 End Sub
 
 ADSI_Accept root, visitor
+
+]]></script>
+</job>
+
+<job id="ExtractZip">
+<runtime>
+<description>extract files from zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="folderPath" type="string" required="true" many="false"
+         helpstring="destination folder to extract files." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+If WScript.Arguments.Unnamed.Count <> 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim destFolderPath
+destFolderPath = WScript.Arguments.Unnamed(1)
+
+Dim zfo
+Set zfo = New ZipFileObject
+zfo.ExtractZipFile zipName, destFolderPath
 
 ]]></script>
 </job>
