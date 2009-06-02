@@ -1684,14 +1684,23 @@ Class ZipFileObject
     Dim startTime
     startTime = Now
 
-    ' need to create new zip folder object in updating.
-    Do While ivar_shellApp.NameSpace(zipPath).Items.Count = itemsCount
+    Dim zipFolder
+    Do
+      Set zipFolder = ivar_shellApp.NameSpace(zipPath) ' need to create new zip folder object in updating.
+      If Not zipFolder Is Nothing Then
+        If zipFolder.Items.Count <> itemsCount Then
+          Exit Do
+        End If
+      End If
+      Set zipFolder = Nothing           ' need to release zip folder object in updating.
+
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
         WaitForItemsChanged = False
         Exit Function
       End If
       WScript.Sleep ivar_pollingIntervalMillisecs
     Loop
+    Set zipFolder = Nothing             ' need to release zip folder object in updating.
 
     Do While IsOpened(zipPath)
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
