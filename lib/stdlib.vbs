@@ -1680,11 +1680,12 @@ Class ZipFileObject
 
   ' Success -> True
   ' Failure -> False
-  Private Function WaitForItemsChanged(zipPath, zipFolder, itemsCount)
+  Private Function WaitForItemsChanged(zipPath, itemsCount)
     Dim startTime
     startTime = Now
 
-    Do While zipFolder.Items.Count = itemsCount
+    ' need to create new zip folder object in updating.
+    Do While ivar_shellApp.NameSpace(zipPath).Items.Count = itemsCount
       If DateDiff("s", startTime, Now) > ivar_timeoutSeconds Then
         WaitForItemsChanged = False
         Exit Function
@@ -1703,29 +1704,30 @@ Class ZipFileObject
     WaitForItemsChanged = True
   End Function
 
-  ' sometimes fails since the second times.
   Public Sub CreateZipFile(filename, entries)
     Dim z
     Set z = GetZipName(filename)
 
     CreateEmptyZipFile z("Name"), True
 
-    Dim zipFolder
-    Set zipFolder = ivar_shellApp.NameSpace(z("AbsPath"))
-    If zipFolder Is Nothing Then
+    If ivar_shellApp.NameSpace(z("AbsPath")) Is Nothing Then
       Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
          "not found a zip file: " & z("Name")
     End If
 
-    Dim entryName, count
+    Dim entryName, zipFolder, count
     For Each entryName In entries
       If Not ivar_fso.FileExists(entryName) And Not ivar_fso.FolderExists(entryName) Then
         Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
            "not found file or folder: " & entryName
       End If
+
+      Set zipFolder = ivar_shellApp.NameSpace(z("AbsPath")) ' need to create new zip folder object in each update.
       count = zipFolder.Items.Count
       zipFolder.CopyHere ivar_fso.GetAbsolutePathName(entryName)
-      If Not WaitForItemsChanged(z("AbsPath"), zipFolder, count) Then
+      Set zipFolder = Nothing           ' need to release zip folder object in each update.
+
+      If Not WaitForItemsChanged(z("AbsPath"), count) Then
         Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
            "failed to add an entry to zip file: " & entryName & " -> " & z("Name")
       End If
