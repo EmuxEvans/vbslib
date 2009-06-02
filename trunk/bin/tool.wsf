@@ -14,6 +14,7 @@ These jobs are defined.
     MakeZip
     MaxSizeFile
     ShowDateTime
+    ShowZip
     WatchEventLog
 </description>
 <example>
@@ -361,7 +362,7 @@ PrintSeparator Now & ": End of" & klassName
 
 <job id="MakeZip">
 <runtime>
-<description>make zip file.</description>
+<description>show entries of zip file.</description>
 <named name="timeout" type="string" required="false"
        helpstring="timeout seconds. default is 60s." />
 <unnamed name="zipName" type="string" required="true" many="false"
@@ -473,6 +474,36 @@ Else
 End If
 
 WScript.Echo strftime(dateTimeFormat, Now)
+
+]]></script>
+</job>
+
+<job id="ShowZip">
+<runtime>
+<description>make zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+Dim entry
+For Each entry In zfo.ZipFileEntries(zipName)
+  WScript.StdOut.WriteLine entry
+Next
 
 ]]></script>
 </job>
