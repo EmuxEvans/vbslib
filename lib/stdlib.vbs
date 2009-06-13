@@ -1713,21 +1713,21 @@ Class ZipFileObject
     WaitForItemsChanged = True
   End Function
 
-  Public Sub CreateZipFile(filename, entries)
+  Public Sub Zip(filename, entries)
     Dim z
     Set z = GetZipName(filename)
 
     CreateEmptyZipFile z("Name"), True
 
     If ivar_shellApp.NameSpace(z("AbsPath")) Is Nothing Then
-      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Zip", _
          "not found a zip file: " & z("Name")
     End If
 
     Dim entryName, zipFolder, count
     For Each entryName In entries
       If Not ivar_fso.FileExists(entryName) And Not ivar_fso.FolderExists(entryName) Then
-        Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
+        Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Zip", _
            "not found file or folder: " & entryName
       End If
 
@@ -1737,27 +1737,27 @@ Class ZipFileObject
       Set zipFolder = Nothing           ' need to release zip folder object in each update.
 
       If Not WaitForItemsChanged(z("AbsPath"), count) Then
-        Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.CreateZipFile", _
+        Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Zip", _
            "failed to add an entry to zip file: " & entryName & " -> " & z("Name")
       End If
     Next
   End Sub
 
-  Public Sub ExtractZipFile(filename, destFolderPath)
+  Public Sub Unzip(filename, destFolderPath)
     Dim z
     Set z = GetZipName(filename)
 
     Dim zipFolder
     Set zipFolder = ivar_shellApp.NameSpace(z("AbsPath"))
     If zipFolder Is Nothing Then
-      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.ExtractZipFile", _
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Unzip", _
          "not found a zip file: " & z("Name")
     End If
 
     Dim destFolder
     Set destFolder = ivar_shellApp.NameSpace(ivar_fso.GetAbsolutePathName(destFolderPath))
     If destFolder Is Nothing Then
-      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.ExtractZipFile", _
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Unzip", _
          "not found a folder: " & destFolderPath
     End If
 
@@ -1784,18 +1784,18 @@ Class ZipFileObject
     ZipFolderEntries = entryList.Items
   End Function
 
-  Public Function ZipFileEntries(filename)
+  Public Function ZipEntries(filename)
     Dim z
     Set z = GetZipName(filename)
 
     Dim zipFolder
     Set zipFolder = ivar_shellApp.NameSpace(z("AbsPath"))
     If zipFolder Is Nothing Then
-      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.ZipFileEntries", _
+      Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.ZipEntries", _
          "not found a zip file: " & z("Name")
     End If
 
-    ZipFileEntries = ZipFolderEntries(z("Name"), zipFolder)
+    ZipEntries = ZipFolderEntries(z("Name"), zipFolder)
   End Function
 End Class
 

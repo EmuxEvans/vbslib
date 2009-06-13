@@ -1,3 +1,7 @@
+2009-06-13  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: method names of zip file object are changed.
+
 2009-06-02  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* lib/stdlib.vbs: large zip file.

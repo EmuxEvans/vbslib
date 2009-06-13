@@ -117,13 +117,13 @@ Sub TestCreateEmptyZipFile_NotOverwrite
   AssertEqual 58, errNum
 End Sub
 
-Sub TestCreateZipFile
+Sub TestZip
   With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
     .Close
   End With
 
-  zfo.CreateZipFile fso.BuildPath(tempFolder, "foo.zip"), _
+  zfo.Zip fso.BuildPath(tempFolder, "foo.zip"), _
      Array(fso.BuildPath(tempFolder, "foo.txt"))
 
   Assert fso.FileExists(fso.BuildPath(tempFolder, "foo.zip"))
@@ -132,7 +132,7 @@ Sub TestCreateZipFile
   End With
 End Sub
 
-Sub TestCreateZipFileAndExtractZipFile
+Sub TestZipAndUnzip
   With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
     .Close
@@ -140,13 +140,13 @@ Sub TestCreateZipFileAndExtractZipFile
 
   Dim zipPath
   zipPath = fso.BuildPath(tempFolder, "foo.zip")
-  zfo.CreateZipFile zipPath, _
+  zfo.Zip zipPath, _
      Array(fso.BuildPath(tempFolder, "foo.txt"))
 
   Dim extractPath
   extractPath = fso.BuildPath(tempFolder, "extract")
   fso.CreateFolder extractPath
-  zfo.ExtractZipFile zipPath, extractPath
+  zfo.Unzip zipPath, extractPath
 
   Assert fso.FileExists(fso.BuildPath(extractPath, "foo.txt"))
   With fso.GetFile(fso.BuildPath(extractPath, "foo.txt"))
@@ -157,7 +157,7 @@ Sub TestCreateZipFileAndExtractZipFile
   End With
 End Sub
 
-Sub TestCreateZipFileAndZipFileEntries
+Sub TestZipAndZipEntries
   With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
     .Close
@@ -165,11 +165,11 @@ Sub TestCreateZipFileAndZipFileEntries
 
   Dim zipPath
   zipPath = fso.BuildPath(tempFolder, "foo.zip")
-  zfo.CreateZipFile zipPath, _
+  zfo.Zip zipPath, _
      Array(fso.BuildPath(tempFolder, "foo.txt"))
 
   AssertEqual ShowValue(Array(fso.BuildPath(zipPath, "foo.txt"))), _
-              ShowValue(zfo.ZipFileEntries(zipPath))
+              ShowValue(zfo.ZipEntries(zipPath))
 End Sub
 
 ' Local Variables:
