@@ -8,14 +8,14 @@ List job of tool.wsf.
 These jobs are defined.
 
     ADSIObjectDump
-    Unzip
     ListJob
     ListWmiObject
-    Zip
     MaxSizeFile
     ShowDateTime
-    ZipList
+    Unzip
     WatchEventLog
+    Zip
+    ZipList
 </description>
 <example>
 EXAMPLE: cscript tool.wsf
@@ -254,35 +254,6 @@ ADSI_Accept root, visitor
 ]]></script>
 </job>
 
-<job id="Unzip">
-<runtime>
-<description>extract files from zip file.</description>
-<unnamed name="zipName" type="string" required="true" many="false"
-         helpstring="name for zip file."/>
-<unnamed name="folderPath" type="string" required="true" many="false"
-         helpstring="destination folder to extract files." />
-</runtime>
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript"><![CDATA[
-
-If WScript.Arguments.Unnamed.Count <> 2 Then
-  WScript.Arguments.ShowUsage
-  WScript.Quit 255
-End If
-
-Dim zipName
-zipName = WScript.Arguments.Unnamed(0)
-
-Dim destFolderPath
-destFolderPath = WScript.Arguments.Unnamed(1)
-
-Dim zfo
-Set zfo = New ZipFileObject
-zfo.Unzip zipName, destFolderPath
-
-]]></script>
-</job>
-
 <job id="ListWmiObject">
 <runtime>
 <description>List WMI object.</description>
@@ -360,55 +331,6 @@ PrintSeparator Now & ": End of" & klassName
 ]]></script>
 </job>
 
-<job id="Zip">
-<runtime>
-<description>make zip file.</description>
-<named name="timeout" type="string" required="false"
-       helpstring="timeout seconds. default is 60s." />
-<unnamed name="zipName" type="string" required="true" many="false"
-         helpstring="name for zip file."/>
-<unnamed name="fileOrFolder" type="string" required="true" many="true"
-         helpstring="file or folder to add zip file." />
-</runtime>
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript"><![CDATA[
-
-Option Explicit
-
-If WScript.Arguments.Unnamed.Count < 2 Then
-  WScript.Arguments.ShowUsage
-  WScript.Quit 255
-End If
-
-Dim zipName
-zipName = WScript.Arguments.Unnamed(0)
-
-Dim zipEntries
-Set zipEntries = New ListBuffer
-
-Dim i
-For i = 1 To WScript.Arguments.Unnamed.Count - 1
-  zipEntries.Add WScript.Arguments.Unnamed(i)
-Next
-
-Dim zfo
-Set zfo = New ZipFileObject
-
-Dim optName
-For Each optName In WScript.Arguments.Named
-  Select Case LCase(optName)
-    Case "timeout":
-      zfo.TimeoutSeconds = CLng(GetNamedArgumentString("timeout", WScript.Arguments.Named, Empty))
-    Case Else:
-      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
-  End Select
-Next
-
-zfo.Zip zipName, zipEntries.Items
-
-]]></script>
-</job>
-
 <job id="MaxSizeFile">
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
@@ -478,36 +400,6 @@ WScript.Echo strftime(dateTimeFormat, Now)
 ]]></script>
 </job>
 
-<job id="ZipList">
-<runtime>
-<description>show entries of zip file.</description>
-<unnamed name="zipName" type="string" required="true" many="false"
-         helpstring="name for zip file."/>
-</runtime>
-<script language="VBScript" src="../lib/stdlib.vbs" />
-<script language="VBScript"><![CDATA[
-
-Option Explicit
-
-If WScript.Arguments.Unnamed.Count <> 1 Then
-  WScript.Arguments.ShowUsage
-  WScript.Quit 255
-End If
-
-Dim zipName
-zipName = WScript.Arguments.Unnamed(0)
-
-Dim zfo
-Set zfo = New ZipFileObject
-
-Dim entry
-For Each entry In zfo.ZipEntries(zipName)
-  WScript.StdOut.WriteLine entry
-Next
-
-]]></script>
-</job>
-
 <job id="WatchEventLog">
 <script language="VBScript" src="../lib/stdlib.vbs" />
 <script language="VBScript"><![CDATA[
@@ -545,6 +437,114 @@ Do
   Next
   WScript.StdOut.WriteBlankLines 1
 Loop
+
+]]></script>
+</job>
+
+<job id="Zip">
+<runtime>
+<description>make zip file.</description>
+<named name="timeout" type="string" required="false"
+       helpstring="timeout seconds. default is 60s." />
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="fileOrFolder" type="string" required="true" many="true"
+         helpstring="file or folder to add zip file." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count < 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zipEntries
+Set zipEntries = New ListBuffer
+
+Dim i
+For i = 1 To WScript.Arguments.Unnamed.Count - 1
+  zipEntries.Add WScript.Arguments.Unnamed(i)
+Next
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+Dim optName
+For Each optName In WScript.Arguments.Named
+  Select Case LCase(optName)
+    Case "timeout":
+      zfo.TimeoutSeconds = CLng(GetNamedArgumentString("timeout", WScript.Arguments.Named, Empty))
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
+  End Select
+Next
+
+zfo.Zip zipName, zipEntries.Items
+
+]]></script>
+</job>
+
+<job id="ZipList">
+<runtime>
+<description>show entries of zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+Dim entry
+For Each entry In zfo.ZipEntries(zipName)
+  WScript.StdOut.WriteLine entry
+Next
+
+]]></script>
+</job>
+
+<job id="Unzip">
+<runtime>
+<description>extract files from zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="folderPath" type="string" required="true" many="false"
+         helpstring="destination folder to extract files." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+If WScript.Arguments.Unnamed.Count <> 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim destFolderPath
+destFolderPath = WScript.Arguments.Unnamed(1)
+
+Dim zfo
+Set zfo = New ZipFileObject
+zfo.Unzip zipName, destFolderPath
 
 ]]></script>
 </job>
