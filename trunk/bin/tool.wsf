@@ -8,13 +8,13 @@ List job of tool.wsf.
 These jobs are defined.
 
     ADSIObjectDump
-    ExtractZip
+    Unzip
     ListJob
     ListWmiObject
-    MakeZip
+    Zip
     MaxSizeFile
     ShowDateTime
-    ShowZip
+    ZipList
     WatchEventLog
 </description>
 <example>
@@ -254,7 +254,7 @@ ADSI_Accept root, visitor
 ]]></script>
 </job>
 
-<job id="ExtractZip">
+<job id="Unzip">
 <runtime>
 <description>extract files from zip file.</description>
 <unnamed name="zipName" type="string" required="true" many="false"
@@ -278,7 +278,7 @@ destFolderPath = WScript.Arguments.Unnamed(1)
 
 Dim zfo
 Set zfo = New ZipFileObject
-zfo.ExtractZipFile zipName, destFolderPath
+zfo.Unzip zipName, destFolderPath
 
 ]]></script>
 </job>
@@ -360,7 +360,7 @@ PrintSeparator Now & ": End of" & klassName
 ]]></script>
 </job>
 
-<job id="MakeZip">
+<job id="Zip">
 <runtime>
 <description>make zip file.</description>
 <named name="timeout" type="string" required="false"
@@ -404,7 +404,7 @@ For Each optName In WScript.Arguments.Named
   End Select
 Next
 
-zfo.CreateZipFile zipName, zipEntries.Items
+zfo.Zip zipName, zipEntries.Items
 
 ]]></script>
 </job>
@@ -478,7 +478,7 @@ WScript.Echo strftime(dateTimeFormat, Now)
 ]]></script>
 </job>
 
-<job id="ShowZip">
+<job id="ZipList">
 <runtime>
 <description>show entries of zip file.</description>
 <unnamed name="zipName" type="string" required="true" many="false"
@@ -501,7 +501,7 @@ Dim zfo
 Set zfo = New ZipFileObject
 
 Dim entry
-For Each entry In zfo.ZipFileEntries(zipName)
+For Each entry In zfo.ZipEntries(zipName)
   WScript.StdOut.WriteLine entry
 Next
 
