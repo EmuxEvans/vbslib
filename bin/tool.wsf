@@ -362,7 +362,7 @@ PrintSeparator Now & ": End of" & klassName
 
 <job id="MakeZip">
 <runtime>
-<description>show entries of zip file.</description>
+<description>make zip file.</description>
 <named name="timeout" type="string" required="false"
        helpstring="timeout seconds. default is 60s." />
 <unnamed name="zipName" type="string" required="true" many="false"
@@ -480,7 +480,7 @@ WScript.Echo strftime(dateTimeFormat, Now)
 
 <job id="ShowZip">
 <runtime>
-<description>make zip file.</description>
+<description>show entries of zip file.</description>
 <unnamed name="zipName" type="string" required="true" many="false"
          helpstring="name for zip file."/>
 </runtime>
