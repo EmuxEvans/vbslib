@@ -1724,13 +1724,14 @@ Class ZipFileObject
          "not found a zip file: " & z("Name")
     End If
 
-    Dim entryName, zipFolder, count
+    Dim entryName
     For Each entryName In entries
       If Not ivar_fso.FileExists(entryName) And Not ivar_fso.FolderExists(entryName) Then
         Err.Raise RuntimeError, "stdlib.vbs:ZipFileObject.Zip", _
            "not found file or folder: " & entryName
       End If
 
+      Dim zipFolder, count
       Set zipFolder = ivar_shellApp.NameSpace(z("AbsPath")) ' need to create new zip folder object in each update.
       count = zipFolder.Items.Count
       zipFolder.CopyHere ivar_fso.GetAbsolutePathName(entryName)
