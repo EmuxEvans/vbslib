@@ -132,6 +132,8 @@ Sub TestZip
   End With
 End Sub
 
+' Why does a temporary file remain in MS-Windows temporary directory?
+' (TEMP -> %USERPROFILE%\Local Settings\Temp)
 Sub TestZipAndUnzip
   With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
