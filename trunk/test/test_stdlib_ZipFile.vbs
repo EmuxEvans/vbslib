@@ -79,6 +79,7 @@ Sub TestCreateEmptyZipFile
     AssertEqual Len(ZipFile_EmptyData), .Size
     With .OpenAsTextStream(ForReading)
       AssertEqual ZipFile_EmptyData, .ReadAll
+      .Close
     End With
   End With
 End Sub
@@ -96,6 +97,7 @@ Sub TestCreateEmptyZipFile_Overwrite
     AssertEqual Len(ZipFile_EmptyData), .Size
     With .OpenAsTextStream(ForReading)
       AssertEqual ZipFile_EmptyData, .ReadAll
+      .Close
     End With
   End With
 End Sub
@@ -155,6 +157,7 @@ Sub TestZipAndUnzip
     AssertEqual Len("Hello world."), .Size
     With .OpenAsTextStream(ForReading)
       AssertEqual "Hello world.", .ReadAll
+      .Close
     End With
   End With
 End Sub
