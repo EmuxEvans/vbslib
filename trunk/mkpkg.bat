@@ -1,13 +1,12 @@
 @echo off
+setlocal
 
 set basedir=%~dp0
 cd "%basedir%"
 
-cscript bin\tool.wsf //Nologo //Job:ShowDateTime "set pkgname=vbslib-%%Y%%m%%d" >mkpkg_tmp.bat
-echo svn export . %%pkgname%% >>mkpkg_tmp.bat
-echo cscript bin\tool.wsf //Job:Zip %%pkgname%%.zip %%pkgname%% >>mkpkg_tmp.bat
-echo rmdir /s /q %%pkgname%% >>mkpkg_tmp.bat
-echo dir %%pkgname%%.zip >>mkpkg_tmp.bat
+for /f usebackq %%i in (
+  `cscript bin\tool.wsf //Nologo //Job:ShowDateTime vbslib-%%Y%%m%%d`) do set pkgname=%%i
 
-call mkpkg_tmp.bat
-del /s mkpkg_tmp.bat >nul
+svn export http://vbslib.googlecode.com/svn/trunk %pkgname%
+cscript bin\tool.wsf //Nologo //Job:Zip %pkgname%.zip %pkgname%
+rmdir /s /q %pkgname%
