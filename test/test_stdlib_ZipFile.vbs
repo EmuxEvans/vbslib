@@ -3,6 +3,7 @@
 
 Option Explicit
 
+Dim shell
 Dim fso
 Dim zfo
 Dim tempFolder
@@ -10,7 +11,12 @@ Dim tempFolder
 ' for fso.OpenTextFile
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
 
+Function WindowsName
+  WindowsName = FirstItem(GetObject("winmgmts:root\cimv2").InstancesOf("Win32_OperatingSystem")).Caption
+End Function
+
 Sub SetUp
+  Set shell = CreateObject("WScript.Shell")
   Set fso = CreateObject("Scripting.FileSystemObject")
   Set zfo = New ZipFileObject
   zfo.TimeoutSeconds = 1
@@ -20,6 +26,7 @@ End Sub
 
 Sub TearDown
   fso.DeleteFolder tempFolder
+  Set shell = Nothing
   Set fso = Nothing
   Set zfo = Nothing
 End Sub
@@ -160,6 +167,21 @@ Sub TestZipAndUnzip
       .Close
     End With
   End With
+
+  If re("Windows XP", "i").Test(WindowsName) Then
+    Dim systemTempFolder
+    Set systemTempFolder = fso.GetFolder(shell.ExpandEnvironmentStrings("%TEMP%"))
+
+    Dim delItems
+    delItems = FindAll(systemTempFolder.SubFolders, _
+                       ValueFilter(ValueObjectProperty("Name"), _
+                                   ValueMatch(re("foo\.zip", "i"))))
+
+    Dim i
+    For Each i In delItems
+      i.Delete(True)
+    Next
+  End If
 End Sub
 
 Sub TestZipAndZipEntries
