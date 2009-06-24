@@ -11,8 +11,8 @@ Dim tempFolder
 ' for fso.OpenTextFile
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
 
-Function WindowsName
-  WindowsName = FirstItem(GetObject("winmgmts:root\cimv2").InstancesOf("Win32_OperatingSystem")).Caption
+Function GetWindowsName
+  GetWindowsName = FirstItem(GetObject("winmgmts:root\cimv2").InstancesOf("Win32_OperatingSystem")).Caption
 End Function
 
 Sub SetUp
@@ -168,7 +168,7 @@ Sub TestZipAndUnzip
     End With
   End With
 
-  If re("Windows XP", "i").Test(WindowsName) Then
+  If re("Windows XP", "i").Test(GetWindowsName) Then
     Dim systemTempFolder
     Set systemTempFolder = fso.GetFolder(shell.ExpandEnvironmentStrings("%TEMP%"))
 
