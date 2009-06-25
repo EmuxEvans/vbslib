@@ -141,8 +141,6 @@ Sub TestZip
   End With
 End Sub
 
-' Why does a temporary file remain in MS-Windows temporary directory?
-' (TEMP -> %USERPROFILE%\Local Settings\Temp)
 Sub TestZipAndUnzip
   With fso.CreateTextFile(fso.BuildPath(tempFolder, "foo.txt"))
     .Write "Hello world."
@@ -168,6 +166,7 @@ Sub TestZipAndUnzip
     End With
   End With
 
+  ' Why does unzip temporary file remain in temporary directory at Windows XP?
   If re("Windows XP", "i").Test(GetWindowsName) Then
     Dim systemTempFolder
     Set systemTempFolder = fso.GetFolder(shell.ExpandEnvironmentStrings("%TEMP%"))
