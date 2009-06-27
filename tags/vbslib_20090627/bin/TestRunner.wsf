@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<job id="ConsoleTestRunner">
+<runtime>
+<description>Console test runner of VBScript Unit Test.</description>
+<named name="stdin" type="boolean" required="false"
+       helpstring="read VBScript test case filename(s) from standard input." />
+<named name="testCaseName" type="string" required="false"
+       helpstring="run test case of name."/>
+<named name="testCaseMatch" type="string" required="false"
+       helpstring="run test case matching regexp."/>
+<named name="testProcName" type="string" required="false"
+       helpstring="run test procedure of name."/>
+<named name="testProcMatch" type="string" required="false"
+       helpstring="run test procedure matching regexp."/>
+<unnamed name="filename" many="true" required="false"
+         helpstring="VBScript test case." />
+<example>
+EXAMPLE
+
+  (1) Run test case from command line arguments.
+
+        cscript TestRunner.wsf test_foo.vbs test_bar.vbs
+
+  (2) Run test case from standard input.
+
+        dir /b test_*.vbs | cscript TestRunner.wsf /stdin+
+</example>
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript" src="../lib/unittest.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim key
+Dim optStdIn: optStdIn = False
+Dim optTestCaseName
+Dim optTestCaseMatch
+Dim optTestProcName
+Dim optTestProcMatch
+
+For Each key In WScript.Arguments.Named
+  Select Case UCase(key)
+    Case "STDIN":
+      optStdIn = GetNamedArgumentBool(key, WScript.Arguments.Named, Empty)
+    Case "TESTCASENAME":
+      optTestCaseName = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTCASEMATCH":
+      optTestCaseMatch = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTPROCNAME":
+      optTestProcName = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case "TESTPROCMATCH":
+      optTestProcMatch = GetNamedArgumentString(key, WScript.Arguments.Named, Empty)
+    Case Else:
+      Err.Raise RuntimeError, "TestRunner.wsf", "Unknown command line option: " & key
+  End Select
+Next
+
+Dim fileList
+Set fileList = New ListBuffer
+fileList.Append WScript.Arguments.Unnamed
+If optStdIn Then
+  Do Until WScript.StdIn.AtEndOfStream
+    fileList.Add WScript.StdIn.ReadLine
+  Loop
+End If
+
+If fileList.Count = 0 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim loader
+Set loader = New UnitTest_TestCaseLoader
+loader.AddObject "WScript", WScript
+
+Dim path
+For Each path In fileList.Items
+  WScript.StdOut.WriteLine "load " & path
+  loader.ImportTestCase path
+Next
+
+Dim testProcList, testCase
+Set testProcList = New ListBuffer
+For Each testCase In loader.Items
+  testProcList.Append testCase.Items
+Next
+testProcList = testProcList.Items
+
+Dim strCompText
+Set strCompText = GetFuncProcSubset(GetRef("StrComp3_"), 3, D(Array(2, vbTextCompare)))
+
+If Not IsEmpty(optTestCaseName) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("ModuleName"), _
+                                     ValueCompare("=", optTestCaseName, strCompText)))
+End If
+If Not IsEmpty(optTestCaseMatch) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("ModuleName"), _
+                                     ValueMatch(re(optTestCaseMatch, "i"))))
+End If
+If Not IsEmpty(optTestProcName) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("Name"), _
+                                     ValueCompare("=", optTestProcName, strCompText)))
+End If
+If Not IsEmpty(optTestProcMatch) Then
+  testProcList = FindAll(testProcList, _
+                         ValueFilter(ValueObjectProperty("Name"), _
+                                     ValueMatch(re(optTestProcMatch, "i"))))
+End If
+
+Dim errorList
+Set errorList = New ListBuffer
+
+Dim startTime
+startTime = Timer
+
+Dim testProc, testStat
+For Each testProc In testProcList
+  testStat = "."
+  Err.Clear
+  On Error Resume Next
+
+  testProc.SetUp
+  If Err.Number <> 0 Then
+    testStat = "E"
+    errorList.Add Array(testProc, "SetUp Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
+    Err.Clear
+  Else
+    testProc.Execute
+    If Err.Number <> 0 Then
+      If UnitTest_IsAssertFail(Err) Then
+        testStat = "F"
+        errorList.Add Array(testProc, "Assertion Failed: " & Err.Description)
+      Else
+        testStat = "E"
+        errorList.Add Array(testProc, "Test Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
+      End If
+      Err.Clear
+    End If
+  End If
+
+  testProc.TearDown
+  If Err.Number <> 0 Then
+    testStat = "E"
+    errorList.Add Array(testProc, "TearDown Error: <" & Err.Number & "> " & Err.Description & " (" & Err.Source & ")")
+    Err.Clear
+  End If
+
+  On Error GoTo 0
+  WScript.StdOut.Write testStat
+Next
+WScript.StdOut.WriteBlankLines 1
+
+WScript.StdOut.Write "result "
+If errorList.Count = 0 Then
+  WScript.StdOut.WriteLine "OK"
+Else
+  WScript.StdOut.WriteLine "NG"
+End If
+
+WScript.StdOut.WriteLine CountItem(testProcList) & " tests, " & _
+                         loader.AssertionCount & "assertions."
+
+Dim endTime, elapsed
+endTime = Timer
+elapsed = endTime - startTime
+WScript.StdOut.WriteLine "elapsed " & elapsed & "s"
+
+Dim count, errPair
+count = 0
+
+If errorList.Count > 0 Then
+  WScript.StdOut.WriteBlankLines 1
+End If
+For Each errPair In errorList.Items
+  count = count + 1
+  WScript.StdOut.WriteLine "(" & count & ") " & errPair(0).ModuleName & ": " & errPair(0).Name
+  WScript.StdOut.WriteLine "  " & errPair(1)
+Next
+
+If errorList.Count > 0 Then
+  WScript.Quit 1
+Else
+  WScript.Quit 0
+End If
+
+]]></script>
+</job>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->

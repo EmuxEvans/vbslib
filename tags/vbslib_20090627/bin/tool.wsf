@@ -1,0 +1,557 @@
+<?xml version="1.0" ?>
+<package>
+
+<job id="ListJob">
+<runtime>
+<description>
+List job of tool.wsf.
+These jobs are defined.
+
+    ADSIObjectDump
+    ListJob
+    ListWmiObject
+    MaxSizeFile
+    ShowDateTime
+    Unzip
+    WatchEventLog
+    Zip
+    ZipList
+</description>
+<example>
+EXAMPLE: cscript tool.wsf
+</example>
+</runtime>
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+WScript.Arguments.ShowUsage
+
+]]></script>
+</job>
+
+<job id="ADSIObjectDump">
+<runtime>
+<description>Dump ADSI Objects</description>
+<named name="showProperties" type="boolean" required="false"
+       helpstring="show properties." />
+<named name="skipUndefinedProperties" type="boolean" required="false"
+       helpstring="skip undefined properties." />
+<unnamed name="ADsPath" many="false" required="true"
+         helpstring="path of object to dump."/>
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim optName
+Dim showProperties: showProperties = False
+Dim skipUndefinedProperties: skipUndefinedProperties = True
+
+For Each optName In WScript.Arguments.Named
+  Select Case UCase(optName)
+    Case "SHOWPROPERTIES":
+      showProperties = GetNamedArgumentBool(optName, WScript.Arguments.Named, Empty)
+    Case "SKIPUNDEFINEDPROPERTIES":
+      skipUndefinedProperties = GetNamedArgumentBool(optName, WScript.Arguments.Named, Empty)
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ADSIObjectDump", "unknnown option: " & optName
+  End Select
+Next
+
+Dim adsPath
+adsPath = WScript.Arguments.Unnamed(0)
+
+Dim root
+Set root = GetObject(adsPath)
+
+Dim visitor
+Set visitor = ADSI_CreateVisitor
+visitor("depth") = 0
+PseudoObject_AttachMethodFuncProc visitor, "GetIndent", GetRef("ADSI_GetIndent"), 1
+PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitObject", GetRef("ADSI_VisitObject"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_VisitContainer", GetRef("ADSI_VisitContainer"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Group", GetRef("ADSI_VisitGroup"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_group", GetRef("ADSI_VisitGroup"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Schema", GetRef("ADSI_VisitSchema"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Class", GetRef("ADSI_VisitClass"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Syntax", GetRef("ADSI_VisitSyntax"), 2
+PseudoObject_AttachMethodSubProc visitor, "ADSI_Visit_Property", GetRef("ADSI_VisitProperty"), 2
+
+Function ADSI_GetIndent(self)
+  ADSI_GetIndent = String(self("depth") * 2, " ")
+End Function
+
+Sub ADSI_VisitObject(self, adsObject)
+  Dim indent
+  indent = self("GetIndent")()
+  WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
+  If showProperties Then
+    Dim schema
+    Set schema = self("GetSchema")(adsObject)
+    PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
+                          Array("AdsPath", "Class", "GUID", "Name", "Parent", "Schema")
+    PrintObjectProperties schema, indent & "  ", "(SchemaProperty) ", Array("Container", "Containment")
+    PrintDirectoryProperties adsObject, indent & "  ", "(MandatoryProperty) ", schema.MandatoryProperties
+    PrintDirectoryProperties adsObject, indent & "  ", "(OptionalProperty) ", schema.OptionalProperties
+  End If
+End Sub
+
+Sub ADSI_VisitContainer(self, adsObject)
+  ADSI_VisitObject self, adsObject
+  If showProperties Then
+    Dim indent
+    indent = self("GetIndent")()
+    PrintObjectProperties adsObject, indent & "  ", "(ContainerProperty) ", Array("Count", "Filter", "Hints")
+  End If
+  self("depth") = self("depth") + 1
+  ADSI_TraverseCollection self, adsObject
+  self("depth") = self("depth") - 1
+End Sub
+
+Sub ADSI_VisitGroup(self, adsObject)
+  ADSI_VisitObject self, adsObject
+  If showProperties Then
+    Dim indent
+    indent = self("GetIndent")()
+    WScript.StdOut.WriteLine _
+           indent & "  (GroupProperty) Members: " & _
+           ShowValue(Map(adsObject.Members, ValueObjectProperties(Array("Name", "Class"))))
+  End If
+End Sub
+
+Sub ADSI_VisitSchema(self, adsObject)
+  Dim indent
+  indent = self("GetIndent")
+  WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
+  If showProperties Then
+    PrintObjectProperties adsObject, indent & "  ", "(ObjectProperty) ", _
+                          Array("AdsPath", "Class", "GUID", "Name", "Parent")
+  End If
+  self("depth") = self("depth") + 1
+  ADSI_TraverseCollection self, adsObject
+  self("depth") = self("depth") - 1
+End Sub
+
+Sub ADSI_VisitClass(self, adsObject)
+  Dim indent
+  indent = self("GetIndent")
+  WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
+  If showProperties Then
+    PrintObjectProperties adsObject, indent & "  ", "(ClassProperty) ", _
+                          Array("Abstract", _
+                                "AdsPath", _
+                                "AuxDerivedFrom", _
+                                "Auxiliary", _
+                                "Class", _
+                                "CLSID", _
+                                "Container", _
+                                "Containment", _
+                                "DerivedFrom", _
+                                "GUID", _
+                                "HelpFileContext", _
+                                "HelpFileName", _
+                                "MandatoryProperties", _
+                                "Name", _
+                                "NamingProperties", _
+                                "OID", _
+                                "OptionalProperties", _
+                                "Parent", _
+                                "PossibleSuperiors", _
+                                "PrimaryInterface", _
+                                "Schema")
+  End If
+End Sub
+
+Sub ADSI_VisitSyntax(self, adsObject)
+  Dim indent
+  indent = self("GetIndent")
+  WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
+  If showProperties Then
+    PrintObjectProperties adsObject, indent & "  ", "(SyntaxProperty) ", _
+                          Array("AdsPath", _
+                                "Class", _
+                                "GUID", _
+                                "Name", _
+                                "OleAutoDataType", _
+                                "Parent", _
+                                "Schema")
+  End If
+End Sub
+
+Sub ADSI_VisitProperty(self, adsObject)
+  Dim indent
+  indent = self("GetIndent")
+  WScript.StdOut.WriteLine indent & "* [" & adsObject.Class & "] " & adsObject.Name
+  If showProperties Then
+    PrintObjectProperties adsObject, indent & "  ", "(PropertyProperty) ", _
+                          Array("AdsPath", _
+                                "Class", _
+                                "GUID", _
+                                "MaxRange", _
+                                "MinRange", _
+                                "MultiValued", _
+                                "Name", _
+                                "OID", _
+                                "Parent", _
+                                "Schema", _
+                                "Syntax")
+  End If
+End Sub
+
+Sub PrintObjectProperties(adsObject, indent, prefix, propNameList)
+  Dim propName, propValue
+  For Each propName In propNameList
+    Err.Clear
+    On Error Resume Next
+
+    propValue = ShowValue(GetObjectProperty(adsObject, propName))
+    If Err.Number <> 0 Then
+      Err.Clear
+      propValue = Empty
+    End If
+
+    If IsEmpty(propValue) Then
+      If Not skipUndefinedProperties Then
+        WScript.StdOut.WriteLine indent & prefix & propName & ": -"
+      End If
+    Else
+      WScript.StdOut.WriteLine indent & prefix & propName & ": " & propValue
+    End If
+  Next
+End Sub
+
+Sub PrintDirectoryProperties(adsObject, indent, prefix, propNameList)
+  Dim propName, propValue
+  For Each propName In propNameList
+    Err.Clear
+    On Error Resume Next
+
+    propValue = ShowValue(adsObject.Get(propName))
+    If Err.Number <> 0 Then
+      Err.Clear
+      propValue = Empty
+    End If
+
+    If IsEmpty(propValue) Then
+      If Not skipUndefinedProperties Then
+        WScript.StdOut.WriteLine indent & prefix & propName & ": -"
+      End If
+    Else
+      WScript.StdOut.WriteLine indent & prefix & propName & ": " & propValue
+    End If
+  Next
+End Sub
+
+ADSI_Accept root, visitor
+
+]]></script>
+</job>
+
+<job id="ListWmiObject">
+<runtime>
+<description>List WMI object.</description>
+<named name="ns" type="string" required="false"
+       helpstring="target namespace." />
+<named name="security" type="boolean" required="false"
+       helpstring="enable Security SID." />
+<unnamed name="class" required="true" many="false"
+         helpstring="class of WMI object." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim optName
+Dim nameSpace: nameSpace = "\root\cimv2"
+Dim isSecurity: isSecurity = False
+
+For Each optName In WScript.Arguments.Named
+  Select Case UCase(optName)
+    Case "NS":
+      nameSpace = WScript.Arguments.Named(optName)
+    Case "SECURITY":
+      isSecurity = GetNamedArgumentBool(optName, WScript.Arguments.Named, False)
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
+  End Select
+Next
+
+Dim klassName
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+klassName = WScript.Arguments.Unnamed(0)
+
+Dim computerName
+computerName = "."
+
+Dim path
+path = "winmgmts:"
+If isSecurity Then
+  path = path & "{(Security)}!"
+End If
+path = path & "\\" & computerName & nameSpace
+WScript.StdOut.WriteLine "access to " & path
+
+Dim services, klass
+Set services = GetObject(path)
+Set klass = services.Get(klassName)
+
+Sub PrintSeparator(message)
+  WScript.StdOut.WriteLine "---------------- " & message & " ----------------"
+End Sub
+
+Dim GetWbemPropOptInfo
+Set GetWbemPropOptInfo = New WbemPropertyOptionalInformationGetter
+Set GetWbemPropOptInfo.Class = klass
+
+Dim count, obj, prop
+count = 0
+
+For Each obj In klass.Instances_
+  count = count + 1
+  PrintSeparator Now & ": " & klassName & ": " & count
+  For Each prop In obj.Properties_
+    WScript.StdOut.WriteLine prop.Name & ": " & _
+           ShowValue(prop.Value) & _
+           GetWbemPropOptInfo(prop.Name)
+  Next
+Next
+PrintSeparator Now & ": End of" & klassName
+
+]]></script>
+</job>
+
+<job id="MaxSizeFile">
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+Dim visitor
+Set visitor = FindFile_CreateVisitor
+visitor("maxSizeFile") = Empty
+PseudoObject_AttachMethodSubProc visitor, "VisitFile", GetRef("VisitFile"), 2
+PseudoObject_AttachMethodSubProc _
+            visitor, "TraverseFolder_ErrorHandler", GetRef("TraverseFolder_ErrorHandler"), 3
+
+Sub VisitFile(self, file)
+  If IsEmpty(self("maxSizeFile")) Then
+    MaxSizeFileSubmit self, file
+  ElseIf file.Size > self("maxSizeFile").Size Then
+    MaxSizeFileSubmit self, file
+  End If
+End Sub
+
+Sub MaxSizeFileSubmit(self, file)
+  Set self("maxSizeFile") = file
+  WScript.StdOut.WriteLine _
+         FormatNumber(file.Size, 0, True, False, True) & " bytes" & vbTab & file.Path
+End Sub
+
+Sub TraverseFolder_ErrorHandler(self, folder, errorContext)
+  WScript.StdErr.WriteLine _
+         "warning: <" & errorContext("Number") & "> (" & errorContext("Source") & ") " & _
+         errorContext("Description") & ": " & folder.Path
+End Sub
+
+Dim path
+For Each path In WScript.Arguments.Unnamed
+  FindFile_PathAccept path, visitor
+Next
+
+]]></script>
+</job>
+
+<job id="ShowDateTime">
+<runtime>
+<description>show formatted date-time.</description>
+<unnamed name="dateTimeFormat" type="string" required="false" many="false"
+         helpstring="date-time format of strftime." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count > 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim dateTimeFormat
+If WScript.Arguments.Unnamed.Count > 0 Then
+  dateTimeFormat = WScript.Arguments.Unnamed(0)
+Else
+  dateTimeFormat = "%c"
+End If
+
+WScript.Echo strftime(dateTimeFormat, Now)
+
+]]></script>
+</job>
+
+<job id="WatchEventLog">
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+WScript.StdOut.WriteLine now
+
+Dim computerName
+computerName = "."
+
+Dim services
+Set services = GetObject("winmgmts:{(Security)}//" & computerName & "/root/cimv2")
+
+Dim GetWbemPropOptInfo
+Set GetWbemPropOptInfo = New WbemPropertyOptionalInformationGetter
+Set GetWbemPropOptInfo.Class = services.Get("Win32_NTLogEvent")
+
+Dim wql
+wql = "SELECT * FROM __InstanceCreationEvent WITHIN 10 WHERE TargetInstance ISA 'Win32_NTLogEvent'"
+
+WScript.StdOut.WriteLine "WQL: " & wql
+
+Dim events, count, ev, prop
+Set events = services.ExecNotificationQuery(wql)
+count = 0
+
+WScript.StdOut.WriteLine "start watching event Log..."
+Do
+  Set ev = events.NextEvent
+  count = count + 1
+  WScript.StdOut.WriteLine "---------------- " & Now & ": log " & count & " ----------------"
+  For Each prop In ev.TargetInstance.Properties_
+    WScript.StdOut.WriteLine prop.Name & ": " & ShowValue(prop.Value) & GetWbemPropOptInfo(prop.Name)
+  Next
+  WScript.StdOut.WriteBlankLines 1
+Loop
+
+]]></script>
+</job>
+
+<job id="Zip">
+<runtime>
+<description>make zip file.</description>
+<named name="timeout" type="string" required="false"
+       helpstring="timeout seconds. default is 60s." />
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="fileOrFolder" type="string" required="true" many="true"
+         helpstring="file or folder to add zip file." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count < 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zipEntries
+Set zipEntries = New ListBuffer
+
+Dim i
+For i = 1 To WScript.Arguments.Unnamed.Count - 1
+  zipEntries.Add WScript.Arguments.Unnamed(i)
+Next
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+Dim optName
+For Each optName In WScript.Arguments.Named
+  Select Case LCase(optName)
+    Case "timeout":
+      zfo.TimeoutSeconds = CLng(GetNamedArgumentString("timeout", WScript.Arguments.Named, Empty))
+    Case Else:
+      Err.Raise RuntimeError, WScript.ScriptName & ":ListWmiObject", "Unknown option: " & optName
+  End Select
+Next
+
+zfo.Zip zipName, zipEntries.Items
+
+]]></script>
+</job>
+
+<job id="ZipList">
+<runtime>
+<description>show entries of zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+Option Explicit
+
+If WScript.Arguments.Unnamed.Count <> 1 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim zfo
+Set zfo = New ZipFileObject
+
+Dim entry
+For Each entry In zfo.ZipEntries(zipName)
+  WScript.StdOut.WriteLine entry
+Next
+
+]]></script>
+</job>
+
+<job id="Unzip">
+<runtime>
+<description>extract files from zip file.</description>
+<unnamed name="zipName" type="string" required="true" many="false"
+         helpstring="name for zip file."/>
+<unnamed name="folderPath" type="string" required="true" many="false"
+         helpstring="destination folder to extract files." />
+</runtime>
+<script language="VBScript" src="../lib/stdlib.vbs" />
+<script language="VBScript"><![CDATA[
+
+If WScript.Arguments.Unnamed.Count <> 2 Then
+  WScript.Arguments.ShowUsage
+  WScript.Quit 255
+End If
+
+Dim zipName
+zipName = WScript.Arguments.Unnamed(0)
+
+Dim destFolderPath
+destFolderPath = WScript.Arguments.Unnamed(1)
+
+Dim zfo
+Set zfo = New ZipFileObject
+zfo.Unzip zipName, destFolderPath
+
+]]></script>
+</job>
+
+</package>
+
+<!-- Local Variables: -->
+<!-- mode: Visual-Basic -->
+<!-- indent-tabs-mode: nil -->
+<!-- End: -->

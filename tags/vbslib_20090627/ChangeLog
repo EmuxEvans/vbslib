@@ -1,0 +1,158 @@
+2009-06-26  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* LICENSE: license for this project.
+
+	* README: description for this project.
+
+2009-06-24  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* test/test_stdlib_ZipFile.vbs: clean up unzip temporary directory
+	on Windows XP.
+
+2009-06-13  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: method names of zip file object are changed.
+
+2009-06-02  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: large zip file.
+
+	* lib/stdlib.vbs: creating zip file does not fail.
+
+2009-04-20  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/tool.wsf: show date-time.
+
+	* lib/stdlib.vbs: strftime.
+
+2009-04-17  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* mkpkg.bat: package utility.
+
+	* bin/tool.wsf: make zip tool.
+
+2009-04-15  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: default value of find.
+
+2009-04-07  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: zip file object.
+
+	* test/test_FileOpenError.vbs: file open error samples.
+
+2009-03-26  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: showlog command.
+
+2009-03-09  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* test/assertion/test_assert.vbs: assertion example.
+
+2009-03-01  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* google code project hosting.
+
+2009-02-28  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: find file error handler.
+	pseudo object framework.
+
+2009-02-26  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: find file.
+
+2009-02-25  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/tool.wsf: ADSIObjectDump tool.
+
+	* lib/stdlib.vbs: ADSI visitor framework.
+
+2009-02-24  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: GUI dialog.
+	dictionary merge.
+
+	* bin/repl.vbs: procedure list command.
+	help command.
+
+2009-02-22  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: script timeout command. script engine reset
+	command.
+
+	* bin/repl.vbs: file open dialog for import.
+
+2009-02-20  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: logging.
+
+	* lib/stdlib.vbs: AryReverse list tool.
+
+	* lib/stdlib.vbs: CompareFilter utility function. ReverseCompare
+	utility function. utility functions of ValueItemAt, ValueItemsAt,
+	ValueObjectProperties. obsolete ValueDictionaryItem function.
+	utility functions of PriorMax and PriorMin. Inject list tool.
+
+2009-02-19  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/TestRunner.wsf, lib/unittest.vbs: count tests and
+	assertions.
+
+	* lib/stdlib.vbs: CountItem function of list tool.
+
+2009-02-18  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: range function of list tool.
+
+2009-02-12  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/TestRunner.wsf: test case filtering options.
+
+	* lib/stdlib.vbs: tool for command line arguments.
+
+2009-02-11  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: import command.
+
+2009-02-10  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/unittest.vbs: assertion procedure definition changed from
+	`AddCode' to `AddProc'.
+
+	* lib/stdlib.vbs: `Max' and `Min' function of list tool.
+
+2009-02-09  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: procedure subset.
+	`Map' function of list tool.
+
+2009-02-08  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* lib/stdlib.vbs: `Dictionary' function.
+	`re' function (RegExp constructer).
+	`Find' function of list tool.
+
+	* bin/tool.wsf: ListJob, ListWmiObject.
+
+2009-02-07  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/TestRunner.wsf: command line options and usage.
+
+2009-02-06  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/TestRunner.wsf, lib/unittest.vbs: Unit-Test framework and
+	test runner.
+
+	* lib/stdlib.vbs: ListBuffer class. shortcut property for last
+	item.
+
+2009-02-05  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/repl.vbs: encapsulated runtime environment by ScriptControl.
+
+2009-01-17  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* repl.vbs: Read Eval Print Loop.
+
+	* start.
