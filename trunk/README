@@ -1,5 +1,7 @@
+VBScript Portable Library.
+
 bin\repl.vbs
-  VBScript Read Eval Print Loop
+  VBScript Read Eval Print Loop.
   `Repl.vbs' runs only with itself.
 
 bin\tool.wsf
@@ -7,14 +9,14 @@ bin\tool.wsf
   Help for optional argument: `/?'.
 
 bin\TestRunner.wsf
-  VBScript unit test runner.
+  VBScript Unit Test runner for console.
   Help for optional argument: `/?'.
 
 lib\stdlib.vbs
-  VBScript Portable Library
+  VBScript Portable Library.
 
 lib\unittest.vbs
-  VBScript Unit Test Library
+  VBScript Unit Test framework.
 
 test\*
   Examples for stdlib.vbs and unit test.
