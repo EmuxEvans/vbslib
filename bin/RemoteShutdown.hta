@@ -5,5 +5,62 @@
 <body>
 <h1>Windows Remote Shutdown</h1>
 
+<h2>Remote Computer Log On</h2>
+<p>
+  <table>
+    <tr>
+      <td><label for="ComputerName">Computer Name:</label></td>
+      <td><input id="ComputerName" type="text" /></td>
+    </tr>
+    <tr>
+      <td><label for="UserName">User Name:</label></td>
+      <td><input id="User Name:" type="text" /></td>
+    </tr>
+    <tr>
+      <td><label for="Password">Password:</label></td>
+      <td><input id="Password:" type="password" /></td>
+    </tr>
+  </table>
+</p>
+<p>
+  <input id="LogOn" type="submit" value="Log On" />
+  <input id="LogOff" type="submit" value="Log Off" disabled="disabled" />
+</p>
+
+<h2>Remote Computer Information</h2>
+<pre id="Information">
+</pre>
+
+<h2>Remote Computer Shutdown</h2>
+<p>
+  <input id="ShutdownFlag-LogOff" type="radio" name="ShutdownFlag" value="0" />
+  <label for="ShutdownFlag-LogOff">(0x0) Log Off</label>
+  <br />
+  <input id="ShutdownFlag-Shutdown" type="radio" name="ShutdownFlag" value="1" />
+  <label for="ShutdownFlag-Shutdown">(0x1) Shutdown</label>
+  <br />
+  <input id="ShutdownFlag-Reboot" type="radio" name="ShutdownFlag" value="2" />
+  <label for="ShutdownFlag-Reboot">(0x2) Reboot</label>
+  <br />
+  <input id="ShutdownFlag-PowerOff" type="radio" name="ShutdownFlag" value="8" />
+  <label for="ShutdownFlag-PowerOff">(0x8) Power Off</label>
+  <br />
+  <input id="ShutdownFlag-ForcedLogOff" type="radio" name="ShutdownFlag" value="4" disabled="disabled" />
+  <label for="ShutdownFlag-ForcedLogOff">(0x4) Forced Log Off</label>
+  <br />
+  <input id="ShutdownFlag-ForcedShutdown" type="radio" name="ShutdownFlag" value="5" disabled="disabled" />
+  <label for="ShutdownFlag-ForcedShutdown">(0x5) Forced Shutdown</label>
+  <br />
+  <input id="ShutdownFlag-ForcedReboot" type="radio" name="ShutdownFlag" value="6" disabled="disabled" />
+  <label for="ShutdownFlag-ForcedReboot">(0x6) Forced Reboot</label>
+  <br />
+  <input id="ShutdownFlag-ForcedPowerOff" type="radio" name="ShutdownFlag" value="12" disabled="disabled" />
+  <label for="ShutdownFlag-ForcedPowerOff">(0xC) Forced Power Off</label>
+  <br />
+  <input id="ShutdownForcedOption" type="checkbox" />
+  <label for="ShutdownForcedOption">Enable Forced Option.</label>
+</p>
+<p><input id="Shutdown" type="submit" value="Shutdown" disabled="disabled" /></p>
+
 </body>
 </html>
