@@ -1,4 +1,116 @@
 <html>
+<script language="VBScript"><!--
+
+Option Explicit
+
+'================================================
+'################ WMI Operations ################
+'------------------------------------------------
+
+Dim locator
+Set locator = CreateObject("WbemScripting.SWbemLocator")
+
+Dim service, operatingSystem
+DisconnectRemoteComputer
+
+Sub ConnectRemoteComputer(computerName, userName, password)
+  Set service = locator.ConnectServer(computerName, "root\cimv2", userName, password)
+  Dim i
+  For Each i In service.InstancesOf("Win32_OperatingSystem")
+    Set operatingSystem = i
+    Exit Sub
+  Next
+
+  Err.Raise 51, "RemoteShutdown.hta", "not found an operating system at remote computer of `" & computerName & "'"
+End Sub
+
+Sub DisconnectRemoteComputer
+  Set operatingSystem = Nothing
+  Set service = Nothing
+End Sub
+
+Sub RemoteShutdown(shutdownFlags)
+  operatingSystem.Win32Shutdown shutdownFlags
+End Sub
+
+Function GetRemoteComputerInformation
+  GetRemoteComputerInformation = operatingSystem.GetObjectText_
+End Function
+
+
+'==================================================
+'################ User I/F Control ################
+'--------------------------------------------------
+
+Sub Command_LogOn
+  Dim computerName, userName, password
+  computerName = document.GetElementById("ComputerName").Value
+  userName = document.GetElementById("UserName").Value
+  password = document.GetElementById("Password").Value
+
+  ConnectRemoteComputer computerName, userName, password
+
+  document.GetElementById("LogOn").Disabled = True
+  document.GetElementById("LogOff").Disabled = False
+  document.GetElementById("Shutdown").Disabled = False
+  document.GetElementById("Information").innerText = GetRemoteComputerInformation
+End Sub
+
+Sub Command_LogOff
+  DisconnectRemoteComputer
+
+  document.GetElementById("LogOn").Disabled = False
+  document.GetElementById("LogOff").Disabled = True
+  document.GetElementById("Shutdown").Disabled = True
+  document.GetElementById("Information").innerText = ""
+End Sub
+
+Sub ToggleShutdownForcedOption
+  If document.GetElementById("ShutdownForcedOption").Checked Then
+    document.GetElementById("ShutdownFlag-ForcedLogOff").Disabled = False
+    document.GetElementById("ShutdownFlag-ForcedShutdown").Disabled = False
+    document.GetElementById("ShutdownFlag-ForcedReboot").Disabled = False
+    document.GetElementById("ShutdownFlag-ForcedPowerOff").Disabled = False
+  Else
+    document.GetElementById("ShutdownFlag-ForcedLogOff").Disabled = True
+    document.GetElementById("ShutdownFlag-ForcedShutdown").Disabled = True
+    document.GetElementById("ShutdownFlag-ForcedReboot").Disabled = True
+    document.GetElementById("ShutdownFlag-ForcedPowerOff").Disabled = True
+  End If
+End Sub
+
+Dim shutdownFlagIdList
+shutdownFlagIdList = Array("ShutdownFlag-LogOff", _
+                           "ShutdownFlag-Shutdown", _
+                           "ShutdownFlag-Reboot", _
+                           "ShutdownFlag-PowerOff", _
+                           "ShutdownFlag-ForcedLogOff", _
+                           "ShutdownFlag-ForcedShutdown", _
+                           "ShutdownFlag-ForcedReboot", _
+                           "ShutdownFlag-ForcedPowerOff")
+
+Function GetShutdownFlag
+  Dim id
+  For Each id In shutdownFlagIdList
+    Dim radioButton
+    Set radioButton = document.GetElementById(id)
+    If Not radioButton.Disabled Then
+      If radioButton.Checked Then
+        GetShutdownFlag = CLng(radioButton.Value)
+        Exit Function
+      End If
+    End If
+  Next
+
+  Err.Raise 51, "RemoteShutdown.hta", "not checked Shutdown Flag."
+End Function
+
+Sub Command_Shutdown
+  RemoteShutdown GetShutdownFlag
+End Sub
+
+
+--></script>
 <head>
 <title>Windows Remote Shutdown</title>
 </head>
@@ -23,8 +135,8 @@
   </table>
 </p>
 <p>
-  <input id="LogOn" type="submit" value="Log On" />
-  <input id="LogOff" type="submit" value="Log Off" disabled="disabled" />
+  <input id="LogOn" type="submit" value="Log On" onclick="Command_LogOn" />
+  <input id="LogOff" type="submit" value="Log Off" onclick="Command_LogOff" disabled="disabled" />
 </p>
 
 <h2>Remote Computer Information</h2>
@@ -57,10 +169,10 @@
   <input id="ShutdownFlag-ForcedPowerOff" type="radio" name="ShutdownFlag" value="12" disabled="disabled" />
   <label for="ShutdownFlag-ForcedPowerOff">(0xC) Forced Power Off</label>
   <br />
-  <input id="ShutdownForcedOption" type="checkbox" />
+  <input id="ShutdownForcedOption" type="checkbox" onclick="ToggleShutdownForcedOption" />
   <label for="ShutdownForcedOption">Enable Forced Option.</label>
 </p>
-<p><input id="Shutdown" type="submit" value="Shutdown" disabled="disabled" /></p>
+<p><input id="Shutdown" type="submit" value="Shutdown" onclick="Command_Shutdown" disabled="disabled" /></p>
 
 </body>
 </html>
