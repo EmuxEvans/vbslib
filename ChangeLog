@@ -1,3 +1,7 @@
+2009-08-19  TOKI Yoshinori  <toki@freedom.ne.jp>
+
+	* bin/RemoteShutdown.hta: GUI utility for windows remote shutdown.
+
 2009-06-27  TOKI Yoshinori  <toki@freedom.ne.jp>
 
 	* LICENSE.txt, README.txt: txt file extension for windows.
