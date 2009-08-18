@@ -42,13 +42,27 @@ End Function
 '################ User I/F Control ################
 '--------------------------------------------------
 
+Sub ShowErrorMessage
+  MsgBox Err.Number & ": " & Err.Description, _
+         vbOKOnly Or vbExclamation, _
+         Err.Source & " Error"
+End Sub
+
 Sub Command_LogOn
   Dim computerName, userName, password
   computerName = document.GetElementById("ComputerName").Value
   userName = document.GetElementById("UserName").Value
   password = document.GetElementById("Password").Value
 
+  On Error Resume Next
   ConnectRemoteComputer computerName, userName, password
+  If Err.Number <> 0 Then
+    ShowErrorMessage
+    DisconnectRemoteComputer
+    Err.Clear
+    Exit Sub
+  End If
+  On Error GoTo 0
 
   document.GetElementById("LogOn").Disabled = True
   document.GetElementById("LogOff").Disabled = False
@@ -106,7 +120,14 @@ Function GetShutdownFlag
 End Function
 
 Sub Command_Shutdown
+  On Error Resume Next
   RemoteShutdown GetShutdownFlag
+  If Err.Number <> 0 Then
+    ShowErrorMessage
+    Err.Clear
+    Exit Sub
+  End If
+  On Error GoTo 0
 End Sub
 
 
