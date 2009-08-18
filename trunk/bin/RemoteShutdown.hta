@@ -68,7 +68,10 @@ Sub Command_LogOn
   document.GetElementById("LogOn").Disabled = True
   document.GetElementById("LogOff").Disabled = False
   document.GetElementById("Shutdown").Disabled = False
+
   document.GetElementById("Information").innerText = GetRemoteComputerInformation
+  document.GetElementById("Information").className = ""
+  document.GetElementById("NoInformation").className = "hidden"
 End Sub
 
 Sub Command_LogOff
@@ -77,7 +80,10 @@ Sub Command_LogOff
   document.GetElementById("LogOn").Disabled = False
   document.GetElementById("LogOff").Disabled = True
   document.GetElementById("Shutdown").Disabled = True
+
   document.GetElementById("Information").innerText = ""
+  document.GetElementById("Information").className = "hidden"
+  document.GetElementById("NoInformation").className = ""
 End Sub
 
 Sub ToggleShutdownForcedOption
@@ -133,11 +139,29 @@ End Sub
 
 
 --></script>
+<style type="text/css">
+.group {
+  border-style: groove;
+  margin-bottom: 1em;
+  padding-left: 1ex;
+  padding-right: 1ex;
+}
+
+#Information {
+  border-style: inset;
+}
+
+.hidden {
+  display: none;
+}
+</style>
 <title>Windows Remote Shutdown</title>
 </head>
+
 <body>
 <h1>Windows Remote Shutdown</h1>
 
+<div class="group">
 <h2>Remote Computer Log On</h2>
 <p>
   <table>
@@ -159,13 +183,19 @@ End Sub
   <input id="LogOn" type="submit" value="Log On" onclick="Command_LogOn" />
   <input id="LogOff" type="submit" value="Log Off" onclick="Command_LogOff" disabled="disabled" />
 </p>
+</div>
 
+<div class="group">
 <h2>Remote Computer Information</h2>
-<pre id="Information">
+<pre id="Information" class="hidden">
 </pre>
+<p id="NoInformation"><em>not connected.</em></p>
+</div>
 
+<div class="group">
 <h2>Remote Computer Shutdown</h2>
 <p>
+  Shutdown Flags:<br />
   <input id="ShutdownFlag-LogOff" type="radio" name="ShutdownFlag" value="0" />
   <label for="ShutdownFlag-LogOff">(0x0) Log Off</label>
   <br />
@@ -194,6 +224,7 @@ End Sub
   <label for="ShutdownForcedOption">Enable Forced Option.</label>
 </p>
 <p><input id="Shutdown" type="submit" value="Shutdown" onclick="Command_Shutdown" disabled="disabled" /></p>
+</div>
 
 </body>
 </html>
